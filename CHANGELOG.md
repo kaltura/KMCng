@@ -1,3 +1,12 @@
+<a name="6.5.4"></a>
+## [6.5.4](https://github.com/kaltura/kmc-ng/compare/v6.5.3...v6.5.4) (2021-06-06)
+
+
+### Bug Fixes
+
+* **Live:** Ignore empty secondaryRtspBroadcastingUrl
+
+
 <a name="6.5.3"></a>
 ## [6.5.3](https://github.com/kaltura/kmc-ng/compare/v6.5.2...v6.5.3) (2021-04-05)
 
