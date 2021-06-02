@@ -46,8 +46,8 @@
           </div>
           <div class="kRow">
             <span class="kLabels">{{'applications.content.entryDetails.live.backup' | translate}}</span>
-            <span>{{_widgetService.data?.secondaryRtspBroadcastingUrl.replace('%i','1')}}</span>
-            <kCopyToClipboard class="kIcon" [text]="_widgetService.data?.secondaryRtspBroadcastingUrl.replace('%i','1')" [iconSwitchTimeout]="5000" [tooltips]="_copyToClipboardTooltips"></kCopyToClipboard>
+            <span>{{_widgetService.data?.secondaryRtspBroadcastingUrl?.replace('%i','1')}}</span>
+            <kCopyToClipboard class="kIcon" [text]="_widgetService.data?.secondaryRtspBroadcastingUrl?.replace('%i','1')" [iconSwitchTimeout]="5000" [tooltips]="_copyToClipboardTooltips"></kCopyToClipboard>
           </div>
         </div>
 
