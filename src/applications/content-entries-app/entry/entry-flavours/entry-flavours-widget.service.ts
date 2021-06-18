@@ -482,7 +482,9 @@ export class EntryFlavoursWidget extends EntryWidget implements OnDestroy {
             .pipe(cancelOnDestroy(this, this.widgetReset$))
             .subscribe(
                 dowmloadUrl => {
-                    this._browserService.openLink(dowmloadUrl);
+                    const name = `${this.data.id}_${id}`;
+                    const type = flavor.flavorAsset.fileExt ? `video/${flavor.flavorAsset.fileExt}` : '';
+                    this._browserService.download(dowmloadUrl, name, type);
                 },
                 error => {
                     this._browserService.showToastMessage({
