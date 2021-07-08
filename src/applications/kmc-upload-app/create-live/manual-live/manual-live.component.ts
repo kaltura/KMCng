@@ -37,7 +37,8 @@ export class ManualLiveComponent implements OnInit, OnDestroy {
       useAkamaiHdProtocol: this.data.useAkamaiHdProtocol,
       streamUrl: {
         flashHDSURL: this.data.flashHDSURL,
-        hlsStreamUrl: this.data.hlsStreamUrl
+        hlsStreamUrl: this.data.hlsStreamUrl,
+        dashStreamUrl: this.data.dashStreamUrl
       }
     });
   }
@@ -62,7 +63,8 @@ export class ManualLiveComponent implements OnInit, OnDestroy {
   private _createForm(): void {
     this._streamUrlForm = this._fb.group({
         flashHDSURL: ['', KalturaValidators.url],
-        hlsStreamUrl: ['', KalturaValidators.url]
+        hlsStreamUrl: ['', KalturaValidators.url],
+        dashStreamUrl: ['', KalturaValidators.url]
       },
       {
         validator: (formGroup: FormGroup) => {
@@ -86,13 +88,16 @@ export class ManualLiveComponent implements OnInit, OnDestroy {
             description: data.description,
             useAkamaiHdProtocol: data.useAkamaiHdProtocol,
             flashHDSURL: data.streamUrl.flashHDSURL,
-            hlsStreamUrl: data.streamUrl.hlsStreamUrl
+            hlsStreamUrl: data.streamUrl.hlsStreamUrl,
+            dashStreamUrl: data.streamUrl.dashStreamUrl
           });
       });
   }
 
   private _atLeastOneUrlValidator(formgroup: FormGroup) {
-    if (!formgroup.controls['flashHDSURL'].value && !formgroup.controls['hlsStreamUrl'].value) {
+    if (!formgroup.controls['flashHDSURL'].value &&
+        !formgroup.controls['hlsStreamUrl'].value &&
+        !formgroup.controls['dashStreamUrl'].value) {
       return {atLeastOneUrl: true};
     } else {
       return null;

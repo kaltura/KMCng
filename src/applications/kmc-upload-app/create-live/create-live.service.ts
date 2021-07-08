@@ -74,6 +74,13 @@ export class CreateLiveService {
       stream.liveStreamConfigurations.push(cfg);
     }
 
+    if (data.dashStreamUrl) {
+      const cfg = new KalturaLiveStreamConfiguration();
+      cfg.protocol = KalturaPlaybackProtocol.mpegDash;
+      cfg.url = data.dashStreamUrl;
+      stream.liveStreamConfigurations.push(cfg);
+    }
+
     return this._kalturaServerClient
       .request(new LiveStreamAddAction({liveStreamEntry: stream, sourceType: KalturaSourceType.manualLiveStream}))
   }

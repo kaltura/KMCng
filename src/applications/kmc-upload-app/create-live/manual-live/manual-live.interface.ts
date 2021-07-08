@@ -3,5 +3,6 @@ export interface ManualLive {
   description: string,
   flashHDSURL: string,
   hlsStreamUrl: string,
+  dashStreamUrl: string,
   useAkamaiHdProtocol: boolean
 }

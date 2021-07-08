@@ -478,6 +478,7 @@
                     "description": "Description",
                     "flashHDSURL": "Live Flash HDS stream URL",
                     "hlsStreamUrl": "Live Mobile HLS stream URL",
+                    "dashStreamUrl": "DASH stream URL",
                     "useAkamaiHdProtocol": "Akamai HD protocol is used on this HDS URL.",
                     "errors": {
                         "required": "This field is required",
