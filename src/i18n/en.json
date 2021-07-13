@@ -193,6 +193,7 @@
                 "title": "Your password has expired. To continue using the system you need to change your password now.",
                 "error": {
                     "equal": "Passwords do not match",
+                    "notEqual": "New password cannot be the same as old password",
                     "required": "Field is required"
                 },
                 "placeholder": {

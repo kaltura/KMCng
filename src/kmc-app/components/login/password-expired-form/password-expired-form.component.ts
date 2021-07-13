@@ -58,7 +58,7 @@ export class PasswordExpiredFormComponent {
     this._resetPasswordForm = this._fb.group({
       oldPassword: ['', Validators.required],
       passwords: this._fb.group({
-        newPassword: ['', Validators.required],
+        newPassword: ['', Validators.compose([Validators.required, NotEqualFieldsValidator.validate('oldPassword')])],
         repeatPassword: ['', Validators.required],
       }, { validator: EqualFieldsValidator.validate('newPassword', 'repeatPassword') })
     });
@@ -75,9 +75,16 @@ export class PasswordExpiredFormComponent {
 
   public _getClientValidationMessage(control: AbstractControl): string {
     const invalid = this._showError(control);
-    const message = control.hasError('fieldsEqual')
-      ? 'app.login.passwordExpired.error.equal'
-      : 'app.login.passwordExpired.error.required';
+    let message = '';
+    if (control.hasError('fieldsEqual')) {
+        message = 'app.login.passwordExpired.error.equal';
+    }
+    if (control.hasError('fieldsNotEqual')) {
+        message = 'app.login.passwordExpired.error.notEqual';
+    }
+    if (control.hasError('required')) {
+        message = 'app.login.passwordExpired.error.required';
+    }
     return invalid ? message : '';
   }
 
@@ -96,5 +103,17 @@ export class PasswordExpiredFormComponent {
   }
     public _contactSupport(): void {
         this._browserService.openSupport();
+    }
+}
+
+class NotEqualFieldsValidator {
+    public static validate(compareControl: string) {
+        return (c: AbstractControl) => {
+            return (c && c.parent?.parent && c.value !== c.parent.parent.get(compareControl).value) ? null : {
+                fieldsNotEqual: {
+                    valid: false
+                }
+            };
+        };
     }
 }
