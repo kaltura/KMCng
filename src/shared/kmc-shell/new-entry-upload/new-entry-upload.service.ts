@@ -1,7 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { KalturaClient } from 'kaltura-ngx-client';
 import { Observable } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription';
 import { KalturaMediaType, KalturaEntryApplication } from 'kaltura-ngx-client';
 import { TrackedFileStatuses, UploadManagement } from '@kaltura-ng/kaltura-common';
 import { NewEntryUploadFile } from './new-entry-upload-file';
@@ -13,8 +12,9 @@ import { KalturaAssetsParamsResourceContainers } from 'kaltura-ngx-client';
 import { MediaUpdateContentAction } from 'kaltura-ngx-client';
 import { UploadTokenDeleteAction } from 'kaltura-ngx-client';
 import { TrackedFileData } from '@kaltura-ng/kaltura-common';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { filter, switchMap, tap } from 'rxjs/operators';
 import { globalConfig } from 'config/global';
 
 export interface KmcNewEntryUpload {
@@ -40,7 +40,7 @@ export class NewEntryUploadService implements OnDestroy {
   private _monitorTrackedFilesChanges(): void {
     this._uploadManagement.onTrackedFileChanged$
       .pipe(cancelOnDestroy(this))
-      .filter(trackedFile => trackedFile.data instanceof NewEntryUploadFile)
+      .pipe(filter(trackedFile => trackedFile.data instanceof NewEntryUploadFile))
       .subscribe(
         trackedFile => {
           // NOTE: this service handles only 'purged' and 'waitingUpload' statuses by design.
@@ -61,7 +61,7 @@ export class NewEntryUploadService implements OnDestroy {
   private _cleanupUpload(trackedFile: TrackedFileData): void {
     const trackedFileData = <NewEntryUploadFile>trackedFile.data;
 
-    if (trackedFileData.createMediaEntrySubscription instanceof Subscription) {
+    if (trackedFileData.createMediaEntrySubscription) {
       trackedFileData.createMediaEntrySubscription.unsubscribe();
       trackedFileData.createMediaEntrySubscription = null;
     }
@@ -80,11 +80,11 @@ export class NewEntryUploadService implements OnDestroy {
 
   private _linkEntryWithFile(trackedFile: TrackedFileData): void {
     (<NewEntryUploadFile>trackedFile.data).createMediaEntrySubscription = this._createMediaEntry(<NewEntryUploadFile>trackedFile.data)
-      .do(entry => {
+      .pipe(tap(entry => {
         (<NewEntryUploadFile>trackedFile.data).entryId = entry.id;
         this._mediaCreated.next({ id: trackedFile.id, entryId: entry.id });
-      })
-      .switchMap((entry: KalturaMediaEntry) => this._updateMediaContent(entry, <NewEntryUploadFile>trackedFile.data))
+      }))
+      .pipe(switchMap((entry: KalturaMediaEntry) => this._updateMediaContent(entry, <NewEntryUploadFile>trackedFile.data)))
       .subscribe(
         () => {
         },

@@ -5,6 +5,7 @@
   border-top-right-radius: 5px;
   background-color: white;
   display: inline-block;
+  max-width: 100%;
   .kTranscodingProfilesListTitle {
     margin-top: 28px;
     margin-bottom: 12px;
@@ -89,11 +90,11 @@
   z-index: 203;
 }
 
-:host ::ng-deep span.ui-button-icon-left.pi-kIcontrash {
+:host ::ng-deep span.p-button-icon-left.pi-kIcontrash {
   margin-left: -.5em;
 }
 :host ::ng-deep .kProfilesTableFooter {
-  .ui-dropdown-panel {
+  .p-dropdown-panel {
     min-width: 70px;
   }
 }

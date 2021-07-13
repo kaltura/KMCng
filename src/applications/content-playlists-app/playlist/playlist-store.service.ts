@@ -1,7 +1,7 @@
 import { Host, Injectable, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subject } from 'rxjs/Subject';
+import {BehaviorSubject, EMPTY} from 'rxjs';
+import { Subject } from 'rxjs';
 import { ISubscription } from 'rxjs/Subscription';
 import { KalturaClient, KalturaMultiRequest, KalturaObjectBaseFactory } from 'kaltura-ngx-client';
 import { PlaylistGetAction } from 'kaltura-ngx-client';
@@ -22,6 +22,9 @@ import { ContentPlaylistViewService } from 'app-shared/kmc-shared/kmc-views/deta
 import { ContentPlaylistViewSections } from 'app-shared/kmc-shared/kmc-views/details-views/content-playlist-view.service';
 import { ContentPlaylistsMainViewService } from 'app-shared/kmc-shared/kmc-views/main-views/content-playlists-main-view.service';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { debounce } from 'rxjs/operators';
+import { timer } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
 
 export enum ActionTypes {
   PlaylistLoading,
@@ -110,7 +113,7 @@ export class PlaylistStore implements OnDestroy {
   private _onSectionsStateChanges(): void {
     this._widgetsManager.widgetsState$
       .pipe(cancelOnDestroy(this))
-      .debounce(() => Observable.timer(500))
+      .pipe(debounce(() => timer(500)))
       .subscribe(
         sectionsState => {
           const newDirtyState = Object.keys(sectionsState)
@@ -214,7 +217,7 @@ export class PlaylistStore implements OnDestroy {
   private _onRouterEvents(): void {
     this._router.events
       .pipe(cancelOnDestroy(this))
-      .filter(event => event instanceof NavigationEnd)
+      .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(
         () => {
           const currentPlaylistId = this._playlistRoute.snapshot.params.id;
@@ -284,13 +287,13 @@ export class PlaylistStore implements OnDestroy {
       this._widgetsManager.notifyDataSaving(newPlaylist, request, this.playlist)
         .pipe(cancelOnDestroy(this))
         .pipe(tag('block-shell'))
-        .switchMap((response: { ready: boolean, reason?: OnDataSavingReasons, errors?: Error[] }) => {
+        .pipe(switchMap((response: { ready: boolean, reason?: OnDataSavingReasons, errors?: Error[] }) => {
             if (response.ready) {
               this._savePlaylistInvoked = true;
 
               return this._kalturaServerClient.multiRequest(request)
                 .pipe(tag('block-shell'))
-                .map(([res]) => {
+                .pipe(map(([res]) => {
                     if (res.error) {
                       this._state.next({ action: ActionTypes.PlaylistSavingFailed });
                     } else {
@@ -302,9 +305,9 @@ export class PlaylistStore implements OnDestroy {
                       }
                     }
 
-                    return Observable.empty();
+                    return EMPTY;
                   }
-                )
+                ))
             } else {
               switch (response.reason) {
                 case OnDataSavingReasons.validationErrors:
@@ -318,10 +321,10 @@ export class PlaylistStore implements OnDestroy {
                   break;
               }
 
-              return Observable.empty();
+              return EMPTY;
             }
           }
-        )
+        ))
         .subscribe(
           response => {
             // do nothing - the service state is modified inside the map functions.
@@ -349,8 +352,10 @@ export class PlaylistStore implements OnDestroy {
   public openPlaylist(playlist: KalturaPlaylist) {
     if (this.playlistId !== playlist.id) {
       this.canLeaveWithoutSaving()
-            .filter(({ allowed }) => allowed)
-            .pipe(cancelOnDestroy(this))
+            .pipe(
+                filter(({ allowed }) => allowed),
+                cancelOnDestroy(this)
+            )
             .subscribe(() => {
                 this._contentPlaylistView.open({ playlist, section: ContentPlaylistViewSections.Metadata });
             });
@@ -385,7 +390,7 @@ export class PlaylistStore implements OnDestroy {
   public returnToPlaylists(): void {
     this.canLeaveWithoutSaving()
       .pipe(cancelOnDestroy(this))
-      .filter(({ allowed }) => allowed)
+      .pipe(filter(({ allowed }) => allowed))
       .subscribe(() => {
           this._contentPlaylistsMainView.open();
       });

@@ -7,9 +7,8 @@ import {
   KeyValueDiffers,
   OnDestroy
 } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs';
-
+import { BehaviorSubject } from 'rxjs';
+import { throwError } from 'rxjs';
 import { KalturaClient } from 'kaltura-ngx-client';
 import { KalturaMultiRequest } from 'kaltura-ngx-client';
 import { AppAuthentication, BrowserService } from 'app-shared/kmc-shell';
@@ -23,7 +22,7 @@ import { AttachmentAssetDeleteAction } from 'kaltura-ngx-client';
 import { AttachmentAssetUpdateAction } from 'kaltura-ngx-client';
 import { AttachmentAssetAddAction } from 'kaltura-ngx-client';
 import { KalturaMediaEntry } from 'kaltura-ngx-client';
-import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { cancelOnDestroy } from '@kaltura-ng/kaltura-common';
 import { TrackedFileStatuses, UploadManagement } from '@kaltura-ng/kaltura-common';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
 import { NewEntryRelatedFile } from './new-entry-related-file';
@@ -33,6 +32,8 @@ import { getKalturaServerUri } from 'config/server';
 import { globalConfig } from 'config/global';
 import { ContentEntryViewSections } from 'app-shared/kmc-shared/kmc-views/details-views/content-entry-view.service';
 import {KalturaLogger} from '@kaltura-ng/kaltura-logger';
+import { filter } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
 export interface RelatedFile extends KalturaAttachmentAsset {
   uploading?: boolean,
@@ -72,16 +73,16 @@ export class EntryRelatedWidget extends EntryWidget implements OnDestroy
   private _trackUploadFiles(): void {
     this._uploadManagement.onTrackedFileChanged$
       .pipe(cancelOnDestroy(this))
-      .filter(uploadedFile => uploadedFile.data instanceof NewEntryRelatedFile)
-      .map(uploadedFile => {
+      .pipe(filter(uploadedFile => uploadedFile.data instanceof NewEntryRelatedFile))
+      .pipe(map(uploadedFile => {
         let relevantRelatedFile = null;
         if (uploadedFile.data instanceof NewEntryRelatedFile) {
           const relatedFiles = this._relatedFiles.getValue().items;
           relevantRelatedFile = relatedFiles ? relatedFiles.find(file => file.uploadFileId === uploadedFile.id) : null;
         }
         return { relevantRelatedFile, uploadedFile };
-      })
-      .filter(({ relevantRelatedFile }) => !!relevantRelatedFile)
+      }))
+      .pipe(filter(({ relevantRelatedFile }) => !!relevantRelatedFile))
       .subscribe(
         ({ relevantRelatedFile, uploadedFile }) => {
           switch (uploadedFile.status) {
@@ -148,7 +149,7 @@ export class EntryRelatedWidget extends EntryWidget implements OnDestroy
       filter: new KalturaAssetFilter({ entryIdEqual: this._entryId })
     }))
       .pipe(cancelOnDestroy(this, this.widgetReset$))
-      .map(response => {
+      .pipe(map(response => {
         // Set file type and restore previous upload state
         this._updateAssetsResponse(response);
 
@@ -164,14 +165,14 @@ export class EntryRelatedWidget extends EntryWidget implements OnDestroy
         super._hideLoader();
 
         return {failed: false};
-      })
-      .catch(error => {
+      }))
+      .pipe(catchError(error => {
           this._relatedFiles.next({ items: [] });
           super._hideLoader();
           super._showActivationError();
-          return Observable.throw(error);
+          return throwError(error);
         }
-      );
+      ));
   }
 
   protected onDataSaving(data: KalturaMediaEntry, request: KalturaMultiRequest) {

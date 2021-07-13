@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {Observable, forkJoin, EMPTY} from 'rxjs';
 import { PlaylistsStore } from '../playlists-store/playlists-store.service';
 import { PlaylistDeleteAction } from 'kaltura-ngx-client';
 import { KalturaRequest } from 'kaltura-ngx-client';
 import { subApplicationsConfig } from 'config/sub-applications';
 import { KalturaClient } from 'kaltura-ngx-client';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class BulkDeleteService {
@@ -13,7 +14,7 @@ export class BulkDeleteService {
 
   public deletePlaylist(ids: string[]): Observable<{}> {
     if (!ids || ids.length <= 0) {
-      return Observable.empty();
+      return EMPTY;
     }
 
     return this._transmit(ids.map(id => new PlaylistDeleteAction({ id })), true);
@@ -36,8 +37,8 @@ export class BulkDeleteService {
     const multiRequests = splittedRequests
       .map(reqChunk => this._kalturaServerClient.multiRequest(reqChunk));
 
-    return Observable.forkJoin(multiRequests)
-      .map(responses => {
+    return forkJoin(multiRequests)
+      .pipe(map(responses => {
         const errorMessage = [].concat.apply([], responses)
           .filter(response => !!response.error)
           .reduce((acc, { error }) => `${acc}\n${error.message}`, '')
@@ -48,6 +49,6 @@ export class BulkDeleteService {
         } else {
           return {};
         }
-      });
+      }));
   }
 }

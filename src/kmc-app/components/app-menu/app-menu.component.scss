@@ -7,9 +7,9 @@
 
 .appMenu {
     background: $menuBkgColor; /* Old browsers */
-    background: -moz-linear-gradient(left, #1B4A97 0%, #3E77D5 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(left, #1B4A97 0%,#3E77D5 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to right, #1B4A97 0%,#3E77D5 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    background: -moz-linear-gradient(left, #004194 0%, #006EFA 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(left, #004194 0%,#006EFA 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to right, #004194 0%,#006EFA 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 
     height: 54px;
     display: flex;
@@ -94,7 +94,7 @@
 
         .kIconhelp.has-notification:after {
           content: ' \25CF';
-          color: lighten($kPrimary, 10%);
+          color: lighten(#00a784, 10%);
           position: absolute;
           right: -4px;
           bottom: -4px;

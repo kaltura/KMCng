@@ -1,7 +1,7 @@
 import {MenuItem} from 'primeng/api';
 import {ISubscription} from 'rxjs/Subscription';
 import {SuggestionsProviderData} from '@kaltura-ng/kaltura-primeng-ui';
-import {Subject} from 'rxjs/Subject';
+import {Subject} from 'rxjs';
 import {Component, ElementRef, Inject, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {JumpToSection} from './jump-to-section.component';
 import {DOCUMENT} from '@angular/common';

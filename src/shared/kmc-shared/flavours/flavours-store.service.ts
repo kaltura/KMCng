@@ -1,7 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import { Observable } from 'rxjs';
 import {PartnerProfileStore} from '../partner-profile';
-import 'rxjs/add/observable/throw';
 import {KalturaClient} from 'kaltura-ngx-client';
 import {FlavorParamsListAction} from 'kaltura-ngx-client';
 import {KalturaFlavorParams} from 'kaltura-ngx-client';
@@ -10,6 +9,8 @@ import {KalturaFlavorParamsListResponse} from 'kaltura-ngx-client';
 import {KalturaDetachedResponseProfile} from 'kaltura-ngx-client';
 import {KalturaResponseProfileType} from 'kaltura-ngx-client';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { throwError } from 'rxjs';
+import { map, catchError, publishReplay, refCount } from 'rxjs/operators';
 
 @Injectable()
 export class FlavoursStore extends PartnerProfileStore implements OnDestroy {
@@ -25,17 +26,17 @@ export class FlavoursStore extends PartnerProfileStore implements OnDestroy {
       // execute the request
       this._getFlavorsFilters$ = this._buildGetRequest()
         .pipe(cancelOnDestroy(this))
-        .map(
+        .pipe(map(
           response => {
             return ({items: response ? response.objects : []});
-          })
-        .catch(error => {
+          }))
+        .pipe(catchError(error => {
             // re-throw the provided error
             this._getFlavorsFilters$ = null;
-            return Observable.throw(new Error('failed to retrieve flavors list'));
-        })
-        .publishReplay(1)
-        .refCount();
+            return throwError(new Error('failed to retrieve flavors list'));
+        }))
+        .pipe(publishReplay(1))
+        .pipe(refCount());
     }
 
     return this._getFlavorsFilters$;

@@ -12,7 +12,7 @@ import { BrowserService } from 'app-shared/kmc-shell/providers';
 import { KalturaDetachedResponseProfile } from 'kaltura-ngx-client';
 import { KalturaResponseProfileType } from 'kaltura-ngx-client';
 import { KalturaBulkUpload } from 'kaltura-ngx-client';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { UploadMonitorStatuses } from './upload-monitor.component';
 import { KalturaBulkUploadObjectType } from 'kaltura-ngx-client';
 import { BulkUploadRequestFactory } from './bulk-upload-request-factory';

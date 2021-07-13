@@ -28,12 +28,12 @@
                         [disabled]="!permission.checked || permission.disabled || (!isNewRole && (_kmcPermissions.ADMIN_ROLE_UPDATE | kDisabledIfNotPermitted))"
                         [showToggleAll]="true"
                         [maxSelectedLabels]="0"
+                        [appendTo]="'body'"
                         [defaultLabel]="permission.isAdvancedGroup ? ('applications.administration.role.permissionsTable.viewOnly' | translate) : ('applications.administration.role.permissionsTable.selectPermissions' | translate)"
                         [disabledLabel]="'applications.administration.role.permissionsTable.disabled' | translate"
                         [allSelectedLabel]="'applications.administration.role.permissionsTable.allPermissions' | translate"
                         [selectAllLabel]="'applications.administration.role.permissionsTable.allPermissions' | translate"
                         [selectedItemsLabel]="'applications.administration.role.permissionsTable.custom' | translate"
-                        [appendTo]="'body'"
                         [resetFilterOnHide]="true"
                         (onChange)="_onChange($event, permission)"
                         [(ngModel)]="permission.formValue">

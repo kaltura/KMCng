@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
+import { throwError } from 'rxjs';
 import { EntriesFilters, EntriesStore, SortDirection } from 'app-shared/content-shared/entries/entries-store/entries-store.service';
 import { KalturaPlayableEntryOrderBy } from 'kaltura-ngx-client';
 import { KalturaSearchOperator } from 'kaltura-ngx-client';
@@ -11,6 +12,8 @@ import { PlaylistRule } from './playlist-rule.interface';
 import { KalturaMediaEntryFilterForPlaylist } from 'kaltura-ngx-client';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class PlaylistRuleParserService implements OnDestroy {
@@ -34,7 +37,7 @@ export class PlaylistRuleParserService implements OnDestroy {
 
   private _mapCustomMetadata(advancedSearch: KalturaSearchOperator): Observable<GroupedListType<string>> {
     if (!advancedSearch) {
-      return Observable.of(null);
+      return of(null);
     }
 
     try {
@@ -92,7 +95,7 @@ export class PlaylistRuleParserService implements OnDestroy {
       };
 
       return this._getMetadataProfiles()
-        .map(metadata => {
+        .pipe(map(metadata => {
           const relevantItems = advancedSearch.items.filter((searchItem: KalturaMetadataSearchItem) => !!searchItem.items.length);
           const assignedItems = relevantItems.map(item => assignMetadataProfileId(item)); // Step 1
           return deepFlatten(assignedItems) // Step 2
@@ -101,9 +104,9 @@ export class PlaylistRuleParserService implements OnDestroy {
             // Exclude null values from array created on step 3
             // [{value, listName}, null, ...] => [{value, listName}, ...]
             .reduce(createGroupedList, {}); // Step 5
-        });
+        }));
     } catch (error) {
-      return Observable.throw(error);
+      return throwError(error);
     }
   }
 
@@ -124,7 +127,7 @@ export class PlaylistRuleParserService implements OnDestroy {
     const uniqueCategoriesIds = Array.from(new Set<number>(categoriesIds.filter(Number).map(Number)));
 
     return this._mapCustomMetadata(<KalturaSearchOperator>originalFilter.advancedSearch)
-      .map(customMetadata => {
+      .pipe(map(customMetadata => {
         const result = <EntriesFilters>{
           mediaTypes: getListTypeFilterFromRule(originalFilter.mediaTypeIn),
           durations: getListTypeFilterFromRule(originalFilter.durationTypeMatchOr),
@@ -158,7 +161,7 @@ export class PlaylistRuleParserService implements OnDestroy {
         }
 
         return result;
-      });
+      }));
   }
 
   public toPlaylistRule(payload: { name: string, orderBy: KalturaPlayableEntryOrderBy, limit: number, rule: PlaylistRule }): Observable<PlaylistRule> {
@@ -167,7 +170,7 @@ export class PlaylistRuleParserService implements OnDestroy {
     const entriesCount = entries.length || 0;
 
     return this._entriesStore.convertFiltersToServerStruct()
-      .map(originalFilter => {
+      .pipe(map(originalFilter => {
         if (originalFilter instanceof KalturaMediaEntryFilterForPlaylist) {
             originalFilter.name = payload.name;
 
@@ -183,6 +186,6 @@ export class PlaylistRuleParserService implements OnDestroy {
           this._logger.error(`cannot build playlist rule. expected filter of type 'KalturaMediaEntryFilterForPlaylist'.`);
           throw new Error(`cannot build playlist rule. expected filter of type 'KalturaMediaEntryFilterForPlaylist'.`);
         }
-      });
+      }));
   }
 }

@@ -22,6 +22,8 @@ import { ContentPlaylistViewSections, ReachAppViewService, ReachPages } from 'ap
 import { AreaBlockerMessage } from '@kaltura-ng/kaltura-ui';
 import { BulkAddViewersService } from './services/bulk-add-viewers.service';
 import { BulkRemoveViewersService } from './services/bulk-remove-viewers.service';
+import {Menu} from "primeng/menu";
+import {TieredMenu} from "primeng/tieredmenu";
 
 @Component({
   selector: 'kBulkActions',
@@ -67,6 +69,7 @@ export class BulkActionsComponent implements OnInit, OnDestroy {
   @Output() blockerMessageChange = new EventEmitter<AreaBlockerMessage>();
 
   @ViewChild('bulkActionsPopup', { static: true }) public bulkActionsPopup: PopupWidgetComponent;
+  @ViewChild('menu', { static: true }) private _bulkMenu: TieredMenu;
 
   constructor(private _appLocalization: AppLocalization, private _browserService: BrowserService,
     private _bulkSchedulingService: BulkSchedulingService,
@@ -164,6 +167,7 @@ export class BulkActionsComponent implements OnInit, OnDestroy {
   }
 
   openBulkActionWindow(action: string, popupWidth: number, popupHeight: number) {
+    this._bulkMenu.hide();
     if (this._categoriesLocked && (action === 'addToNewCategory' || action === 'addToCategories')) {
       this._browserService.alert({
         header: this._appLocalization.get('applications.content.categories.categoriesLockTitle'),
@@ -181,6 +185,7 @@ export class BulkActionsComponent implements OnInit, OnDestroy {
   }
 
   performBulkAction(action: string): void {
+    this._bulkMenu.hide();
     switch (action) {
       case 'addToNewPlaylist':
         this._onAddToNewPlaylist();
@@ -351,6 +356,7 @@ export class BulkActionsComponent implements OnInit, OnDestroy {
       const result: MenuItem[] = [
           {
               label: this._appLocalization.get('applications.content.bulkActions.download'), command: (event) => {
+              this._bulkMenu.hide();
               this.downloadEntries();
           },
               disabled: !this._permissionsService.hasPermission(KMCPermissions.CONTENT_MANAGE_DOWNLOAD)
@@ -498,6 +504,7 @@ export class BulkActionsComponent implements OnInit, OnDestroy {
   }
 
   public _captionRequest(): void {
+      this._bulkMenu.hide();
       if (!this._reachAppViewService.isAvailable({ page: ReachPages.entries, entries: this.selectedEntries })) {
           return;
       }

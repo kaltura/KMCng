@@ -5,7 +5,7 @@ import { SettingsReachProfileViewSections } from "app-shared/kmc-shared/kmc-view
 import { AbstractControl, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Observable } from "rxjs";
 import { cancelOnDestroy } from "@kaltura-ng/kaltura-common";
-import { async } from "rxjs-compat/scheduler/async";
+import { asyncScheduler } from 'rxjs';
 import {
     KalturaMultiRequest,
     KalturaReachProfile,
@@ -14,29 +14,32 @@ import {
 } from "kaltura-ngx-client";
 import { KMCPermissions, KMCPermissionsService } from "app-shared/kmc-shared/kmc-permissions";
 import { AppLocalization } from "@kaltura-ng/mc-shared";
+import { observeOn } from 'rxjs/operators';
+import { merge } from 'rxjs';
+import { of } from 'rxjs';
 
 @Injectable()
 export class ReachProfileSettingsWidget extends ReachProfileWidget implements OnDestroy {
-    
+
     public deleteOptions: { label: string, value: number }[] = [];
     public regionOptions: { label: string, value: number }[] = [];
-    
+
     public settingsForm: FormGroup;
     public nameField: AbstractControl;
     public machineField: AbstractControl;
     public professionalField: AbstractControl;
     public deletionField: AbstractControl;
     public regionField: AbstractControl;
-    
+
     constructor(logger: KalturaLogger,
                 private _permissionsService: KMCPermissionsService,
                 private _appLocalization: AppLocalization,
                 private _formBuilder: FormBuilder) {
-        
+
         super(SettingsReachProfileViewSections.Settings, logger);
         this._buildForm();
     }
-    
+
     private _buildForm(): void {
         this.settingsForm = this._formBuilder.group({
             name: ['', Validators.required],
@@ -45,18 +48,18 @@ export class ReachProfileSettingsWidget extends ReachProfileWidget implements On
             deletion: '',
             region: ''
         });
-        
+
         this.nameField = this.settingsForm.controls['name'];
         this.machineField = this.settingsForm.controls['machine'];
         this.professionalField = this.settingsForm.controls['professional'];
         this.deletionField = this.settingsForm.controls['deletion'];
         this.regionField = this.settingsForm.controls['region'];
     }
-    
+
     private _monitorFormChanges(): void {
-        Observable.merge(this.settingsForm.valueChanges, this.settingsForm.statusChanges)
+        merge(this.settingsForm.valueChanges, this.settingsForm.statusChanges)
             .pipe(cancelOnDestroy(this))
-            .observeOn(async) // using async scheduler so the form group status/dirty mode will be synchornized
+            .pipe(observeOn(asyncScheduler)) // using async scheduler so the form group status/dirty mode will be synchornized
             .subscribe(() => {
                     super.updateState({
                         isValid: this.settingsForm.status !== 'INVALID',
@@ -65,17 +68,17 @@ export class ReachProfileSettingsWidget extends ReachProfileWidget implements On
                 }
             );
     }
-    
+
     protected onValidate(wasActivated: boolean): Observable<{ isValid: boolean }> {
         const formData = wasActivated ? this.settingsForm.value : this.data;
         const name = (formData.name || '').trim();
         const hasValue = name !== '';
-        
-        return Observable.of({
+
+        return of({
             isValid: hasValue
         });
     }
-    
+
     protected onDataSaving(newData: KalturaReachProfile, request: KalturaMultiRequest): void {
         const formData = this.wasActivated ? this.settingsForm.value : this.data;
         newData.name = formData.name;
@@ -84,7 +87,7 @@ export class ReachProfileSettingsWidget extends ReachProfileWidget implements On
         newData.contentDeletionPolicy = formData.deletion;
         newData.vendorTaskProcessingRegion = formData.region;
     }
-    
+
     /**
      * Do some cleanups if needed once the section is removed
      */
@@ -93,13 +96,13 @@ export class ReachProfileSettingsWidget extends ReachProfileWidget implements On
         this.regionOptions = [];
         this.settingsForm.reset();
     }
-    
+
     protected onActivate(firstTimeActivating: boolean): Observable<{ failed: boolean }> | void {
-        
+
         if (firstTimeActivating && (this.isNewData || this._permissionsService.hasPermission(KMCPermissions.REACH_PLUGIN_PERMISSION))) {
             this._monitorFormChanges();
         }
-        
+
         this.deleteOptions = [
             {label: this._appLocalization.get('applications.settings.reach.settings.deleteOptions.deleteAfterMonth'), value: KalturaReachProfileContentDeletionPolicy.deleteAfterMonth},
             {label: this._appLocalization.get('applications.settings.reach.settings.deleteOptions.deleteAfterThreeMonths'), value: KalturaReachProfileContentDeletionPolicy.deleteAfterThreeMonths},
@@ -111,7 +114,7 @@ export class ReachProfileSettingsWidget extends ReachProfileWidget implements On
             {label: this._appLocalization.get('applications.settings.reach.settings.regionOptions.us'), value: KalturaVendorTaskProcessingRegion.us},
             {label: this._appLocalization.get('applications.settings.reach.settings.regionOptions.eu'), value: KalturaVendorTaskProcessingRegion.eu}
         ];
-        
+
         this.settingsForm.reset({
             name: this.data.name,
             machine: this.data.enableMachineModeration,
@@ -120,6 +123,6 @@ export class ReachProfileSettingsWidget extends ReachProfileWidget implements On
             region: this.data.vendorTaskProcessingRegion
         });
     }
-    
+
     ngOnDestroy() {}
 }

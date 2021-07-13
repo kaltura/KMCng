@@ -8,6 +8,7 @@ import { KMCPermissions, KMCPermissionsService } from 'app-shared/kmc-shared/kmc
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 import { KalturaMetadataObjectType } from "kaltura-ngx-client";
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'kCustomSchemaFieldForm',
@@ -18,7 +19,7 @@ import { KalturaMetadataObjectType } from "kaltura-ngx-client";
 export class CustomSchemaFieldFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() field: MetadataItem | null;
-  
+
   @Input() set applyTo(type: KalturaMetadataObjectType){
     this._isUserEntry = type === KalturaMetadataObjectType.userEntry;
   };
@@ -91,7 +92,7 @@ export class CustomSchemaFieldFormComponent implements OnInit, OnDestroy, AfterV
     if (this.parentPopupWidget) {
       this.parentPopupWidget.state$
         .pipe(cancelOnDestroy(this))
-        .filter(event => event.state === PopupWidgetStates.BeforeClose)
+        .pipe(filter(event => event.state === PopupWidgetStates.BeforeClose))
         .subscribe(event => {
           const canPreventClose = event.context && event.context.allowClose;
 
@@ -186,7 +187,7 @@ export class CustomSchemaFieldFormComponent implements OnInit, OnDestroy, AfterV
 
     this._typeField.valueChanges
       .pipe(cancelOnDestroy(this))
-      .filter(() => this._isNew)
+      .pipe(filter(() => this._isNew))
       .subscribe(change => {
         this._fieldForm.patchValue({ searchable: change !== MetadataItemTypes.Date });
       });
@@ -212,11 +213,11 @@ export class CustomSchemaFieldFormComponent implements OnInit, OnDestroy, AfterV
     if (this._field.isSearchable !== searchable) {
       this._field.isSearchable = searchable;
     }
-    
+
     if (this._field.isHidden !== hidden) {
       this._field.isHidden = hidden;
     }
-    
+
     if (this._field.isRequired !== required) {
       this._field.isRequired = required;
     }

@@ -7,6 +7,7 @@ import {KalturaClient} from 'kaltura-ngx-client';
 import {LiveStreamAddAction} from 'kaltura-ngx-client';
 import {KalturaSourceType} from 'kaltura-ngx-client';
 import { Observable } from 'rxjs';
+import { throwError } from 'rxjs';
 import {KalturaLiveStreamConfiguration} from 'kaltura-ngx-client';
 import {KalturaPlaybackProtocol} from 'kaltura-ngx-client';
 import {KalturaLive} from './kaltura-live-stream/kaltura-live-stream.interface';
@@ -23,7 +24,7 @@ export class CreateLiveService {
 
   public createKalturaLiveStream(data: KalturaLive): Observable<KalturaLiveStreamEntry> {
     if (!data || !data.name) {
-      throw Observable.throw(new Error('Missing required fields'));
+      throw throwError(new Error('Missing required fields'));
     }
 
     const stream = new KalturaLiveStreamEntry({
@@ -46,7 +47,7 @@ export class CreateLiveService {
 
   public createManualLiveStream(data: ManualLive): Observable<KalturaLiveStreamEntry> {
     if (!data || !data.name) {
-      throw Observable.throw(new Error('Missing required fields'));
+      throw throwError(new Error('Missing required fields'));
     }
     const stream = new KalturaLiveStreamEntry({
       mediaType: KalturaMediaType.liveStreamFlash,
@@ -79,7 +80,7 @@ export class CreateLiveService {
 
   public createUniversalLiveStream(data: UniversalLive): Observable<KalturaLiveStreamEntry> {
     if (!data || !data.name || !data.primaryEncoderIp || !data.secondaryEncoderIp) {
-      throw Observable.throw(new Error('Missing required fields'));
+      throw throwError(new Error('Missing required fields'));
     }
 
     const stream = new KalturaLiveStreamEntry({

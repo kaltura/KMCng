@@ -13,6 +13,7 @@ import { KMCPermissions } from 'app-shared/kmc-shared/kmc-permissions';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { ContentBulkUploadsMainViewService } from 'app-shared/kmc-shared/kmc-views';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { first, delay } from 'rxjs/operators';
 
 @Component({
   selector: 'kBulkLogList',
@@ -54,7 +55,7 @@ export class BulkLogListComponent implements OnInit, OnDestroy {
       if (this._contentBulkUploadsMainView.viewEntered()) {
           this._appEvents.event(BulkLogUploadingStartedEvent)
               .pipe(cancelOnDestroy(this))
-              .delay(2000) // Component specific - need to wait due to updating the list on the server side
+              .pipe(delay(2000)) // Component specific - need to wait due to updating the list on the server side
               .subscribe(() => this._store.reload());
 
           this._prepare();
@@ -70,7 +71,7 @@ export class BulkLogListComponent implements OnInit, OnDestroy {
         this._isBusy = true;
         this._refineFiltersService.getFilters()
             .pipe(cancelOnDestroy(this))
-            .first() // only handle it once, no need to handle changes over time
+            .pipe(first()) // only handle it once, no need to handle changes over time
             .subscribe(
                 lists => {
                   this._logger.info(`handle successful loading of filters, proceed initiation`);

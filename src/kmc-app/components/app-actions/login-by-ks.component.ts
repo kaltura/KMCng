@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { serverConfig } from 'config/server';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { AppAuthentication, BrowserService } from 'app-shared/kmc-shell';
-import 'rxjs/add/operator/first';
 
 @Component({
     selector: 'kLoginByKSComponent',

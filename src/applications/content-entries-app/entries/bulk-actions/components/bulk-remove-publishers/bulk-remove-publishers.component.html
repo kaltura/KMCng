@@ -7,7 +7,7 @@
       <kAutoComplete  *ngIf="users && users.length" [ngModel]="users"
                      [tooltipResolver]="'__tooltip'"
                      [classField]="'__class'"
-                     [multiple]="true"
+                     [allowMultiple]="true"
                      [limitToSuggestions]="false"
                      readonly="true"
                      (onUnselect)="_removeUser($event)">

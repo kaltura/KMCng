@@ -9,7 +9,8 @@ import { KalturaBulkUploadUserData } from 'kaltura-ngx-client';
 import { KalturaBulkUploadCategoryUserData } from 'kaltura-ngx-client';
 import { UserAddFromBulkUploadAction } from 'kaltura-ngx-client';
 import { CategoryUserAddFromBulkUploadAction } from 'kaltura-ngx-client';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
 import { KalturaBulkUpload } from 'kaltura-ngx-client';
 
 export enum BulkUploadTypes {
@@ -79,7 +80,7 @@ export class BulkUploadService {
   public upload(files: FileList, type: BulkUploadTypes): Observable<KalturaBulkUpload> {
     const actions = this._getAction(Array.from(files), type);
 
-    return Observable.from(actions)
-      .flatMap(action => this._kalturaServerClient.request(action));
+    return from(actions)
+      .pipe(flatMap(action => this._kalturaServerClient.request(action)));
   }
 }

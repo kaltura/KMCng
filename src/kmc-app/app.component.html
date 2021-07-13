@@ -12,11 +12,15 @@
     [acceptLabel]="_confirmationLabels.yes"
     [rejectLabel]="_confirmationLabels.no"
     >
+    <p-footer>
+        <button type="button" pButton label="{{_confirmationLabels.yes}}" (click)="confirm.accept()"></button>
+        <button type="button" pButton label="{{_confirmationLabels.no}}" (click)="confirm.reject()"></button>
+    </p-footer>
 </p-confirmDialog>
 <p-confirmDialog #alert header="Alert" [key]="'alert'" [closeOnEscape]="true" width="440"
                  [class.kAlignToLeft]="_confirmDialogAlignLeft">
     <p-footer>
-        <button type="button" pButton icon="fa-check" label="{{_confirmationLabels.ok}}" (click)="alert.accept()"></button>
+        <button type="button" pButton label="{{_confirmationLabels.ok}}" (click)="alert.accept()"></button>
     </p-footer>
 </p-confirmDialog>
 

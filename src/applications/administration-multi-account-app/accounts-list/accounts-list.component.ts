@@ -10,6 +10,7 @@ import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 import { KalturaPartner, KalturaPartnerStatus } from "kaltura-ngx-client";
 import { MultiAccountRefineFiltersService, RefineList } from '../multi-account-store/multi-account-refine-filters.service';
 import { serverConfig, buildBaseUri } from "config/server";
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'kAccountsList',
@@ -60,7 +61,7 @@ export class AccountsListComponent implements OnInit, OnDestroy {
       this._logger.info(`initiate accounts list view`);
       this._refineFiltersService.getFilters()
           .pipe(cancelOnDestroy(this))
-          .first() // only handle it once, no need to handle changes over time
+          .pipe(first()) // only handle it once, no need to handle changes over time
           .subscribe(
               lists => {
                   this._isBusy = false;

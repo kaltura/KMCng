@@ -43,7 +43,7 @@
         position: relative;
         .kRefreshBtn {
             position: absolute;
-            right: 24px;
+            right: 4px;
             bottom: 16px;
             font-size: 24px;
             border: none;
@@ -76,13 +76,13 @@
 		text-align: center;
 	}
 }
-:host ::ng-deep .ui-button-icon-right.ui-c.pi-pi-fw.kIcondropdown_arrow_bottom{
+:host ::ng-deep .p-button-icon-right.ui-c.pi-pi-fw.kIcondropdown_arrow_bottom{
 	font-size: 11px;
 	padding-right: 4px;
 }
 
 :host ::ng-deep p-table {
-    .ui-table .ui-table-thead > tr > th {
+    .p-datatable .p-datatable-thead > tr > th {
         border-left: 1px solid $kGrayscale6;
     }
 }

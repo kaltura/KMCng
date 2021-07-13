@@ -105,7 +105,7 @@
           .kDefaultControls {
             button {
               margin-right: 24px;
-              ::ng-deep .ui-button-icon-left{
+              ::ng-deep .p-button-icon-left{
                 font-size: 18px;
               }
             }
@@ -120,6 +120,6 @@
   transform: rotate(180deg);
 }
 
-:host ::ng-deep span.ui-button-icon-left.pi-kIcontrash{
+:host ::ng-deep span.p-button-icon-left.pi-kIcontrash{
   margin-left: -.5em;
 }

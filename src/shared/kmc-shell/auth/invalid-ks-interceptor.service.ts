@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { AppAuthentication } from './app-authentication.service';
 import { BrowserService } from '../providers/browser.service';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
+import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Injectable()
 export class InvalidKsInterceptorService implements HttpInterceptor {
@@ -26,15 +28,13 @@ export class InvalidKsInterceptorService implements HttpInterceptor {
         });
     }
 
-    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
         return next.handle(request)
-            .switchMap((event: HttpResponse<any>) => {
-
+            .pipe(switchMap((event: HttpResponse<any>) => {
                 if (event.body && event.body.objectType === "KalturaAPIException" && event.body.code === 'INVALID_KS') {
                     return this._createAlert();
                 }
-
-                return Observable.of(event);
-            });
+                return of(event);
+            }));
     }
 }

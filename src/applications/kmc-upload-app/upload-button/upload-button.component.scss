@@ -16,4 +16,8 @@
       border: 1px solid $kGrayscale4 !important;
       cursor: none;
   }
+    ::ng-deep   .p-button-label {
+        padding: .25em 1em;
+    }
 }
+

@@ -12,7 +12,7 @@ import {
 } from 'kaltura-ngx-client';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { cancelOnDestroy } from "@kaltura-ng/kaltura-common";
-import { Subject } from "rxjs/Subject";
+import { Subject } from "rxjs";
 import { SuggestionsProviderData } from "@kaltura-ng/kaltura-primeng-ui";
 import { ISubscription } from "rxjs/Subscription";
 import { Observable } from "rxjs";

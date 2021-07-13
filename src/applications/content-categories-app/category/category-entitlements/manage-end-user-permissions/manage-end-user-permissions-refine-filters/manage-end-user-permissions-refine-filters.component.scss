@@ -74,11 +74,11 @@ a.disabled {
   margin-left: 10px;
 }
 
-:host ::ng-deep .ui-tree .ui-tree-container {
+:host ::ng-deep .p-tree .p-tree-container {
   overflow: visible;
 }
 
-:host ::ng-deep .ui-tree .ui-chkbox {
+:host ::ng-deep .p-tree .ui-chkbox {
   vertical-align: top;
   margin-top: 14px;
 }

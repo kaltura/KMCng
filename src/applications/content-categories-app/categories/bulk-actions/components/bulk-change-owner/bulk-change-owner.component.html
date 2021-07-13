@@ -11,7 +11,7 @@
                      [onItemAdding]="_convertUserInputToValidValue"
                      [tooltipResolver]="'__tooltip'"
                      [classField]="'__class'"
-                     [multiple]="false"
+                     [allowMultiple]="false"
                      [limitToSuggestions]="false"
                      placeholder="{{'applications.content.entryDetails.users.changeOwnerPH' | translate}}"
                      [minLength]="3"
@@ -19,7 +19,7 @@
                      (completeMethod)="_searchUsers($event)">
       </kAutoComplete>
 
-    </div> 
+    </div>
     <div class="kFooter">
       <button type="button" class="kButtonBranded" pButton label="{{'applications.content.categories.bActions.save' | translate}}" (click)="_apply()"></button>
     </div>

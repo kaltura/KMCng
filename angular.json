@@ -9,7 +9,7 @@
       "projectType": "application",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "aot": true,
             "outputPath": "dist",
@@ -18,6 +18,12 @@
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "preserveSymlinks": true,
+              "allowedCommonJsDependencies": [
+                  "seamless-immutable",
+                  "jquery",
+                  "qrcode",
+                  "ajv"
+              ],
             "assets": [
               "src/server-config.json",
               "src/assets",
@@ -48,7 +54,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,

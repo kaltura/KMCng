@@ -1,8 +1,9 @@
 import { Host, Injectable, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subject } from 'rxjs/Subject';
+import {BehaviorSubject, EMPTY} from 'rxjs';
+import { Subject } from 'rxjs';
+import { throwError } from 'rxjs';
 import { ISubscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs';
 import { KalturaClient, KalturaMultiRequest, KalturaObjectBaseFactory } from 'kaltura-ngx-client';
@@ -35,6 +36,9 @@ import { SettingsTranscodingMainViewService } from 'app-shared/kmc-shared/kmc-vi
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 import { TranscodingProfilesUpdatedEvent } from 'app-shared/kmc-shared/events';
 import { AppEventsService } from 'app-shared/kmc-shared';
+import { debounce, map, flatMap, switchMap } from 'rxjs/operators';
+import { timer } from 'rxjs';
+import { of } from 'rxjs';
 
 export enum ActionTypes {
   ProfileLoading,
@@ -107,7 +111,7 @@ export class TranscodingProfileStore implements OnDestroy {
   private _onSectionsStateChanges(): void {
     this._widgetsManager.widgetsState$
       .pipe(cancelOnDestroy(this))
-      .debounce(() => Observable.timer(500))
+      .pipe(debounce(() => timer(500)))
       .subscribe(
         sectionsState => {
           const newDirtyState = Object
@@ -215,7 +219,7 @@ export class TranscodingProfileStore implements OnDestroy {
 
   private _checkFlavors(newProfile: KalturaConversionProfileWithAsset): Observable<{ proceedSave: boolean }> {
     if (newProfile.flavorParamsIds && newProfile.flavorParamsIds.trim().length) {
-      return Observable.of({ proceedSave: true });
+      return of({ proceedSave: true });
     }
 
     return Observable.create(observer => {
@@ -245,17 +249,17 @@ export class TranscodingProfileStore implements OnDestroy {
     this._widgetsManager.notifyDataSaving(newProfile, request, this.profile.data())
       .pipe(cancelOnDestroy(this))
       .pipe(tag('block-shell'))
-      .flatMap(prepareResponse => {
+      .pipe(flatMap(prepareResponse => {
         if (prepareResponse.ready) {
           return this._checkFlavors(newProfile)
-            .switchMap(({ proceedSave }) => {
+            .pipe(switchMap(({ proceedSave }) => {
               if (!proceedSave) {
-                return Observable.empty();
+                return EMPTY;
               }
 
               return this._kalturaServerClient.multiRequest(request)
                 .pipe(tag('block-shell'))
-                .map(multiResponse => {
+                .pipe(map(multiResponse => {
                   if (multiResponse.hasErrors()) {
                     const errorMessage = multiResponse.map(response => {
                       if (response.error) {
@@ -278,9 +282,9 @@ export class TranscodingProfileStore implements OnDestroy {
                     }
                   }
 
-                  return Observable.empty();
-                });
-            });
+                  return EMPTY;
+                }));
+            }));
         } else {
           switch (prepareResponse.reason) {
             case OnDataSavingReasons.validationErrors:
@@ -294,9 +298,9 @@ export class TranscodingProfileStore implements OnDestroy {
               break;
           }
 
-          return Observable.empty();
+          return EMPTY;
         }
-      })
+      }))
       .subscribe(
         response => {
           // do nothing - the service state is modified inside the map functions.
@@ -395,7 +399,7 @@ export class TranscodingProfileStore implements OnDestroy {
       // build the request
       return this._kalturaServerClient
         .multiRequest(new KalturaMultiRequest(conversionProfileAction, conversionProfileAssetParamsAction))
-        .map(([profilesResponse, assetsResponse]) => {
+        .pipe(map(([profilesResponse, assetsResponse]) => {
           if (profilesResponse.error) {
             throw Error(profilesResponse.error.message);
           }
@@ -409,9 +413,9 @@ export class TranscodingProfileStore implements OnDestroy {
           const flavorParamsIds = (profile.flavorParamsIds || '').trim();
           const flavors = flavorParamsIds ? flavorParamsIds.split(',').length : 0;
           return Object.assign(profile, { assets, flavors });
-        });
+        }));
     } else {
-      return Observable.throw(new Error('missing profileId'));
+      return throwError(new Error('missing profileId'));
     }
   }
 

@@ -15,6 +15,7 @@ import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { Title } from '@angular/platform-browser';
 import { ContextualHelpService } from 'app-shared/kmc-shared/contextual-help/contextual-help.service';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { from as fromPromise} from 'rxjs';
 
 export enum ContentCategoryViewSections {
     Metadata = 'Metadata',
@@ -177,7 +178,7 @@ export class ContentCategoryViewService extends KmcDetailsViewBaseService<Conten
         this._logger.info('handle open category view request by the user', { categoryId: args.category.id });
         const navigate = (): Observable<boolean> => {
             const sectionToken = this._getSectionRouteToken(args.section);
-            return Observable.fromPromise(this._router.navigateByUrl(`/content/categories/category/${args.category.id}/${sectionToken}`));
+            return fromPromise(this._router.navigateByUrl(`/content/categories/category/${args.category.id}/${sectionToken}`));
     };
         // show category edit warning if needed
         if (!args.ignoreWarningTag && args.category.tags && args.category.tags.indexOf('__EditWarning') > -1) {

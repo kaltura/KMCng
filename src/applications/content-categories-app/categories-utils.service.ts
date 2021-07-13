@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import {BrowserService} from 'app-shared/kmc-shell';
 import {KalturaCategory} from 'kaltura-ngx-client';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class CategoriesUtilsService {
@@ -21,7 +22,7 @@ export class CategoriesUtilsService {
       );
     if (!categoryToDelete) {
         this._logger.warn(`no category provided, abort action, throw error`);
-      return Observable.throw(new Error('Invalid category parameter'));
+      return throwError(new Error('Invalid category parameter'));
     }
 
     return Observable.create(observer => {

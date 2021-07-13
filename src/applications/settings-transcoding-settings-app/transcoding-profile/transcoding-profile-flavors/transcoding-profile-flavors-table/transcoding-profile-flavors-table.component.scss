@@ -34,11 +34,11 @@
 }
 
 :host ::ng-deep p-table {
-  tr.ui-state-highlight .kEditFlavorIcon {
+  tr.p-highlight .kEditFlavorIcon {
     display: block !important;
   }
 
-  tr.ui-state-highlight .kTitle {
+  tr.p-highlight .kTitle {
     cursor: pointer;
   }
 
@@ -51,7 +51,7 @@
     display: table;
   }
 
-  .ui-chkbox {
+  .p-chkbox {
     margin-left: 10px;
     margin-right: 0px;
   }
@@ -59,11 +59,11 @@
 
 :host ::ng-deep {
     .kDisabled {
-        .ui-chkbox {
+        .p-chkbox {
             cursor: default;
         }
 
-        .ui-chkbox-box {
+        .p-chkbox-box {
             pointer-events: none;
             opacity: 0.3;
         }

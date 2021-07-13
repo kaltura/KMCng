@@ -36,11 +36,11 @@
     flex-direction: column;
 
     ::ng-deep p-table {
-        .ui-table .ui-table-thead > tr > th {
+        .p-datatable .p-datatable-thead > tr > th {
             border-left: 1px solid $kGrayscale6;
         }
 
-        .ui-table-scrollable-body {
+        .p-datatable-scrollable-body {
             margin-bottom: 34px;
         }
 

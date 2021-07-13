@@ -1,10 +1,7 @@
 import {Injectable} from '@angular/core';
-import 'rxjs/add/operator/publishReplay';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/observable/forkJoin';
-
 import {DefaultFiltersList} from './default-filters-list';
 import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 
 export interface RefineListItem {
     value: string,
@@ -25,7 +22,7 @@ export class ManageEndUserPermissionsRefineFiltersService {
   }
 
     public getFilters(): Observable<RefineList[]> {
-        return Observable.of(this._buildDefaultFiltersGroup());
+        return of(this._buildDefaultFiltersGroup());
     }
 
     private _buildDefaultFiltersGroup(): RefineList[] {

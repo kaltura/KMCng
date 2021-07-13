@@ -45,12 +45,12 @@
         <p-radioButton class="kRadioLeft"
                        name="allowMultiple"
                        [value]="false"
-                       [formControl]="_allowMultipleField"
+                       formControlName="allowMultiple"
                        [label]="'applications.settings.metadata.fieldForm.single' | translate"></p-radioButton>
         <p-radioButton class="kRadioRight"
                        name="allowMultiple"
                        [value]="true"
-                       [formControl]="_allowMultipleField"
+                       formControlName="allowMultiple"
                        [label]="'applications.settings.metadata.fieldForm.unlimited' | translate"></p-radioButton>
       </div>
     </div>

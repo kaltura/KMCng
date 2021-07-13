@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
-import 'rxjs/add/observable/forkJoin';
-
+import { forkJoin } from 'rxjs';
+import { throwError } from 'rxjs';
 import { ThumbAssetSetAsDefaultAction } from 'kaltura-ngx-client';
 import { ThumbAssetGetByEntryIdAction } from 'kaltura-ngx-client';
 import { KalturaThumbAsset } from 'kaltura-ngx-client';
@@ -31,6 +31,8 @@ import { KMCPermissions, KMCPermissionsService } from 'app-shared/kmc-shared/kmc
 import { ContentEntryViewSections } from 'app-shared/kmc-shared/kmc-views/details-views/content-entry-view.service';
 import {KalturaLogger} from '@kaltura-ng/kaltura-logger';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 export interface ThumbnailRow {
   id: string;
@@ -84,18 +86,18 @@ export class EntryThumbnailsWidget extends EntryWidget {
         const canLoadProfiles = this._permissionsService.hasPermission(KMCPermissions.CONTENTDISTRIBUTION_PLUGIN_PERMISSION);
         const getProfiles$ = canLoadProfiles
             ? this._kalturaServerClient.request(new DistributionProfileListAction({}))
-            : Observable.of({});
+            : of({});
 
-        return Observable.forkJoin(getThumbnails$, getProfiles$)
+        return forkJoin(getThumbnails$, getProfiles$)
             .pipe(cancelOnDestroy(this, this.widgetReset$))
 
-            .catch((error, caught) => {
+            .pipe(catchError((error, caught) => {
                 super._hideLoader();
                 super._showActivationError();
                 this._thumbnails.next({items: []});
-                return Observable.throw(error);
-            })
-            .map(responses => {
+                return throwError(error);
+            }))
+            .pipe(map(responses => {
                 const thumbnails = responses[0] || [];
                 this._distributionProfiles = (responses[1] as KalturaDistributionProfileListResponse).objects || [];
                 this.buildThumbnailsData(thumbnails);
@@ -105,7 +107,7 @@ export class EntryThumbnailsWidget extends EntryWidget {
                 super._hideLoader();
 
                 return {failed: false};
-            });
+            }));
 
     }
 

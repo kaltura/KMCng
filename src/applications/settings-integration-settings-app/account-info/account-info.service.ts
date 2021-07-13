@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {KalturaClient} from 'kaltura-ngx-client';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 import {KalturaPartner} from 'kaltura-ngx-client';
 import {PartnerGetInfoAction} from 'kaltura-ngx-client';
@@ -23,7 +24,7 @@ export class AccountInfoService {
 
 
     return this._kalturaServerClient.request(new PartnerGetInfoAction())
-      .map(
+      .pipe(map(
         (response: KalturaPartner) => {
 
           const accountInfo: AccountInfo = {
@@ -33,6 +34,6 @@ export class AccountInfoService {
             userSecret: response.secret
           };
           return accountInfo;
-        });
+        }));
   }
 }

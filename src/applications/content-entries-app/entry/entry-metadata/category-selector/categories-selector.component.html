@@ -21,7 +21,7 @@
 	<div class="kMain" [class.kLocked]="_categoriesLocked">
 		<kAutoComplete #autoComplete
 					   [disabled]="!_categoriesLoaded || _categoriesLocked"
-					   [multiple]="false"
+					   [allowMultiple]="false"
 					   field="name"
 					   suggestionItemField="item"
 					   suggestionLabelField="name"

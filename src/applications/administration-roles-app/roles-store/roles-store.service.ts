@@ -1,7 +1,7 @@
 import { BrowserService } from 'shared/kmc-shell/providers/browser.service';
 import { KalturaUserRoleFilter } from 'kaltura-ngx-client';
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
 import { ISubscription } from 'rxjs/Subscription';
 import { KalturaFilterPager } from 'kaltura-ngx-client';
@@ -24,6 +24,8 @@ import { AdminRolesMainViewService } from 'app-shared/kmc-shared/kmc-views';
 import { PermissionTreeNodes, PermissionTreeNode } from './permission-tree-nodes';
 import { KMCPermissionsService } from 'app-shared/kmc-shared/kmc-permissions';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 export enum SortDirection {
   Desc = -1,
@@ -209,36 +211,36 @@ export class RolesStoreService extends FiltersStoreBase<RolesFilters> implements
         new UserRoleListAction({ filter, pager })
       );
     } catch (err) {
-      return Observable.throw(err);
+      return throwError(err);
     }
 
   }
 
   public deleteRole(role: KalturaUserRole): Observable<void> {
     if (!role) {
-      return Observable.throw(new Error(this._appLocalization.get('applications.administration.roles.errors.cantDeleteRole')));
+      return throwError(new Error(this._appLocalization.get('applications.administration.roles.errors.cantDeleteRole')));
     }
     if (role.partnerId === 0) {
-      return Observable.throw(new Error(this._appLocalization.get('applications.administration.roles.errors.cantDeleteAdminRole')));
+      return throwError(new Error(this._appLocalization.get('applications.administration.roles.errors.cantDeleteAdminRole')));
     }
 
     return this._kalturaClient.request(new UserRoleDeleteAction({
       userRoleId: role.id
     }))
-      .map(() => {
+      .pipe(map(() => {
         return undefined;
-      })
-      .catch(error => {
+      }))
+      .pipe(catchError(error => {
         if (error.code === 'ROLE_IS_BEING_USED') {
           error.message = this._appLocalization.get('applications.administration.roles.errors.roleInUse');
         }
         throw error;
-      });
+      }));
   }
 
   public duplicateRole(role: KalturaUserRole): Observable<KalturaUserRole> {
     if (!role) {
-      return Observable.throw(new Error(this._appLocalization.get('applications.administration.roles.errors.cantDuplicateRole')));
+      return throwError(new Error(this._appLocalization.get('applications.administration.roles.errors.cantDuplicateRole')));
     }
 
     const multiRequest = new KalturaMultiRequest(
@@ -250,46 +252,46 @@ export class RolesStoreService extends FiltersStoreBase<RolesFilters> implements
     );
 
     return this._kalturaClient.multiRequest(multiRequest)
-      .map(
+      .pipe(map(
         data => {
           if (data.hasErrors()) {
             throw new Error(this._appLocalization.get('applications.administration.roles.errors.duplicationError'));
           }
           return data[1].result;
-        })
-      .catch(error => {
+        }))
+      .pipe(catchError(error => {
         throw new Error(this._appLocalization.get('applications.administration.roles.errors.duplicationError'));
-      });
+      }));
   }
 
   public updateRole(id: number, role: KalturaUserRole): Observable<void> {
     if (!role) {
-      return Observable.throw(new Error('Unable to update role'));
+      return throwError(new Error('Unable to update role'));
     }
     if (role.partnerId === 0) {
-      return Observable.throw(new Error('Unable to update Administrator role'));
+      return throwError(new Error('Unable to update Administrator role'));
     }
 
     return this._kalturaClient.request(new UserRoleUpdateAction({
       userRoleId: id,
       userRole: role
     }))
-      .map(() => {
+      .pipe(map(() => {
         return;
-      });
+      }));
 
   }
 
   public addRole(role: KalturaUserRole): Observable<void> {
     if (!role) {
-      return Observable.throw(new Error('Unable to add role'));
+      return throwError(new Error('Unable to add role'));
     }
     role.tags = 'kmc';
 
     return this._kalturaClient.request(new UserRoleAddAction({ userRole: role }))
-      .map(() => {
+      .pipe(map(() => {
         return;
-      });
+      }));
   }
 
   public reload(): void {

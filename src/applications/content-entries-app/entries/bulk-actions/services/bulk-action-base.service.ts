@@ -1,4 +1,5 @@
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { subApplicationsConfig } from 'config/sub-applications';
 
 import { KalturaMediaEntry } from 'kaltura-ngx-client';
@@ -35,8 +36,8 @@ export abstract class BulkActionBaseService<T> {
     }
     multiRequests.push(this._kalturaServerClient.multiRequest(mr));
 
-    return Observable.forkJoin(multiRequests)
-      .map(responses => {
+    return forkJoin(multiRequests)
+      .pipe(map(responses => {
         const errorMessage = [].concat.apply([], responses)
           .filter(response => !!response.error)
           .reduce((acc, { error }) => `${acc}\n${error.message}`, '')
@@ -47,7 +48,7 @@ export abstract class BulkActionBaseService<T> {
         } else {
           return {};
         }
-      });
+      }));
   }
 
 }

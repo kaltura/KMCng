@@ -76,52 +76,27 @@ form{
       margin-left: 8px;
     }
   }
-  ::ng-deep .ui-autocomplete.ui-widget{
+}
+
+kautocomplete {
     width: 100%;
-    font-size: 15px;
-
-    input{
-      width: 100%;
-    }
-
-    li.userAdded{
-      background-color: transparentize($kPrimary, 0.5) !important;
-    }
-
-    ul.ui-autocomplete-multiple-container {
-      height: auto;
-    }
-  }
-  ::ng-deep kAutoComplete{
-    margin-top: 4px;
-    width: 100%;
-    .ui-autocomplete-input-token{
-      width: 260px;
-    }
-  }
 }
 
-:host ::ng-deep .ui-autocomplete.ui-widget{
-	width: 100%;
-	input{
-		width: 100%;
-	}
+kautocomplete ::ng-deep ul{
+    width: 100% !important;
+    .p-autocomplete-input-token input {
+        width: 220px;
+    }
+    li.userAdded {
+        background-color: transparentize($kPrimary, 0.5) !important;
+    }
+}
+:host ::ng-deep .kHighlightedText {
+    text-decoration: underline;
 }
 
-:host ::ng-deep kAutoComplete{
-	width: 100%;
-
-  li.userAdded{
-    background-color: transparentize($kPrimary, 0.5) !important;
-  }
-
-  .ui-state-disabled {
-    background-color: $kGrayscale5 !important;
-  }
-}
-
-::ng-deep kPopupWidget .kPopupWidget {
-	overflow: visible !important;
+kPopupWidget ::ng-deep .kPopupWidget {
+    overflow: visible !important;
 }
 
 

@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {KalturaClient} from 'kaltura-ngx-client';
 import {KalturaCategory} from 'kaltura-ngx-client';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {CategoryUpdateAction} from 'kaltura-ngx-client';
 
 export interface Entitlement {
@@ -25,6 +26,6 @@ export class EditEntitlementService {
         privacyContext: privacyContextLabel
       })
     }))
-      .map(_ => (undefined));
+      .pipe(map(_ => (undefined)));
   }
 }

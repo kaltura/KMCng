@@ -5,7 +5,7 @@
 
 :host ::ng-deep {
     .kAlignToLeft {
-        .ui-dialog.ui-confirmdialog .ui-dialog-content.ui-widget-content {
+        .p-dialog.p-confirm-dialog .p-dialog-content {
             text-align: left;
             line-height: 1.4em;
         }

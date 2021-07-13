@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
 import { ISubscription } from 'rxjs/Subscription';
 import { KalturaClient, KalturaMultiRequest } from 'kaltura-ngx-client';
@@ -32,6 +32,7 @@ import { SettingsAccessControlMainViewService } from 'app-shared/kmc-shared/kmc-
 import { FlavoursStore } from 'app-shared/kmc-shared';
 import { switchMap, map } from 'rxjs/operators';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { throwError } from 'rxjs';
 
 const localStoragePageSizeKey = 'accessControlProfiles.list.pageSize';
 
@@ -196,7 +197,7 @@ export class AccessControlProfilesStore extends FiltersStoreBase<AccessControlPr
               })
           );
     } catch (err) {
-      return Observable.throw(err);
+      return throwError(err);
     }
   }
 
@@ -378,14 +379,14 @@ export class AccessControlProfilesStore extends FiltersStoreBase<AccessControlPr
     const actions = profiles.map(({ id }) => new AccessControlDeleteAction({ id }));
     return this._kalturaServerClient
       .multiRequest(new KalturaMultiRequest(...actions))
-      .map((response) => {
+      .pipe(map((response) => {
         if (response && response.length) {
           const failedResponse = response.find(res => !!res.error);
           if (failedResponse) {
-            throw Observable.throw(failedResponse.error);
+            throw throwError(failedResponse.error);
           }
         }
-      });
+      }));
   }
 
   public saveProfile(profile: KalturaAccessControl): Observable<void> {
@@ -396,8 +397,8 @@ export class AccessControlProfilesStore extends FiltersStoreBase<AccessControlPr
     profile.allowEmptyArray('restrictions');
 
     return this._kalturaServerClient.request(saveAction)
-      .map(() => {
-      });
+      .pipe(map(() => {
+      }));
   }
 }
 

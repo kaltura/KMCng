@@ -25,11 +25,11 @@
         font-weight: 700;
     }
 
-    &.kTagsVisible ::ng-deep .ui-table-scrollable-body {
+    &.kTagsVisible ::ng-deep .p-datatable-scrollable-body {
         height: calc(100vh - 320px) !important;
     }
 
-    ::ng-deep .ui-table-scrollable-body {
+    ::ng-deep .p-datatable-scrollable-body {
         height: calc(100vh - 280px) !important;
         overflow: auto;
     }
@@ -51,18 +51,18 @@
         padding-left: 28px !important;
     }
 
-    .ui-dropdown {
-        min-width: 127px !important;
+    .p-dropdown {
+        width: 127px !important;
     }
 
 }
 
-:host ::ng-deep .ui-table .nameColumn {
+:host ::ng-deep .p-datatable .nameColumn {
     font-weight: normal;
     width: 200px;
 }
 
-:host ::ng-deep .ui-table .permissionLevelColumn {
+:host ::ng-deep .p-datatable .permissionLevelColumn {
     font-weight: normal;
     width: 140px;
     text-align: left;
@@ -72,7 +72,7 @@
     }
 }
 
-:host ::ng-deep .ui-table .updateMethodColumn {
+:host ::ng-deep .p-datatable .updateMethodColumn {
     font-weight: normal;
     width: 140px;
     text-align: left;
@@ -83,13 +83,13 @@
     }
 }
 
-:host ::ng-deep .ui-table .updatedAtColumn {
+:host ::ng-deep .p-datatable .updatedAtColumn {
     font-weight: normal;
     width: 81px;
     text-align: left;
 }
 
-:host ::ng-deep .ui-table {
+:host ::ng-deep .p-datatable {
     .statusColumn {
         font-weight: normal;
         width: 170px;
@@ -105,7 +105,7 @@
     visibility: visible;
 }
 
-:host ::ng-deep .ui-table .removeColumn {
+:host ::ng-deep .p-datatable .removeColumn {
     overflow: visible;
     width: 55px;
     text-align: center;

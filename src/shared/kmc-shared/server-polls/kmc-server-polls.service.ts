@@ -4,7 +4,7 @@ import {
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, throwError as ObservableThrowError} from 'rxjs';
 import { ServerPolls } from '@kaltura-ng/kaltura-common';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { AppEventsService } from 'app-shared/kmc-shared/app-events';
 import { UserLoginStatusEvent } from 'app-shared/kmc-shared/events';

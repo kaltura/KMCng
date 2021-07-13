@@ -16,6 +16,7 @@ import {
     ReachServicesRefineFiltersService,
     RefineList
 } from "../reach-services-store/reach-services-refine-filters.service";
+import { first } from 'rxjs/operators';
 
 @Component({
     selector: 'k-reach-services-list',
@@ -24,9 +25,9 @@ import {
     providers: [KalturaLogger.createLogger('ReachServicesListComponent')]
 })
 export class ReachServicesListComponent implements OnInit, OnDestroy {
-    
+
     @Output() setParentBlockerMessage = new EventEmitter<AreaBlockerMessage>();
-    
+
     public _isBusy = false;
     public _blockerMessage: AreaBlockerMessage = null;
     public _tableIsBusy = false;
@@ -34,7 +35,7 @@ export class ReachServicesListComponent implements OnInit, OnDestroy {
     public _kmcPermissions = KMCPermissions;
     public _serviceFeatures = [];
     public _window = window;
-    
+
     public _query = {
         sortBy: 'createdAt',
         sortDirection: SortDirection.Asc,
@@ -42,7 +43,7 @@ export class ReachServicesListComponent implements OnInit, OnDestroy {
         pageSize: 50
     };
     public _refineFilters: RefineList[];
-    
+
     constructor(private _appLocalization: AppLocalization,
                 private _router: Router,
                 private _logger: KalturaLogger,
@@ -51,7 +52,7 @@ export class ReachServicesListComponent implements OnInit, OnDestroy {
                 private _settingsReachMainViewService: SettingsReachMainViewService,
                 private _settingsReachViewService: SettingsReachProfileViewService,
                 public _reachServicesStore: ReachServicesStore) {
-        
+
         this._serviceFeatures = [
             { label: this._appLocalization.get('applications.settings.reach.services.captions'), value: KalturaVendorServiceFeature.captions },
             { label: this._appLocalization.get('applications.settings.reach.services.translations'), value: KalturaVendorServiceFeature.translation },
@@ -60,23 +61,23 @@ export class ReachServicesListComponent implements OnInit, OnDestroy {
             { label: this._appLocalization.get('applications.settings.reach.services.chaptering'), value: KalturaVendorServiceFeature.chaptering }
         ];
     }
-    
+
     ngOnInit() {
         if (this._settingsReachMainViewService.isAvailable()) {
             this._prepare();
         }
     }
-    
+
     ngOnDestroy() {
-    
+
     }
-    
+
     private _prepare(): void {
         this._logger.info(`initiate reach profiles list view, load refine filters`);
         this._isBusy = true;
         this._refineFiltersService.getFilters()
             .pipe(cancelOnDestroy(this))
-            .first() // only handle it once, no need to handle changes over time
+            .pipe(first()) // only handle it once, no need to handle changes over time
             .subscribe(
                 lists => {
                     this._logger.info(`handle successful loading of filters, proceed initiation`);
@@ -104,7 +105,7 @@ export class ReachServicesListComponent implements OnInit, OnDestroy {
                     });
                 });
     }
-    
+
     private _registerToFilterStoreDataChanges(): void {
         this._reachServicesStore.filtersChange$
             .pipe(cancelOnDestroy(this))
@@ -112,7 +113,7 @@ export class ReachServicesListComponent implements OnInit, OnDestroy {
                 this._updateComponentState(changes);
             });
     }
-    
+
     private _registerToDataChanges(): void {
         this._reachServicesStore.services.state$
             .pipe(cancelOnDestroy(this))
@@ -149,7 +150,7 @@ export class ReachServicesListComponent implements OnInit, OnDestroy {
                 }
             );
     }
-    
+
     private _restoreFiltersState(): void {
         this._updateComponentState(this._reachServicesStore.cloneFilters(
             [
@@ -162,29 +163,29 @@ export class ReachServicesListComponent implements OnInit, OnDestroy {
             ]
         ));
     }
-    
+
     private _updateComponentState(updates: Partial<ReachProfilesFilters>): void {
         // if (typeof updates.freeText !== 'undefined') {
         //     this._query.freeText = updates.freeText || '';
         // }
-    
+
         if (typeof updates.pageSize !== 'undefined') {
             this._query.pageSize = updates.pageSize;
         }
-    
+
         if (typeof updates.pageIndex !== 'undefined') {
             this._query.pageIndex = updates.pageIndex;
         }
-    
+
         if (typeof updates.sortBy !== 'undefined') {
             this._query.sortBy = updates.sortBy;
         }
-    
+
         if (typeof updates.sortDirection !== 'undefined') {
             this._query.sortDirection = updates.sortDirection;
         }
     }
-    
+
     public _onPaginationChanged(state): void {
         if (state.page !== this._query.pageIndex || state.rows !== this._query.pageSize) {
             this._reachServicesStore.filter({
@@ -193,7 +194,7 @@ export class ReachServicesListComponent implements OnInit, OnDestroy {
             });
         }
     }
-    
+
     public _onSortChanged(event): void {
         if (event.field !== this._query.sortBy || event.order !== this._query.sortDirection) {
             this._reachServicesStore.filter({
@@ -202,7 +203,7 @@ export class ReachServicesListComponent implements OnInit, OnDestroy {
             });
         }
     }
-    
+
     public _onFeatureChange(event): void {
         this._reachServicesStore.filter({
             feature: event.value

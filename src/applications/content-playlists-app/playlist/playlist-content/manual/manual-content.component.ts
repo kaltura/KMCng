@@ -3,6 +3,7 @@ import { PlaylistStore } from '../../playlist-store.service';
 import { ManualContentWidget } from './manual-content-widget.service';
 import { KalturaMediaEntry } from 'kaltura-ngx-client';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'kPlaylistContentManual',
@@ -19,7 +20,7 @@ export class ManualContentComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._widgetService.attachForm();
     this._widgetService.data$
-      .filter(Boolean)
+      .pipe(filter(Boolean))
       .pipe(cancelOnDestroy(this))
       .subscribe(() => {
         this._clearSelection();

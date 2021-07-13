@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import { Observable } from 'rxjs';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {BehaviorSubject} from 'rxjs';
 import {AppLocalization} from '@kaltura-ng/mc-shared';
 import {SectionsList} from './sections-list';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';

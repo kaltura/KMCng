@@ -219,7 +219,7 @@ $box-shadow2: ();
     $box-shadow: $box-shadow,
     random($width)-$width / 2 + px
     random($height)-$height / 1.2 + px
-    hsl(random(360), 100, 50);
+    hsl(random(360deg), 100%, 50%);
     $box-shadow2: $box-shadow2, 0 0 #fff
 }
 @mixin keyframes ($animationName) {

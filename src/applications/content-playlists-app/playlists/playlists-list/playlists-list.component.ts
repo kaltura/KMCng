@@ -12,11 +12,12 @@ import { BrowserService } from 'app-shared/kmc-shell/providers';
 import { PreviewAndEmbedEvent } from 'app-shared/kmc-shared/events';
 import { AppEventsService } from 'app-shared/kmc-shared';
 import { KMCPermissions } from 'app-shared/kmc-shared/kmc-permissions';
-import { async } from 'rxjs/scheduler/async';
+import { asyncScheduler } from 'rxjs';
 import { ContentPlaylistViewSections } from 'app-shared/kmc-shared/kmc-views/details-views/content-playlist-view.service';
 import { ContentPlaylistViewService } from 'app-shared/kmc-shared/kmc-views/details-views';
 import { ContentPlaylistsMainViewService } from 'app-shared/kmc-shared/kmc-views';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { observeOn } from 'rxjs/operators';
 
 @Component({
   selector: 'kPlaylistsList',
@@ -190,7 +191,7 @@ export class PlaylistsListComponent implements OnInit, OnDestroy {
 
     private _registerToDataChanges(): void {
         this._playlistsStore.playlists.state$
-            .observeOn(async)
+            .pipe(observeOn(asyncScheduler))
             .pipe(cancelOnDestroy(this))
             .subscribe(
                 result => {
@@ -218,7 +219,7 @@ export class PlaylistsListComponent implements OnInit, OnDestroy {
                     throw error;
                 });
     }
-    
+
     private _openRaptAnalytics(id: string): void {
       this._router.navigate(['analytics/playlist'], { queryParams: { id } });
     }

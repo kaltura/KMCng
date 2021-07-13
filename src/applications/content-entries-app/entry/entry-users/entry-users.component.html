@@ -1,63 +1,64 @@
 <k-area-blocker [showLoader]="_widgetService.showSectionLoader" [message]="_widgetService.sectionBlockerMessage">
-	<form [formGroup]="_widgetService.usersForm" novalidate>
-		<div class="kUsers">
-			<p class="kTitle">{{'applications.content.entryDetails.users.users' | translate}}</p>
-			<div class="kUsersDetails">
-				<div class="kRow">
-					<span class="kLabels">{{'applications.content.entryDetails.users.creator' | translate}}</span>
-					<span [kTooltip]="_widgetService._creator">{{_widgetService._creator}}</span>
-				</div>
-				<div class="kRow">
-					<span class="kLabels">{{'applications.content.entryDetails.users.owner' | translate}}</span>
-					<span [kTooltip]="_widgetService._owner?.screenName ? _widgetService._owner?.screenName : _widgetService._owner?.id">
+    <form [formGroup]="_widgetService.usersForm" novalidate>
+        <div class="kUsers">
+            <p class="kTitle">{{'applications.content.entryDetails.users.users' | translate}}</p>
+            <div class="kUsersDetails">
+                <div class="kRow">
+                    <span class="kLabels">{{'applications.content.entryDetails.users.creator' | translate}}</span>
+                    <span [kTooltip]="_widgetService._creator">{{_widgetService._creator}}</span>
+                </div>
+                <div class="kRow">
+                    <span class="kLabels">{{'applications.content.entryDetails.users.owner' | translate}}</span>
+                    <span
+                        [kTooltip]="_widgetService._owner?.screenName ? _widgetService._owner?.screenName : _widgetService._owner?.id">
             {{_widgetService._owner?.screenName ? _widgetService._owner?.screenName : _widgetService._owner?.id}}
           </span>
-					<a class="changeOwner"
-             *ngIf="_kmcPermissions.CONTENT_MANAGE_ENTRY_USERS | kNgIfPermitted"
-             (click)="_openChangeOwner()">{{'applications.content.entryDetails.users.changeOwner' | translate}}</a>
-				</div>
-				<div class="kRow kSeparator">
-					<span class="kLabels">{{'applications.content.entryDetails.users.co-editors' | translate}}</span>
-					<kAutoComplete #editorsAutoComplete
-								   formControlName="editors"
-								   suggestionItemField="item"
-								   suggestionLabelField="name"
-								   [tooltipResolver]="'__tooltip'"
-								   [classField]="'__class'"
-								   field="id"
-								   [multiple]="true"
-								   [onItemAdding]="_convertUserInputToValidValue"
-								   [limitToSuggestions]="false"
-								   [minLength]="3"
-								   suggestionSelectableField="isSelectable"
-								   [suggestionsProvider]="_usersProvider"
-								   (completeMethod)="_searchUsers($event, 'editors')">
-					</kAutoComplete>
-				</div>
-				<div class="kRow">
-					<span class="kLabels">{{'applications.content.entryDetails.users.co-publishers' | translate}}</span>
-					<kAutoComplete formControlName="publishers"
-								   suggestionItemField="item"
-								   suggestionLabelField="name"
-								   field="screenName"
-								   [multiple]="true"
-								   [tooltipResolver]="'__tooltip'"
-								   [classField]="'__class'"
-								   [onItemAdding]="_convertUserInputToValidValue"
-								   [limitToSuggestions]="false"
-								   [minLength]="3"
-								   suggestionSelectableField="isSelectable"
-								   [suggestionsProvider]="_usersProvider"
-								   (completeMethod)="_searchUsers($event, 'publishers')">
-					</kAutoComplete>
-				</div>
+                    <a class="changeOwner"
+                       *ngIf="_kmcPermissions.CONTENT_MANAGE_ENTRY_USERS | kNgIfPermitted"
+                       (click)="_openChangeOwner()">{{'applications.content.entryDetails.users.changeOwner' | translate}}</a>
+                </div>
+                <div class="kRow kSeparator">
+                    <span class="kLabels">{{'applications.content.entryDetails.users.co-editors' | translate}}</span>
+                    <kAutoComplete #editorsAutoComplete
+                                   formControlName="editors"
+                                   suggestionItemField="item"
+                                   suggestionLabelField="name"
+                                   [tooltipResolver]="'__tooltip'"
+                                   [classField]="'__class'"
+                                   field="id"
+                                   [allowMultiple]="true"
+                                   [onItemAdding]="_convertUserInputToValidValue"
+                                   [limitToSuggestions]="false"
+                                   [minLength]="3"
+                                   suggestionSelectableField="isSelectable"
+                                   [suggestionsProvider]="_usersProvider"
+                                   (completeMethod)="_searchUsers($event, 'editors')">
+                    </kAutoComplete>
+                </div>
+                <div class="kRow">
+                    <span class="kLabels">{{'applications.content.entryDetails.users.co-publishers' | translate}}</span>
+                    <kAutoComplete formControlName="publishers"
+                                   suggestionItemField="item"
+                                   suggestionLabelField="name"
+                                   field="screenName"
+                                   [allowMultiple]="true"
+                                   [tooltipResolver]="'__tooltip'"
+                                   [classField]="'__class'"
+                                   [onItemAdding]="_convertUserInputToValidValue"
+                                   [limitToSuggestions]="false"
+                                   [minLength]="3"
+                                   suggestionSelectableField="isSelectable"
+                                   [suggestionsProvider]="_usersProvider"
+                                   (completeMethod)="_searchUsers($event, 'publishers')">
+                    </kAutoComplete>
+                </div>
                 <div class="kRow">
                     <span class="kLabels">{{'applications.content.entryDetails.users.co-viewers' | translate}}</span>
                     <kAutoComplete formControlName="viewers"
                                    suggestionItemField="item"
                                    suggestionLabelField="name"
                                    field="id"
-                                   [multiple]="true"
+                                   [allowMultiple]="true"
                                    [tooltipResolver]="'__tooltip'"
                                    [classField]="'__class'"
                                    [onItemAdding]="_convertUserInputToValidValue"
@@ -68,46 +69,48 @@
                                    (completeMethod)="_searchUsers($event, 'viewers')">
                     </kAutoComplete>
                 </div>
-			</div>
-		</div>
+            </div>
+        </div>
 
-		<kPopupWidget #ownerPopup data-aid="ownerPopup" [popupWidth]="550" [popupHeight]="264" [modal]="true">
-        <div class="kFloater kOverrideFAIcons">
-          <div class="kHeader">
-            <span class="kTitle">{{'applications.content.entryDetails.users.changeOwner' | translate}}</span>
-          </div>
+        <kPopupWidget #ownerPopup data-aid="ownerPopup" [popupWidth]="550" [popupHeight]="264" [modal]="true">
+            <ng-template>
+                <div class="kFloater kOverrideFAIcons">
+                    <div class="kHeader">
+                        <span class="kTitle">{{'applications.content.entryDetails.users.changeOwner' | translate}}</span>
+                    </div>
 
-          <div class="kContainer">
-            <span class="kLabel">{{'applications.content.entryDetails.users.changeOwnerText' | translate}}</span>
-            <kAutoComplete formControlName="owners"
-                           suggestionItemField="item"
-                           suggestionLabelField="name"
-                           field="screenName"
-                           [onItemAdding]="_convertUserInputToValidValue"
-                           [multiple]="false"
-						   [tooltipResolver]="'__tooltip'"
-						   [classField]="'__class'"
-                           [limitToSuggestions]="false"
-                           placeholder="{{'applications.content.entryDetails.users.changeOwnerPH' | translate}}"
-                           [minLength]="3"
+                    <div class="kContainer">
+                        <span
+                            class="kLabel">{{'applications.content.entryDetails.users.changeOwnerText' | translate}}</span>
+                        <kAutoComplete formControlName="owners"
+                                       suggestionItemField="item"
+                                       suggestionLabelField="name"
+                                       field="screenName"
+                                       [onItemAdding]="_convertUserInputToValidValue"
+                                       [allowMultiple]="false"
+                                       [tooltipResolver]="'__tooltip'"
+                                       [classField]="'__class'"
+                                       [limitToSuggestions]="false"
+                                       placeholder="{{'applications.content.entryDetails.users.changeOwnerPH' | translate}}"
+                                       [minlength]="3"
+                                       [suggestionsProvider]="_usersProvider"
+                                       (onUnselect)="_updateApplyButtonState()"
+                                       (onSelect)="_updateApplyButtonState()"
+                                       (completeMethod)="_searchUsers($event)">
+                        </kAutoComplete>
+                    </div>
 
-                           [suggestionsProvider]="_usersProvider"
-                           (onUnselect)="_updateApplyButtonState()"
-                           (onSelect)="_updateApplyButtonState()"
-                           (completeMethod)="_searchUsers($event)">
-            </kAutoComplete>
-          </div>
-
-          <div class="kFooter">
-            <button type="button" class="kButtonDefault" [disabled]="false" (click)="ownerPopup.close()" pButton label="{{'app.common.cancel' | translate}}"></button>
-            <button pButton type="button" class="kButtonBranded"
-                    [label]="'applications.content.entryDetails.users.save' | translate"
-                    [disabled]="_disableSaveButton"
-                    (click)="_saveAndClose()"></button>
-          </div>
-			</div>
-
-		</kPopupWidget>
-	</form>
+                    <div class="kFooter">
+                        <button type="button" class="kButtonDefault" [disabled]="false" (click)="ownerPopup.close()" pButton
+                                label="{{'app.common.cancel' | translate}}"></button>
+                        <button pButton type="button" class="kButtonBranded"
+                                [label]="'applications.content.entryDetails.users.save' | translate"
+                                [disabled]="_disableSaveButton"
+                                (click)="_saveAndClose()"></button>
+                    </div>
+                </div>
+            </ng-template>
+        </kPopupWidget>
+    </form>
 
 </k-area-blocker>

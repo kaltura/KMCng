@@ -9,5 +9,8 @@
   .kBulkActionsBtn{
     font-weight: 400;
     font-size: 15px;
+      ::ng-deep .p-button-label {
+          padding: .25em 2.1em .25em 1em;
+      }
   }
 }

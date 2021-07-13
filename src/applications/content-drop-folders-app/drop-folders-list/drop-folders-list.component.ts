@@ -12,6 +12,7 @@ import { ContentEntryViewSections, ContentEntryViewService } from 'app-shared/km
 import { ContentDropFoldersMainViewService } from 'app-shared/kmc-shared/kmc-views';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 import { RefineGroup } from 'app-shared/content-shared/entries/entries-store/entries-refine-filters.service';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'kDropFoldersList',
@@ -64,7 +65,7 @@ export class DropFoldersListComponent implements OnInit, OnDestroy {
         this._isBusy = true;
         this._refineFiltersService.getFilters()
             .pipe(cancelOnDestroy(this))
-            .first() // only handle it once, no need to handle changes over time
+            .pipe(first()) // only handle it once, no need to handle changes over time
             .subscribe(
                 filters => {
                     this._isBusy = false;

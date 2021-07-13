@@ -19,6 +19,7 @@ import {
     SettingsTranscodingProfileViewService
 } from 'app-shared/kmc-shared/kmc-views/details-views';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'kTranscodingProfile',
@@ -117,7 +118,7 @@ export class TranscodingProfileComponent implements OnInit, OnDestroy {
               });
     this._profileStore.profile.state$
       .pipe(cancelOnDestroy(this))
-      .filter(Boolean)
+      .pipe(filter(Boolean))
       .subscribe(
           (status: StatusArgs) => {
           this._showLoader = false;

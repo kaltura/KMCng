@@ -9,6 +9,7 @@ import { NewReplaceVideoUploadFile } from 'app-shared/kmc-shell/new-replace-vide
 import { TrackedFileStatuses } from '@kaltura-ng/kaltura-common';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { filter } from 'rxjs/operators';
 
 export enum FlavorsTabs {
     current = 'current',
@@ -69,10 +70,10 @@ export class ReplacementStatusComponent implements OnInit, OnDestroy {
     private _monitorTrackedFilesChanges(): void {
         this._uploadManagement.onTrackedFileChanged$
             .pipe(cancelOnDestroy(this))
-            .filter(trackedFile =>
+            .pipe(filter(trackedFile =>
                 trackedFile.data instanceof NewReplaceVideoUploadFile
                 && trackedFile.data.entryId === this.entry.id
-            )
+            ))
             .subscribe(trackedFile => {
                 switch (trackedFile.status) {
                     case TrackedFileStatuses.failure:

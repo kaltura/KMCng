@@ -33,27 +33,9 @@
   align-items: center;
   justify-content: center;
 }
-:host ::ng-deep kautocomplete {
-  li.userAdded{
-    background-color: transparentize($kPrimary, 0.5) !important;
-  }
-  .ui-autocomplete {
-    width: 475px;
-  }
-  .ui-autocomplete-multiple-container {
-    max-height: 310px;
-    overflow-y: auto;
-
-    .ui-inputtext{
-      padding: 4px 6px;
-      .ui-autocomplete-input-token{
-        padding: 0;
-        input{
-          height: 34px;
-          padding-left: 8px;
-          width: 472px;
-        }
-      }
-    }
-  }
+:host ::ng-deep kautocomplete ul{
+    width: 100% !important;
+}
+:host ::ng-deep .kHighlightedText {
+    text-decoration: underline;
 }

@@ -13,6 +13,9 @@ import { KalturaFilterPager } from 'kaltura-ngx-client';
 import { CategoryEntryDeleteAction } from 'kaltura-ngx-client';
 import { CategoriesSearchService, CategoryData } from 'app-shared/content-shared/categories/categories-search.service';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { throwError } from 'rxjs';
+import { of } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
 
 @Injectable()
 export class BulkRemoveCategoriesService extends BulkActionBaseService<number[]> implements OnDestroy {
@@ -26,7 +29,7 @@ export class BulkRemoveCategoriesService extends BulkActionBaseService<number[]>
     private _getCategoryEntryMapping(entries: string[]): Observable<KalturaCategoryEntry[]> {
 
         if (entries.length === 0) {
-            return Observable.throw(new Error('no entries were selected'));
+            return throwError(new Error('no entries were selected'));
         }
         // load all category entries
         const filter: KalturaCategoryEntryFilter = new KalturaCategoryEntryFilter(
@@ -43,13 +46,13 @@ export class BulkRemoveCategoriesService extends BulkActionBaseService<number[]>
             filter: filter,
             pager: pager
         }))
-            .map(item => item.objects);
+            .pipe(map(item => item.objects));
     }
 
     public getCategoriesOfEntries(entries: string[]): Observable<CategoryData[]> {
         return this._getCategoryEntryMapping(entries)
             .pipe(cancelOnDestroy(this))
-            .switchMap(items => {
+            .pipe(switchMap(items => {
                 // got all entry categories - load category details for each entry category
                 if (items && items.length) {
                     const categoriesIds = Object.keys(items.reduce((acc, category) => {
@@ -59,11 +62,11 @@ export class BulkRemoveCategoriesService extends BulkActionBaseService<number[]>
 
                     return this._categoriesSearch.getCategories(categoriesIds)
                         .pipe(cancelOnDestroy(this))
-                        .map(categoryListResponse => categoryListResponse.items)
+                        .pipe(map(categoryListResponse => categoryListResponse.items))
                 } else {
-                    return Observable.of([]);
+                    return of([]);
                 }
-            })
+            }))
     }
 
     public execute(entries: KalturaMediaEntry[], categoriesId: number[]): Observable<{}> {

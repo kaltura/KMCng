@@ -3,7 +3,7 @@ import { ReachProfileStore } from '../reach-profile-store.service';
 import { ReachProfileDetailsWidget } from './reach-profile-details-widget.service';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 import { KalturaReachProfile } from "kaltura-ngx-client";
-import {KalturaReachProfileWithCredit} from "../../reach-profiles/reach-profiles-store/reach-profiles-store.service";
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'kReachProfileDetails',
@@ -23,7 +23,7 @@ export class ReachProfileDetailsComponent implements OnInit, OnDestroy {
 
     this._widgetService.data$
       .pipe(cancelOnDestroy(this))
-      .filter(Boolean)
+      .pipe(filter(Boolean))
       .subscribe(
           (data: KalturaReachProfile) => {
           this._currentProfile = data;

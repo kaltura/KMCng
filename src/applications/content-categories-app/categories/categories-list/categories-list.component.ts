@@ -7,7 +7,7 @@ import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/c
 import {Router} from '@angular/router';
 import {CategoriesUtilsService} from '../../categories-utils.service';
 import {PopupWidgetComponent, PopupWidgetStates} from '@kaltura-ng/kaltura-ui';
-
+import { observeOn } from 'rxjs/operators';
 import {CategoriesModes} from "app-shared/content-shared/categories/categories-mode-type";
 import {CategoriesRefineFiltersService, RefineGroup} from '../categories-refine-filters.service';
 import {
@@ -23,10 +23,11 @@ import {
     ReachAppViewService, ReachPages
 } from 'app-shared/kmc-shared/kmc-views/details-views';
 import { ContentNewCategoryViewService } from 'app-shared/kmc-shared/kmc-views/details-views/content-new-category-view.service';
-import { async } from 'rxjs/scheduler/async';
+import { asyncScheduler } from 'rxjs';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { ContentCategoriesMainViewService } from 'app-shared/kmc-shared/kmc-views';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'kCategoriesList',
@@ -114,7 +115,7 @@ export class CategoriesListComponent implements OnInit, OnDestroy, AfterViewInit
         this._isBusy = true;
         this._refineFiltersService.getFilters()
             .pipe(cancelOnDestroy(this))
-            .first() // only handle it once, no need to handle changes over time
+            .pipe(first()) // only handle it once, no need to handle changes over time
             .subscribe(
                 groups => {
 
@@ -151,7 +152,7 @@ export class CategoriesListComponent implements OnInit, OnDestroy, AfterViewInit
 
     private _registerToDataChanges(): void {
         this._categoriesService.categories.state$
-            .observeOn(async)
+            .pipe(observeOn(asyncScheduler))
             .pipe(cancelOnDestroy(this))
             .subscribe(
                 result => {

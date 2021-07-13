@@ -19,6 +19,8 @@ import {
 import { KMCPermissions } from 'app-shared/kmc-shared/kmc-permissions';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { first } from 'rxjs/operators';
+import { skip } from 'rxjs/operators';
 
 export interface UserActionData {
   action: 'activate' | 'deactivate' | 'permissionLevel'| 'updateMethod' | 'delete',
@@ -108,12 +110,12 @@ export class ManageEndUserPermissionsComponent implements OnInit, OnDestroy {
         this._isBusy = true;
         this._refineFiltersService.getFilters()
             .pipe(cancelOnDestroy(this))
-            .first() // only handle it once, no need to handle changes over time
+            .pipe(first()) // only handle it once, no need to handle changes over time
             .subscribe(
                 lists => {
                     this._usersService.users.data$
                         .pipe(cancelOnDestroy(this))
-                        .skip(1) // skip the first emitted value which is the default for '_actualUsersCount' to behave correctly
+                        .pipe(skip(1)) // skip the first emitted value which is the default for '_actualUsersCount' to behave correctly
                         .subscribe(response => {
                             this._users = response.items;
                             this._usersCount = response.totalCount;

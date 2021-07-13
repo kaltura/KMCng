@@ -1,7 +1,7 @@
 import { Component,  QueryList, ViewChildren, ElementRef, Inject, ViewChild, AfterViewInit,OnInit, OnDestroy } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { SuggestionsProviderData } from '@kaltura-ng/kaltura-primeng-ui';
 import { PopupWidgetComponent, PopupWidgetStates } from '@kaltura-ng/kaltura-ui';
 

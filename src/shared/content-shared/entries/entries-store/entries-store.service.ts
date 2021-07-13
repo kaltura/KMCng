@@ -1,5 +1,5 @@
 import { Inject, Injectable, InjectionToken, OnDestroy, Optional } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
 import { ISubscription } from 'rxjs/Subscription';
 import { MetadataProfileStore } from 'app-shared/kmc-shared';
@@ -23,11 +23,13 @@ import {
     TypeAdaptersMapping
 } from '@kaltura-ng/mc-shared';
 import { CategoriesModeAdapter, CategoriesModes, CategoriesModeType } from 'app-shared/content-shared/categories/categories-mode-type';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { KalturaBaseEntry } from 'kaltura-ngx-client';
 import { KalturaMediaEntryFilter } from 'kaltura-ngx-client';
 import { globalConfig } from 'config/global';
 import { cancelOnDestroy } from '@kaltura-ng/kaltura-common';
+import { throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export enum SortDirection {
   Desc = -1,
@@ -229,15 +231,15 @@ export class EntriesStore extends FiltersStoreBase<EntriesFilters> implements On
 
 
     if (!entryId || !entryId.length) {
-      return Observable.throw(new Error('missing entryId argument'));
+      return throwError(new Error('missing entryId argument'));
     }
 
 
     return this._kalturaServerClient
       .request(new BaseEntryDeleteAction({ entryId }))
-      .map(() => {
+      .pipe(map(() => {
         return;
-      });
+      }));
   }
 
   protected _createDefaultFiltersValue(): EntriesFilters {

@@ -213,19 +213,20 @@
 }
 
 :host ::ng-deep .kHeader p-dropdown{
-  .ui-dropdown{
+  .p-dropdown{
     background: $kGrayscale1 !important;
     width: 380px !important;
     border: 1px solid $kGrayscale2;
   }
-  .ui-dropdown-label.ui-inputtext, .ui-dropdown .ui-dropdown-trigger{
+  .p-dropdown-label.p-inputtext, .p-dropdown .p-dropdown-trigger{
     background-color: $kBlack;
     color: $kGrayscale3;
   }
-  .ui-dropdown-panel .ui-dropdown-filter-container{
-      padding-left: 12px;
+  .p-dropdown-panel .p-dropdown-filter-container{
+      padding: 8px;
+      padding-right: 0px;
   }
-  .ui-dropdown-filter.ui-inputtext{
+  .p-dropdown-filter.p-inputtext{
     width: 350px;
   }
   .pi-pi-search:before{
@@ -234,31 +235,31 @@
     content: "\e911";
   }
 
-  .ui-dropdown label{
+  .p-dropdown label{
       padding-left: 2px;
   }
-  .ui-dropdown-item.ui-corner-all{
+  .p-dropdown-item{
       padding-left: 8px;
       padding-right: 8px;
       width: 340px;
   }
-    .ui-dropdown-item.ui-corner-all.ui-state-highlight:after{
+    .p-dropdown-item.p-highlight:after{
         content: none;
     }
     .check{
         margin-left: auto;
         display: none;
     }
-    .ui-dropdown-item.ui-corner-all.ui-state-highlight .check{
+    .p-dropdown-item.p-highlight .check{
         display: block;
     }
 }
 
 :host ::ng-deep .kPreview p-dropdown{
-  .ui-dropdown{
+  .p-dropdown{
     width: 260px !important;
   }
-  .ui-dropdown-filter.ui-inputtext{
+  .p-dropdown-filter.p-inputtext{
     width: 240px;
   }
 }
@@ -274,11 +275,11 @@
     display: block;
   }
 
-  .ui-radiobutton {
+  .p-radiobutton {
     float: left;
   }
 
-  .ui-radiobutton-label {
+  .p-radiobutton-label {
     margin-left: 12px;
     color: $kGrayscale3;
     font-size: 14px;

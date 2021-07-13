@@ -4,6 +4,7 @@ import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { SettingsReachProfileViewSections } from "app-shared/kmc-shared/kmc-views/details-views";
 import { Observable } from "rxjs";
 import { KalturaCatalogItemLanguage, KalturaDictionary, KalturaMultiRequest, KalturaReachProfile } from "kaltura-ngx-client";
+import { of } from 'rxjs';
 
 export interface Dictionary extends KalturaDictionary {
     words?: string[];
@@ -13,29 +14,29 @@ export interface Dictionary extends KalturaDictionary {
 
 @Injectable()
 export class ReachProfileDictionaryWidget extends ReachProfileWidget {
-    
+
     public _languages: { label: string, value: string }[] = [];
     public _dictionaries: Dictionary[] = [];
     public _maxCharacters = 4000;
-    
+
     constructor(logger: KalturaLogger) {
         super(SettingsReachProfileViewSections.Dictionary, logger);
     }
-    
+
     /**
      * Do some cleanups if needed once the section is removed
      */
     protected onReset(): void {
-    
+
     }
-    
+
     protected onActivate(firstTimeActivating: boolean): Observable<{ failed: boolean }> | void {
         // set Languages dropdown options
         this._languages = [];
         Object.keys(KalturaCatalogItemLanguage).forEach(key => {
             this._languages.push({label: KalturaCatalogItemLanguage[key], value: KalturaCatalogItemLanguage[key]});
         });
-        
+
         // set dictionaries (clone objects)
         this._dictionaries = [];
         this.data.dictionaries.forEach((dictionary: KalturaDictionary) => {
@@ -46,7 +47,7 @@ export class ReachProfileDictionaryWidget extends ReachProfileWidget {
             }, dictionary));
         })
     }
-    
+
     private validate(): boolean {
         let valid = true;
         this._dictionaries.forEach(dictionary => {
@@ -56,13 +57,13 @@ export class ReachProfileDictionaryWidget extends ReachProfileWidget {
         });
         return valid;
     }
-    
+
     protected onValidate(wasActivated: boolean): Observable<{ isValid: boolean }> {
-        return Observable.of({
+        return of({
             isValid: this.validate()
         });
     }
-    
+
     protected onDataSaving(newData: KalturaReachProfile, request: KalturaMultiRequest): void {
         newData.dictionaries = [];
         this._dictionaries.forEach((dictionary: Dictionary) => {
@@ -74,7 +75,7 @@ export class ReachProfileDictionaryWidget extends ReachProfileWidget {
             }
         });
     }
-    
+
     public _onDataChange(index, data: string[] = null): void {
         if (data) {
             const numberOfCharacters = data.join('').length;
@@ -86,7 +87,7 @@ export class ReachProfileDictionaryWidget extends ReachProfileWidget {
             isDirty: true
         });
     }
-    
+
     public _addDictionary(): void {
         this._dictionaries.unshift({
             language: KalturaCatalogItemLanguage.en,
@@ -96,7 +97,7 @@ export class ReachProfileDictionaryWidget extends ReachProfileWidget {
             usedCharacters: 0
         } as Dictionary);
     }
-    
+
     public _deleteDictionary(index): void{
         this._dictionaries.splice(index, 1);
         super.updateState({

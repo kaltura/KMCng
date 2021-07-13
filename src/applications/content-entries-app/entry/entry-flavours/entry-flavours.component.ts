@@ -17,6 +17,7 @@ import { KMCPermissions, KMCPermissionsService } from 'app-shared/kmc-shared/kmc
 import { KalturaEntryStatus } from 'kaltura-ngx-client';
 import { ColumnsResizeManagerService, ResizableColumnsTableName } from 'app-shared/kmc-shared/columns-resize-manager';
 import { MenuItem } from 'primeng/api';
+import { filter } from 'rxjs/operators';
 
 @Component({
     selector: 'kEntryFlavours',
@@ -65,7 +66,7 @@ export class EntryFlavours implements AfterViewInit, OnInit, OnDestroy {
 
         this._widgetService.data$
             .pipe(cancelOnDestroy(this))
-            .filter(Boolean)
+            .pipe(filter(Boolean))
             .subscribe((entry: KalturaMediaEntry) => {
                 if (entry.status === KalturaEntryStatus.noContent) {
                     this._replaceButtonsLabel = entry.mediaType === KalturaMediaType.audio

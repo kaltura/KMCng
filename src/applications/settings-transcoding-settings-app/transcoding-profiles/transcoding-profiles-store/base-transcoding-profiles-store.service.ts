@@ -1,6 +1,6 @@
-import { OnDestroy } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs';
+import {Directive, OnDestroy} from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { ISubscription } from 'rxjs/Subscription';
 import { KalturaClient, KalturaMultiRequest, KalturaRequest } from 'kaltura-ngx-client';
 import { KalturaFilterPager } from 'kaltura-ngx-client';
@@ -22,6 +22,8 @@ import { NumberTypeAdapter } from '@kaltura-ng/mc-shared';
 import { SettingsTranscodingMainViewService } from 'app-shared/kmc-shared/kmc-views';
 import { globalConfig } from 'config/global';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface ExtendedKalturaConversionProfileAssetParams extends KalturaConversionProfileAssetParams {
   updated?: boolean;
@@ -37,6 +39,7 @@ export interface TranscodingProfilesFilters {
   pageIndex: number;
 }
 
+@Directive()
 export abstract class BaseTranscodingProfilesStore extends FiltersStoreBase<TranscodingProfilesFilters> implements OnDestroy {
   private _profiles = {
     data: new BehaviorSubject<{ items: KalturaConversionProfileWithAsset[], totalCount: number }>({ items: [], totalCount: 0 }),
@@ -144,7 +147,7 @@ export abstract class BaseTranscodingProfilesStore extends FiltersStoreBase<Tran
       // build the request
       return this._kalturaServerClient
         .multiRequest(new KalturaMultiRequest(conversionProfileAction, conversionProfileAssetParamsAction))
-        .map(([profilesResponse, assetsResponse]) => {
+        .pipe(map(([profilesResponse, assetsResponse]) => {
           if (profilesResponse.error) {
             throw Error(profilesResponse.error.message);
           }
@@ -171,9 +174,9 @@ export abstract class BaseTranscodingProfilesStore extends FiltersStoreBase<Tran
           }
 
           return { objects, totalCount };
-        });
+        }));
     } catch (err) {
-      return Observable.throw(err);
+      return throwError(err);
     }
   }
 
@@ -191,8 +194,8 @@ export abstract class BaseTranscodingProfilesStore extends FiltersStoreBase<Tran
     const multiRequests = splitRequests
       .map(reqChunk => this._kalturaServerClient.multiRequest(reqChunk));
 
-    return Observable.forkJoin(multiRequests)
-      .map(responses => {
+    return forkJoin(multiRequests)
+      .pipe(map(responses => {
         const errorMessage = [].concat.apply([], responses)
           .filter(response => !!response.error)
           .reduce((acc, { error }) => `${acc}\n${error.message}`, '')
@@ -201,7 +204,7 @@ export abstract class BaseTranscodingProfilesStore extends FiltersStoreBase<Tran
         if (!!errorMessage) {
           throw new Error(errorMessage);
         }
-      });
+      }));
   }
 
   private _prepare(): void {
@@ -259,8 +262,8 @@ export abstract class BaseTranscodingProfilesStore extends FiltersStoreBase<Tran
   public setAsDefault(profile: KalturaConversionProfileWithAsset): Observable<void> {
     return this._kalturaServerClient
       .request(new ConversionProfileSetAsDefaultAction({ id: profile.id }))
-      .map(() => {
-      });
+      .pipe(map(() => {
+      }));
   }
 
   public deleteProfiles(profiles: KalturaConversionProfileWithAsset[]): Observable<void> {

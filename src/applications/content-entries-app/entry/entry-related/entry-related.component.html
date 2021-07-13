@@ -17,7 +17,7 @@
                         <th [ngStyle]="{'padding-left': '24px'}">
                             {{'applications.content.entryDetails.related.name' | translate}}
                         </th>
-                        <th [ngStyle]="{'width':'140px', 'overflow':'visible'}">
+                        <th [ngStyle]="{'width':'150px', 'overflow':'visible'}">
                             {{'applications.content.entryDetails.related.type' | translate}}
                         </th>
                         <th [ngStyle]="{'width':'100px'}">
@@ -36,12 +36,13 @@
                         <td [ngStyle]="{'padding-left': '24px'}">
                             <span class="kTableColumn kFileName" [kTooltip]="file.filename">{{file.filename}}</span>
                         </td>
-                        <td [ngStyle]="{'width':'140px', 'overflow':'visible'}">
+                        <td [ngStyle]="{'width':'150px', 'overflow':'visible'}">
                             <p-dropdown
                                 [disabled]="file.uploading || file.uploadFailure || (_kmcPermissions.ATTACHMENT_MODIFY | kDisabledIfNotPermitted)"
                                 [options]="_fileTypes"
                                 [placeholder]="'applications.content.entryDetails.related.select' | translate"
                                 [(ngModel)]="file.format"
+                                [appendTo]="'body'"
                                 (onChange)="_widgetService._setDirty()"></p-dropdown>
                         </td>
                         <td [ngStyle]="{'width':'100px'}">{{file.size | kFileSize}}</td>

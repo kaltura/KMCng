@@ -7,7 +7,7 @@ import {
     ViewChild
 } from '@angular/core';
 import {ISubscription} from 'rxjs/Subscription';
-import {Subject} from 'rxjs/Subject';
+import {Subject} from 'rxjs';
 import {AutoComplete, SuggestionsProviderData} from '@kaltura-ng/kaltura-primeng-ui';
 import {
   CategoriesTreeComponent

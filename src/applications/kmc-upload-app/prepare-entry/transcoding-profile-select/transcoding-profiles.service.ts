@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import { Observable } from 'rxjs';
-import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { map } from 'rxjs/operators';
 import {KalturaNullableBoolean} from 'kaltura-ngx-client';
 import {TranscodingProfileManagement} from 'app-shared/kmc-shared/transcoding-profile-management';
 
@@ -19,7 +19,7 @@ export class TranscodingProfilesService {
   /** update the data for current partner */
   public getTranscodingProfiles(): Observable<TranscodingProfile[]> {
     return this._transcodingProfileManagement.get()
-      .map(profiles => {
+      .pipe(map(profiles => {
         const defaultProfileIndex = profiles.findIndex(x => (x.isDefault === KalturaNullableBoolean.trueValue));
         // Set default profile as first in array (if not already first)
         if (defaultProfileIndex > 0) {
@@ -28,6 +28,6 @@ export class TranscodingProfilesService {
           profiles.unshift(defaultProfile);
         }
         return profiles;
-      })
+      }))
   }
 }

@@ -10,6 +10,7 @@ import { KalturaUploadFile } from 'app-shared/kmc-shared';
 import { ContentUploadsMainViewService } from 'app-shared/kmc-shared/kmc-views';
 import { NewReplaceVideoUploadFile } from 'app-shared/kmc-shell/new-replace-video-upload/new-replace-video-upload-file';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { filter } from 'rxjs/operators';
 
 type MonitoredUploadFile = NewEntryUploadFile | NewEntryFlavourFile;
 
@@ -69,7 +70,7 @@ export class UploadListComponent implements OnInit, OnDestroy {
 
       this._uploadManagement.onTrackedFileChanged$
           .pipe(cancelOnDestroy(this))
-          .filter(trackedFile => isMonitoredUploadFile(trackedFile.data))
+          .pipe(filter(trackedFile => isMonitoredUploadFile(trackedFile.data)))
           .subscribe(
               (trackedFile) => {
                   // NOTE: this service does not handle 'waitingUpload' status by design.

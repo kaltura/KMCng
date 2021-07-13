@@ -4,7 +4,7 @@ import { KalturaFeatureStatusType } from 'kaltura-ngx-client';
 import { KmcServerPolls } from 'app-shared/kmc-shared/server-polls';
 import { modulesConfig } from 'config/modules';
 import { CategoriesStatusRequestFactory } from './categories-status-request-factory';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { ReplaySubject } from 'rxjs';
 import { KalturaFeatureStatus } from 'kaltura-ngx-client';
 import { PollInterval } from '@kaltura-ng/kaltura-common';
 import { KalturaClient } from 'kaltura-ngx-client';

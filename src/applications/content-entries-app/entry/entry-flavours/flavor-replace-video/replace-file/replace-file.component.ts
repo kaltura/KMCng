@@ -33,7 +33,7 @@ import { KalturaStorageProfile } from 'kaltura-ngx-client';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { Observer } from 'rxjs/Observer';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap, map, filter } from 'rxjs/operators';
 import { of as ObservableOf} from 'rxjs';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 
@@ -207,7 +207,7 @@ export class ReplaceFileComponent implements OnInit, AfterViewInit, OnDestroy {
             .request(new ConversionProfileAssetParamsListAction({
                 filter: new KalturaConversionProfileAssetParamsFilter({ conversionProfileIdFilter: filter }),
                 pager: new KalturaFilterPager({ pageSize: 1000 })
-            })).map(res => res.objects);
+            })).pipe(map(res => res.objects));
     }
 
     private _loadReplaceData(): void {
@@ -238,7 +238,7 @@ export class ReplaceFileComponent implements OnInit, AfterViewInit, OnDestroy {
                         this._logger.debug(`link replace type detected, load storage profiles list`);
                         result = this._kalturaClient
                             .request(new StorageProfileListAction())
-                            .map(response => response.objects);
+                            .pipe(map(response => response.objects));
                     }else {
                         result = ObservableOf(null);
                     }
@@ -502,8 +502,8 @@ export class ReplaceFileComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this._newReplaceVideoUpload.upload(uploadFileDataList, this.entry.id, Number(transcodingProfileId))
             .pipe(cancelOnDestroy(this))
-            .filter(entryId => entryId === this.entry.id)
-            .map(() => {})
+            .pipe(filter(entryId => entryId === this.entry.id))
+            .pipe(map(() => {}))
             .subscribe(this._replacementResultHandler);
     }
 

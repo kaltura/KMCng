@@ -73,12 +73,12 @@
 }
 
 :host ::ng-deep {
-  .ui-widget.ui-dropdown {
+  .p-dropdown {
     width: 360px;
     font-size: 14px;
   }
 
-  .ui-chkbox-label {
+  .p-chkbox-label {
     font-weight: normal;
     height: 18px;
     color: $kGrayscale1;

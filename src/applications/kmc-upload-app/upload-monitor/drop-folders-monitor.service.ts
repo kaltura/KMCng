@@ -3,7 +3,7 @@ import { KalturaClient } from 'kaltura-ngx-client';
 import { Observable } from 'rxjs';
 import { KmcServerPolls } from 'app-shared/kmc-shared/server-polls';
 import { BrowserService } from 'app-shared/kmc-shell/providers';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { UploadMonitorStatuses } from './upload-monitor.component';
 import { KalturaDropFolder } from 'kaltura-ngx-client';
 import { KalturaDropFolderFilter } from 'kaltura-ngx-client';
@@ -21,6 +21,7 @@ import { DropFoldersRequestFactory } from './drop-folders-request-factory';
 import { KalturaDropFolderFile } from 'kaltura-ngx-client';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 interface DropFoldersUploadFile {
   status: KalturaDropFolderFileStatus;
@@ -130,7 +131,7 @@ export class DropFoldersMonitorService implements OnDestroy {
     });
 
     return this._kalturaClient.request(dropFolders)
-      .map(response => {
+      .pipe(map(response => {
         if (response && response.objects) {
           return response.objects.reduce((list, object) => {
             if (object instanceof KalturaDropFolder) {
@@ -155,7 +156,7 @@ export class DropFoldersMonitorService implements OnDestroy {
         }
 
         return [];
-      });
+      }));
   }
 
   private _getActiveUpload(dropFoldersIn: string): Observable<KalturaDropFolderFileListResponse> {
@@ -186,15 +187,15 @@ export class DropFoldersMonitorService implements OnDestroy {
       this._totals.state.next({ loading: true, error: false });
 
       this._getDropFolders()
-        .map(dropFoldersList => {
+        .pipe(map(dropFoldersList => {
           if (dropFoldersList.length) {
             return dropFoldersList.reduce((ids, kdf) => `${ids}${kdf.id},`, '');
           }
 
           throw new Error('notPermitted');
-        })
-        .do(dropFoldersIn => this._dropFolderChangesFactory.dropFolderIdIn = dropFoldersIn)
-        .switchMap(dropFoldersIn => this._getActiveUpload(dropFoldersIn))
+        }))
+        .pipe(tap(dropFoldersIn => this._dropFolderChangesFactory.dropFolderIdIn = dropFoldersIn))
+        .pipe(switchMap(dropFoldersIn => this._getActiveUpload(dropFoldersIn)))
         .subscribe(
           response => {
             response.objects.forEach(upload => {

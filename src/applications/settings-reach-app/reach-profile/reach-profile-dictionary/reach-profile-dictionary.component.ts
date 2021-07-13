@@ -3,6 +3,7 @@ import { ReachProfileStore } from '../reach-profile-store.service';
 import { cancelOnDestroy } from '@kaltura-ng/kaltura-common';
 import { KalturaReachProfile } from "kaltura-ngx-client";
 import { ReachProfileDictionaryWidget } from "./reach-profile-dictionary-widget.service";
+import { filter } from 'rxjs/operators';
 
 @Component({
     selector: 'kReachProfileDictionary',
@@ -21,7 +22,7 @@ export class ReachProfileDictionaryComponent implements OnInit, OnDestroy {
 
         this._widgetService.data$
             .pipe(cancelOnDestroy(this))
-            .filter(Boolean)
+            .pipe(filter(Boolean))
             .subscribe(
                 (data: KalturaReachProfile) => {
                     this._currentProfile = data;

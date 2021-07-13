@@ -17,6 +17,8 @@ import { ContentPlaylistViewSections } from 'app-shared/kmc-shared/kmc-views/det
 import {KalturaLogger} from '@kaltura-ng/kaltura-logger';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 import {PlaylistsUtilsService} from "../../../playlists-utils.service";
+import { of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 export interface PlaylistContentMediaEntry extends KalturaMediaEntry {
   selectionId?: string;
@@ -44,17 +46,17 @@ export class ManualContentWidget extends PlaylistWidget implements OnDestroy {
   protected onValidate(wasActivated: boolean): Observable<{ isValid: boolean }> {
     if (this.data.playlistType === KalturaPlaylistType.staticList) { // validate only manual playlist
       if (this.wasActivated) {
-        return Observable.of({ isValid: !!this.entries.length });
+        return of({ isValid: !!this.entries.length });
       }
 
       if (this.isNewData && (this.data.playlistContent || '').trim().length > 0) {
-        return Observable.of({ isValid: true });
+        return of({ isValid: true });
       }
 
-      return Observable.of({ isValid: false });
+      return of({ isValid: false });
     }
 
-    return Observable.of({ isValid: true });
+    return of({ isValid: true });
   }
 
   protected onDataSaving(data: KalturaPlaylist, request: KalturaMultiRequest): void {
@@ -85,18 +87,18 @@ export class ManualContentWidget extends PlaylistWidget implements OnDestroy {
     this._isRapt = this._playlistsUtilsService.isRapt(this.data) || this._playlistsUtilsService.isPath(this.data);
     return this._getEntriesRequest()
       .pipe(cancelOnDestroy(this, this.widgetReset$))
-      .map((entries: KalturaMediaEntry[]) => {
+      .pipe(map((entries: KalturaMediaEntry[]) => {
         this.entries = this._sortAndHandleDuplicates(entries);
         this.entries = this._extendWithSelectionId(this.entries);
         this._recalculateCountAndDuration();
         super._hideLoader();
         return { failed: false };
-      })
-      .catch(error => {
+      }))
+      .pipe(catchError(error => {
         super._hideLoader();
         super._showActivationError(error.message);
-        return Observable.of({ failed: true, error });
-      });
+        return of({ failed: true, error });
+      }));
   }
 
   private _getEntriesRequest(): Observable<KalturaBaseEntry[]> {
@@ -114,7 +116,7 @@ export class ManualContentWidget extends PlaylistWidget implements OnDestroy {
               acceptedTypes: [KalturaMediaEntry],
               responseProfile
           }))
-              .map(response => {
+              .pipe(map(response => {
                   return response.objects.map(entry => {
                       if ((entry.capabilities || '').indexOf('quiz.quiz') !== -1) {
                           entry['isQuizEntry'] = true;
@@ -122,9 +124,9 @@ export class ManualContentWidget extends PlaylistWidget implements OnDestroy {
 
                       return entry;
                   });
-              });
+              }));
       } else {
-          return Observable.of([]);
+          return of([]);
       }
   }
 

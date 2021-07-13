@@ -90,11 +90,11 @@
 }
 
 :host ::ng-deep {
-  .ui-dropdown .ui-dropdown-label {
+  .p-dropdown .p-dropdown-label {
     text-overflow: ellipsis;
   }
 
-  .ui-dropdown-item > span {
+  .p-dropdown-item > span {
     display: inline-block;
     overflow: hidden;
     white-space: nowrap;

@@ -25,7 +25,7 @@
                          [onItemAdding]="_convertUserInputToValidValue"
                          [tooltipResolver]="'__tooltip'"
                          [classField]="'__class'"
-                         [multiple]="true"
+                         [allowMultiple]="true"
                          [limitToSuggestions]="false"
                          placeholder=""
                          [minLength]="3"
@@ -42,7 +42,7 @@
         <div class="kControl">
           <p-dropdown [options]="_permissionLevelOptions"
                       [(ngModel)]="_selectedPermissionLevel"
-                      appendTo="body"
+                      [style]="{'width':'326px'}"
                       [disabled]="_selectedPermissionSettings === 'inherit'"></p-dropdown>
         </div>
       </div>
@@ -53,7 +53,7 @@
         <div class="kControl">
           <p-dropdown [options]="_updateMethodOptions"
                       [(ngModel)]="_selectedUpdateMethod"
-                      appendTo="body"
+                      [style]="{'width':'326px'}"
                       [disabled]="_selectedPermissionSettings === 'inherit'"></p-dropdown>
         </div>
       </div>

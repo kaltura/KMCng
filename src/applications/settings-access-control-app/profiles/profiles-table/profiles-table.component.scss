@@ -142,21 +142,21 @@ $kmc-flags-path: '../../styles/flags/';
 }
 
 :host ::ng-deep .kAccessControlProfilesTable p-table {
-    .ui-table .ui-table-tbody .pi-chevron-circle-down {
+    .p-datatable .p-datatable-tbody .pi-chevron-circle-down {
         margin-left: 0;
         margin-top: 3px;
     }
-    .ui-table .ui-table-tbody .pi-chevron-circle-right {
+    .p-datatable .p-datatable-tbody .pi-chevron-circle-right {
         margin-top: 3px;
     }
 
-    .ui-table .ui-table-thead > tr > th,
-    .ui-table .ui-table-tfoot > tr > td,
-    .ui-table .ui-table-tbody > tr > td {
+    .p-datatable .p-datatable-thead > tr > th,
+    .p-datatable .p-datatable-tfoot > tr > td,
+    .p-datatable .p-datatable-tbody > tr > td {
         padding: 0;
     }
 
-    .ui-table-scrollable-body {
+    .p-datatable-scrollable-body {
         margin-bottom: 34px;
     }
     .stickyHeader {

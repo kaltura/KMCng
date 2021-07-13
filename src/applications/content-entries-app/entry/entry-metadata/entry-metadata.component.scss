@@ -11,10 +11,9 @@ hr{
 		font-weight: 400;
 		height: 34px;
     ::ng-deep
-    .ui-button-icon-right.kIcondropdown_arrow_bottom{
+    .p-button-icon-right.kIcondropdown_arrow_bottom{
       font-size: 10px;
       color: $kGrayscale3;
-      margin-right: 4px;
     }
 	}
 }
@@ -70,7 +69,6 @@ hr{
 			input {
 				width: 100%;
                 max-width: 500px;
-				height: 34px;
 			}
 
 			textarea{
@@ -190,59 +188,59 @@ hr{
 		/* PrimeNG overrides */
 		/*********************/
 
-	  .ui-dropdown.ui-widget{
+	  .p-dropdown{
 			width: 100% !important;
 		}
 
-    .ui-autocomplete-multiple-container {
+    .p-autocomplete-multiple-container {
       max-height: 101px;
       overflow-y: auto;
     }
 
-		  .ui-dropdown-label.ui-inputtext{
+		  .p-dropdown-label.p-inputtext{
 			background-color: #ffffff;
               padding-left: 1em;
 		}
-		  .ui-multiselect{
+		  .p-multiselect{
 			width: 100% !important;
 		}
-		  .ui-multiselect-label-container{
+		  .p-multiselect-label-container{
 			color: $kGrayscale3;
 		}
 
-		  .ui-multiselect-trigger .pi-pi-caret-down{
+		  .p-multiselect-trigger .pi-pi-caret-down{
 			margin-top: 0px;
 			right: 8px;
 			position: absolute;
 			color: $kGrayscale3;
 		}
 
-		  .ui-autocomplete.ui-widget{
+		  .p-autocomplete{
 			width: 100%;
 			input{
 				width: 100%;
 			}
 		}
-		  .ui-button-icon-right.ui-c.pi-pi-fw.kIcondropdown_arrow_bottom{
+		  .p-button-icon-right.ui-c.pi-pi-fw.kIcondropdown_arrow_bottom{
 			font-size: 11px;
 			padding-right: 4px;
 		}
 
-		  .ui-autocomplete.ui-widget{
+		  .p-autocomplete{
 			width: 100%;
 			input{
 				width: 100%;
 			}
 		}
-		  .ui-calendar .ui-inputtext{
+		  .p-calendar .p-inputtext{
 			width: 144px;
 		}
 
-		  .ui-button-icon-only .pi{
+		  .p-button-icon-only .pi{
 			margin-left: -.5em;
 		}
 
-		  .ui-multiselect-panel .ui-multiselect-filter-container .pi{
+		  .p-multiselect-panel .p-multiselect-filter-container .pi{
 			color: $kGrayscale3;
 			font-size: 14px;
 			font-weight: 400;
@@ -253,7 +251,7 @@ hr{
             max-width: 500px;
             display: block;
 
-        .ui-state-disabled {
+        .p-disabled {
           background-color: $kGrayscale5;
         }
 		}
@@ -277,9 +275,12 @@ hr{
 		margin-top: -4px;
 		margin-bottom: 4px;
 		cursor: pointer;
-		color: $kBlack;
+		color: $kPrimary;
 	}
 }
-:host ::ng-deep kautocomplete input{
-	height: auto !important;
+:host ::ng-deep kautocomplete ul{
+	width: 100% !important;
+}
+:host ::ng-deep .kHighlightedText {
+    text-decoration: underline;
 }

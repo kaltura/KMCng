@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
 import { KalturaLogger, LogLevels } from '@kaltura-ng/kaltura-logger';
 import { BrowserService } from 'app-shared/kmc-shell/providers';

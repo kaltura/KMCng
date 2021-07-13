@@ -3,6 +3,7 @@ import { TranscodingProfileStore } from '../transcoding-profile-store.service';
 import { TranscodingProfileDetailsWidget } from './transcoding-profile-details-widget.service';
 import { KalturaConversionProfileWithAsset } from '../../transcoding-profiles/transcoding-profiles-store/base-transcoding-profiles-store.service';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'kTranscodingProfileDetails',
@@ -22,7 +23,7 @@ export class TranscodingProfileDetailsComponent implements OnInit, OnDestroy {
 
     this._widgetService.data$
       .pipe(cancelOnDestroy(this))
-      .filter(Boolean)
+      .pipe(filter(Boolean))
       .subscribe(
           (data: KalturaConversionProfileWithAsset) => {
           this._currentProfile = data;

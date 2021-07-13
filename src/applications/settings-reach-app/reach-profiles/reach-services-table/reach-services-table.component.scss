@@ -36,13 +36,13 @@
 }
 
 :host ::ng-deep p-table {
-    .ui-table .ui-table-thead > tr > th {
+    .p-datatable .p-datatable-thead > tr > th {
         border-left: 1px solid $kGrayscale6;
     }
-    .ui-table-scrollable-body {
+    .p-datatable-scrollable-body {
         max-height: 280px !important;
     }
-    .ui-table-scrollable-table-wrapper {
+    .p-datatable-scrollable-table-wrapper {
         max-height: 261px !important;
     }
 }

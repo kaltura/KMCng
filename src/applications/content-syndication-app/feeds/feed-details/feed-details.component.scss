@@ -52,13 +52,13 @@
         width: 258px;
 
         &.kHasError{
-          ::ng-deep .ui-widget.ui-dropdown {
+          ::ng-deep .p-dropdown {
             border: none;
             padding-top: 1px;
           }
         }
 
-        ::ng-deep .ui-dropdown-items-wrapper {
+        ::ng-deep .p-dropdown-items-wrapper {
           max-height:250px !important;
         }
       }
@@ -207,18 +207,18 @@
     }
   }
 
-  .ui-widget.ui-dropdown {
+  .p-dropdown {
     width: 258px;
     font-size: 14px;
   }
 
-  .ui-dropdown-filter-container {
+  .p-dropdown-filter-container {
     width: 100%;
   }
 
 
 
-  .ui-radiobutton-label {
+  .p-radiobutton-label {
     color: $kGrayscale1;
     font-weight: normal;
     font-size: 15px;
@@ -228,7 +228,7 @@
     font-size: 24px !important;
     left: 8px;
 
-    & + .ui-button-text {
+    & + .p-button-text {
       padding-left: 30px;
     }
   }
@@ -252,32 +252,15 @@
     }
   }
 
-  .ui-multiselect{
+  .p-multiselect{
     width: 258px;
     height: 34px;
     color: $kGrayscale1;
     padding-left: 8px;
     font-size: 15px;
 
-    .ui-multiselect-label {
-      line-height: 22px;
-      word-break: break-all;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: inline-block;
-      width: 250px;
-      font-size: 15px;
-      font-weight: normal;
-    }
 
-    .ui-multiselect-trigger {
-      color: $kGrayscale3;
-      border: none;
-      padding-top: 7px;
-    }
-
-    .ui-widget-header {
+    .p-multiselect-header {
       border: none;
       border-bottom: 1px solid $kGrayscale5;
       width: 100%;

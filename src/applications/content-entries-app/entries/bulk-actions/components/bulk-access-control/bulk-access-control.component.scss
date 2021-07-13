@@ -64,7 +64,7 @@
   align-items: center;
   justify-content: center;
 }
-:host ::ng-deep kautocomplete ul.ui-autocomplete-multiple-container.ui-inputtext{
+:host ::ng-deep kautocomplete ul.p-autocomplete-multiple-container.p-inputtext{
   padding: 0px;
   .ui-autocomplete-input-token{
     padding: 0px;
@@ -76,16 +76,16 @@
   }
 }
 :host ::ng-deep {
-  .ui-dropdown.ui-widget {
+  .p-dropdown {
     min-width: 220px;
     width: 220px !important;
   }
 
-  .ui-dropdown-label {
+  .p-dropdown-label {
     text-overflow: ellipsis;
   }
 }
 
-:host ::ng-deep .ui-dropdown-label.ui-inputtext{
+:host ::ng-deep .p-dropdown-label.p-inputtext{
   background-color: #ffffff;
 }

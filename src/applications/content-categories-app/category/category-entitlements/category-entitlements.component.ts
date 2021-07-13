@@ -11,6 +11,7 @@ import {BrowserService} from 'app-shared/kmc-shell';
 import { KMCPermissions, KMCPermissionsService } from 'app-shared/kmc-shared/kmc-permissions';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { skip } from 'rxjs/operators';
 
 @Component({
   selector: 'kCategoryEntitlements',
@@ -60,7 +61,7 @@ export class CategoryEntitlementsComponent implements OnInit, AfterViewInit, OnD
   ngAfterViewInit() {
       this.manageUsersPopup.state$
           .pipe(cancelOnDestroy(this))
-          .skip(1)
+          .pipe(skip(1))
           .subscribe(data => {
                   if (data.state === PopupWidgetStates.Close) {
                       this._membersCount.loading = true;

@@ -7,8 +7,11 @@ import {KMCPermissions, KMCPermissionsService} from "app-shared/kmc-shared/kmc-p
 import {AppLocalization} from "@kaltura-ng/mc-shared";
 import {Observable} from "rxjs";
 import {cancelOnDestroy} from "@kaltura-ng/kaltura-common";
-import {async} from "rxjs-compat/scheduler/async";
+import { asyncScheduler } from 'rxjs';
 import {KalturaMultiRequest, KalturaReachProfile, KalturaVendorCatalogItemOutputFormat} from "kaltura-ngx-client";
+import { observeOn } from 'rxjs/operators';
+import { merge } from 'rxjs';
+import { of } from 'rxjs';
 
 @Injectable()
 export class ReachProfileServiceWidget extends ReachProfileWidget implements OnDestroy {
@@ -70,9 +73,9 @@ export class ReachProfileServiceWidget extends ReachProfileWidget implements OnD
     }
 
     private _monitorFormChanges(): void {
-        Observable.merge(this.serviceForm.valueChanges, this.serviceForm.statusChanges)
+        merge(this.serviceForm.valueChanges, this.serviceForm.statusChanges)
             .pipe(cancelOnDestroy(this))
-            .observeOn(async) // using async scheduler so the form group status/dirty mode will be synchornized
+            .pipe(observeOn(asyncScheduler)) // using async scheduler so the form group status/dirty mode will be synchornized
             .subscribe(() => {
                     super.updateState({
                         isValid: this.serviceForm.status !== 'INVALID',
@@ -87,7 +90,7 @@ export class ReachProfileServiceWidget extends ReachProfileWidget implements OnD
         const max = (formData.max.toString() || '').trim();
         const hasValue = max !== '';
 
-        return Observable.of({
+        return of({
             isValid: hasValue
         });
     }

@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import 'rxjs/add/operator/publishReplay';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/observable/forkJoin';
-
+import { Observable, forkJoin, throwError } from 'rxjs';
+import { publishReplay, refCount, map, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { KalturaClient } from 'kaltura-ngx-client';
 import { KalturaMultiRequest, KalturaMultiResponse } from 'kaltura-ngx-client';
 import { DistributionProfileListAction } from 'kaltura-ngx-client';
@@ -73,8 +71,8 @@ export class EntriesRefineFiltersService {
             const metadataFilters$ = this._getMetadataFilters();
             const serverFilters$ = this._buildQueryRequest();
             const flavorsFilter$ = this._flavoursStore.get();
-            this._getRefineFilters$ = Observable.forkJoin(metadataFilters$, serverFilters$, flavorsFilter$)
-                .map(
+            this._getRefineFilters$ = forkJoin(metadataFilters$, serverFilters$, flavorsFilter$)
+                .pipe(map(
                     ([metadataResponse, serverResponse, flavorsResponse]) => {
                         if (serverResponse.hasErrors()) {
                             throw new Error('failed to load refine filters');
@@ -90,14 +88,14 @@ export class EntriesRefineFiltersService {
 
                             return result;
                         }
-                    })
-                .catch(err => {
+                    }))
+                .pipe(catchError(err => {
                     this._logger.warn(`failed to create refine filters`, { errorMessage: err.message });
                     this._getRefineFilters$ = null;
-                    return Observable.throw(err);
-                })
-                .publishReplay(1)
-                .refCount();
+                    return throwError(err);
+                }))
+                .pipe(publishReplay(1))
+                .pipe(refCount());
         }
 
         return this._getRefineFilters$;
@@ -111,7 +109,7 @@ export class EntriesRefineFiltersService {
             });
         }
 
-        return Observable.of(null);
+        return of(null);
     }
 
     private _buildMetadataFiltersGroups(metadataProfiles: MetadataProfile[]): { metadataProfiles: number[], groups: RefineGroup[] } {
@@ -249,7 +247,7 @@ export class EntriesRefineFiltersService {
 
             return <any>this.kalturaServerClient.multiRequest(request);
         } catch (error) {
-            return Observable.throw(error);
+            return throwError(error);
         }
     }
 }

@@ -157,10 +157,10 @@
 /*********************/
 
 :host ::ng-deep {
-  .ui-dropdown.ui-widget {
+  .p-dropdown {
     width: 100% !important;
   }
-  .ui-dropdown label.ui-dropdown-label {
+  .p-dropdown label.p-dropdown-label {
     font-size: 16px;
   }
 }

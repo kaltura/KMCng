@@ -2,8 +2,8 @@ import { CategoriesService } from '../categories/categories.service';
 import {Host, Injectable, OnDestroy} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
-import { Observable, Subject, BehaviorSubject, Unsubscribable } from 'rxjs';
-
+import {Observable, Subject, BehaviorSubject, Unsubscribable, EMPTY} from 'rxjs';
+import { of } from 'rxjs';
 import {KalturaClient, KalturaMultiRequest, KalturaObjectBaseFactory} from 'kaltura-ngx-client';
 import {KalturaCategory} from 'kaltura-ngx-client';
 import {CategoryGetAction} from 'kaltura-ngx-client';
@@ -23,6 +23,9 @@ import { ContentCategoryViewSections, ContentCategoryViewService } from 'app-sha
 import { ContentCategoriesMainViewService } from 'app-shared/kmc-shared/kmc-views';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { modulesConfig } from 'config/modules';
+import { debounce, map, flatMap } from 'rxjs/operators';
+import { timer } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
 
 export enum ActionTypes {
   CategoryLoading,
@@ -104,7 +107,7 @@ export class CategoryService implements OnDestroy {
     private _onSectionsStateChanges() {
         this._widgetsManager.widgetsState$
             .pipe(cancelOnDestroy(this))
-            .debounce(() => Observable.timer(500))
+            .pipe(debounce(() => timer(500)))
             .subscribe(
                 sectionsState => {
                     const newDirtyState = Object.keys(sectionsState).reduce((result, sectionName) => result || sectionsState[sectionName].isDirty, false);
@@ -153,8 +156,8 @@ export class CategoryService implements OnDestroy {
 	private _onRouterEvents(): void {
 		this._router.events
 			.pipe(cancelOnDestroy(this))
-			.filter(
-			event => event instanceof NavigationEnd)
+			.pipe(filter(
+			event => event instanceof NavigationEnd))
 .subscribe(
                 event => {
 					// we must defer the loadCategory to the next event cycle loop to allow components
@@ -175,7 +178,7 @@ export class CategoryService implements OnDestroy {
     if (!newCategory.referenceId ||
 		((newCategory.referenceId || null) === (this.category.referenceId || null))
 	) {
-      return Observable.of(true);
+      return of(true);
     }
 
     return Observable.create(observer => {
@@ -236,7 +239,7 @@ export class CategoryService implements OnDestroy {
 		this._widgetsManager.notifyDataSaving(newCategory, request, this.category)
 			.pipe(cancelOnDestroy(this))
       .pipe(tag('block-shell'))
-			.flatMap(
+			.pipe(flatMap(
 			(response) => {
 				if (response.ready) {
 					this._saveCategoryInvoked = true;
@@ -244,11 +247,11 @@ export class CategoryService implements OnDestroy {
                     const userModifiedName = this.category.name !== newCategory.name;
 
 					return this._checkReferenceId(newCategory)
-            .switchMap(proceedSaveRequest => {
+            .pipe(switchMap(proceedSaveRequest => {
               if (proceedSaveRequest) {
                 return this._kalturaServerClient.multiRequest(request)
                   .pipe(tag('block-shell'))
-                  .map(
+                  .pipe(map(
                     categorySavedResponse => {
 
                       if (userModifiedName || this._subcategoriesMoved) {
@@ -271,13 +274,13 @@ export class CategoryService implements OnDestroy {
                         this._loadCategory(this.categoryId);
                       }
 
-                      return Observable.empty();
+                      return EMPTY;
                     }
-                  )
+                  ))
               } else {
-                return Observable.empty();
+                return EMPTY;
               }
-            });
+            }));
 				}
 				else {
 					switch (response.reason) {
@@ -292,10 +295,10 @@ export class CategoryService implements OnDestroy {
 							break;
 					}
 
-					return Observable.empty();
+					return EMPTY;
 				}
 			}
-			)
+			))
 			.subscribe(
 			response => {
 				// do nothing - the service state is modified inside the map functions.

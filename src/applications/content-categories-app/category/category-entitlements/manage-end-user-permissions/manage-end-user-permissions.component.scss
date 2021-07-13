@@ -147,11 +147,11 @@
 
 
 :host ::ng-deep {
-  .ui-dropdown {
+  .p-dropdown {
     height: 34px;
     border: 1px solid $kGrayscale4;
 
-    .ui-dropdown-label {
+    .p-dropdown-label {
       color: $kGrayscale1;
       font-size: 15px;
     }
@@ -170,7 +170,7 @@
   color: $kGrayscale3;
 }
 
-:host ::ng-deep  .ui-widget-header.ui-table-scrollable-header {
+:host ::ng-deep  .ui-widget-header.p-datatable-scrollable-header {
   border-top: 0px solid white;
 }
 :host ::ng-deep ktags .kTags {
@@ -178,7 +178,7 @@
   border-bottom: 1px solid $kGrayscale4;
 }
 
-:host ::ng-deep  .ui-button-text-icon-right .ui-button-text {
+:host ::ng-deep  .p-button-text-icon-right .p-button-text {
   padding-left: 10px;
 }
 
@@ -195,7 +195,7 @@
   width: inherit;
 }
 :host ::ng-deep .kTableFooter {
-  .ui-dropdown-panel {
+  .p-dropdown-panel {
     min-width: 70px;
   }
 }

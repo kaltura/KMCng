@@ -2,6 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { DistributionProfileDeleteAction, DistributionProfileListAction, KalturaClient, KalturaDistributionProfileFilter,
     KalturaDistributionProfileListResponse, KalturaDistributionProfileStatus, KalturaFilterPager } from 'kaltura-ngx-client';
 import { Observable } from 'rxjs';
+import { throwError } from 'rxjs';
 import { cancelOnDestroy } from '@kaltura-ng/kaltura-common';
 
 @Injectable()
@@ -19,7 +20,7 @@ export class DistributionService implements OnDestroy{
 
   public deleteProfile(id: number): Observable<void> {
       if (!id) {
-          return Observable.throwError(new Error('Error occurred while trying to delete profile'));
+          return throwError(new Error('Error occurred while trying to delete profile'));
       }
       return this._kalturaServerClient.request(new DistributionProfileDeleteAction({id})).pipe(cancelOnDestroy(this));
   }

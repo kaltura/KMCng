@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/publishReplay';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/observable/forkJoin';
-
+import { publishReplay, refCount } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import {KalturaClient} from 'kaltura-ngx-client';
 import {
   MetadataItemTypes,
@@ -18,6 +17,7 @@ import {EntitlementsFiltersList} from './default-filters-list';
 import * as R from 'ramda';
 import { KMCPermissions, KMCPermissionsService } from 'app-shared/kmc-shared/kmc-permissions';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
+import { of } from 'rxjs';
 
 export interface RefineGroupListItem {
   value: string,
@@ -55,7 +55,7 @@ export class CategoriesRefineFiltersService {
     if (!this._getRefineFilters$) {
       // execute the request
       this._getRefineFilters$ = this._getMetadataFilters()
-        .map(
+        .pipe(map(
           (response) => {
               this._logger.trace(`handle successful get categories refine filters request, mapping response`);
 
@@ -73,14 +73,14 @@ export class CategoriesRefineFiltersService {
             }
 
             return result;
-          })
-        .catch(err => {
+          }))
+        .pipe(catchError(err => {
           this._logger.warn(`failed to create refine filters`, { errorMessage: err.message });
           this._getRefineFilters$ = null;
-          return Observable.throw(err);
-        })
-        .publishReplay(1)
-        .refCount();
+          return throwError(err);
+        }))
+        .pipe(publishReplay(1))
+        .pipe(refCount());
     }
 
     return this._getRefineFilters$;
@@ -95,7 +95,7 @@ export class CategoriesRefineFiltersService {
       }
 
       this._logger.debug(`user doesn't have metadata feature, ignore metadata filters group`);
-      return Observable.of(null);
+      return of(null);
   }
 
   private _buildMetadataFiltersGroups(metadataProfiles: MetadataProfile[]): { metadataProfiles: number[], groups: RefineGroup[] } {

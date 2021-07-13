@@ -50,8 +50,8 @@
         }
     }
 }
-:host ::ng-deep .ui-table {
-    .ui-table-data tr.uoloading {
+:host ::ng-deep .p-datatable {
+    .p-datatable-data tr.uoloading {
         background: repeating-linear-gradient(
                 -75deg,
                 #ffffff,
@@ -67,7 +67,7 @@
         animation: progress 2s linear infinite;
     }
 
-    .ui-table-scrollable-header {
+    .p-datatable-scrollable-header {
         overflow: visible;
     }
     .emptyMessage{

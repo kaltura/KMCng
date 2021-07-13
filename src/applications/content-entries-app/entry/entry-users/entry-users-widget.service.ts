@@ -16,13 +16,15 @@ import {
     UserListAction
 } from 'kaltura-ngx-client';
 
-import 'rxjs/add/observable/forkJoin';
 import { EntryWidget } from '../entry-widget';
-import { async } from 'rxjs/scheduler/async';
+import { asyncScheduler } from 'rxjs';
 import { KMCPermissions, KMCPermissionsService } from 'app-shared/kmc-shared/kmc-permissions';
 import { ContentEntryViewSections } from 'app-shared/kmc-shared/kmc-views/details-views/content-entry-view.service';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { cancelOnDestroy } from '@kaltura-ng/kaltura-common';
+import { merge, forkJoin } from 'rxjs';
+import { observeOn, map, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Injectable()
 export class EntryUsersWidget extends EntryWidget implements OnDestroy
@@ -49,9 +51,9 @@ export class EntryUsersWidget extends EntryWidget implements OnDestroy
 			viewers: [],
 		});
 
-		Observable.merge(this.usersForm.valueChanges,
+		merge(this.usersForm.valueChanges,
 			this.usersForm.statusChanges)
-            .observeOn(async) // using async scheduler so the form group status/dirty mode will be synchornized
+            .pipe(observeOn(asyncScheduler)) // using async scheduler so the form group status/dirty mode will be synchornized
             .pipe(cancelOnDestroy(this))
             .subscribe(
 				() => {
@@ -148,7 +150,7 @@ export class EntryUsersWidget extends EntryWidget implements OnDestroy
 
             const fetchUsersData$ = this._kalturaServerClient.multiRequest(new KalturaMultiRequest(...getUserActions))
                 .pipe(cancelOnDestroy(this, this.widgetReset$))
-                .map((responses: KalturaMultiResponse) => {
+                .pipe(map((responses: KalturaMultiResponse) => {
                     if (responses.hasErrors()) {
                         this._creator = this.data.creatorId;
                         this._owner = new KalturaUser({ screenName: this.data.userId });
@@ -164,7 +166,7 @@ export class EntryUsersWidget extends EntryWidget implements OnDestroy
                     }
 
                     return undefined;
-                });
+                }));
             actions.push(fetchUsersData$);
         }
 
@@ -177,7 +179,7 @@ export class EntryUsersWidget extends EntryWidget implements OnDestroy
 
 		    const fetchEditorsData$ = this._kalturaServerClient.multiRequest(request)
 			    .pipe(cancelOnDestroy(this, this.widgetReset$))
-                .map(
+                .pipe(map(
                     responses => {
                         const editors = responses.map((response, index) => {
                             if (response.error) {
@@ -189,7 +191,7 @@ export class EntryUsersWidget extends EntryWidget implements OnDestroy
                         this.usersForm.patchValue({ editors });
                         return undefined;
                     }
-                );
+                ));
 
 		    actions.push(fetchEditorsData$);
 	    }
@@ -203,7 +205,7 @@ export class EntryUsersWidget extends EntryWidget implements OnDestroy
 
 		    const fetchPublishersData$ = this._kalturaServerClient.multiRequest(request)
 			    .pipe(cancelOnDestroy(this, this.widgetReset$))
-                .map(
+                .pipe(map(
                     responses => {
                         const publishers = responses.map((response, index) => {
                             if (response.error) {
@@ -215,7 +217,7 @@ export class EntryUsersWidget extends EntryWidget implements OnDestroy
                         this.usersForm.patchValue({ publishers });
                         return undefined;
                     }
-                );
+                ));
 
 		    actions.push(fetchPublishersData$);
 	    }
@@ -226,7 +228,7 @@ export class EntryUsersWidget extends EntryWidget implements OnDestroy
 
             const fetchPublishersData$ = this._kalturaServerClient.multiRequest(new KalturaMultiRequest(...getViewersActions))
                 .pipe(cancelOnDestroy(this, this.widgetReset$))
-                .map(
+                .pipe(map(
                     responses => {
                         const viewers = responses.map((response, index) => {
                             if (response.error) {
@@ -239,24 +241,24 @@ export class EntryUsersWidget extends EntryWidget implements OnDestroy
 
                         return undefined;
                     }
-                );
+                ));
 
             actions.push(fetchPublishersData$);
         }
 
-	    return Observable.forkJoin(actions)
-		    .map(responses => {
+	    return forkJoin(actions)
+		    .pipe(map(responses => {
 			    super._hideLoader();
 			    return {failed : false};
-		    })
-		    .catch((error, caught) =>
+		    }))
+		    .pipe(catchError((error, caught) =>
 		    {
 		        console.warn(error);
 			    super._hideLoader();
 			    super._showActivationError();
 
-			    return Observable.of({failed : true, error});
-		    });
+			    return of({failed : true, error});
+		    }));
 
     }
 

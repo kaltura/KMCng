@@ -40,7 +40,7 @@ export class CustomSchemaFormComponent {
               if (!this._permissionsService.hasPermission(KMCPermissions.CUSTOM_DATA_PROFILE_UPDATE)) {
                   this._schemaForm.disable();
               } else {
-                  this._applyToField.disable({onlySelf: true});
+                  this._schemaForm.get('applyTo').disable({onlySelf: true});
               }
           }
 
@@ -86,7 +86,6 @@ export class CustomSchemaFormComponent {
     this._nameField = this._schemaForm.controls['name'];
     this._descriptionField = this._schemaForm.controls['description'];
     this._systemNameField = this._schemaForm.controls['systemName'];
-    this._applyToField = this._schemaForm.controls['applyTo'];
 
     this._schemaForm.valueChanges.subscribe((change) => {
       let sendUpdate = false;

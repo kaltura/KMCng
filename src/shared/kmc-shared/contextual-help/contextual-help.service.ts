@@ -2,12 +2,14 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { globalConfig } from 'config/global';
 import { buildDeployUrl } from 'config/server';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import * as Ajv from 'ajv';
 import { ContextualHelpDataSchema } from './contextual-help-data-schema';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { of } from 'rxjs';
 
 export interface ContextualHelpData {
     viewKey: string;
@@ -52,7 +54,7 @@ export class ContextualHelpService implements OnDestroy {
     private _load(): Observable<any> {
         const url = buildDeployUrl(`public/contextual-help.json?v=${globalConfig.client.appVersion}`);
         return this._http.get(url)
-            .map((response: ContextualHelpData[]) => {
+            .pipe(map((response: ContextualHelpData[]) => {
                 const validationResult = this._validateResponse(response);
                 if (validationResult.isValid) {
                     return response;
@@ -60,11 +62,11 @@ export class ContextualHelpService implements OnDestroy {
                     this._logger.warn(validationResult.error || 'Invalid contextual help data');
                     return [];
                 }
-            })
-            .catch(error => {
+            }))
+            .pipe(catchError(error => {
                 this._logger.warn(`Failed to load contextual help data`, { errorMessage: error.message });
-                return Observable.of([]);
-            });
+                return of([]);
+            }));
     }
 
     public updateHelpItems(viewKey: string): void {

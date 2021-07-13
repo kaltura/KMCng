@@ -67,11 +67,11 @@
 }
 
 
-:host ::ng-deep kautocomplete .kKalturaPrimeUIComponent.ui-autocomplete-multiple{
+:host ::ng-deep kautocomplete .kKalturaPrimeUIComponent.p-autocomplete-multiple{
 	width: 100%;
 }
 
-:host ::ng-deep kautocomplete ul.ui-autocomplete-multiple-container{
+:host ::ng-deep kautocomplete ul.p-autocomplete-multiple-container{
 	max-height: 60px;
 	overflow-y: auto;
 }
@@ -112,9 +112,9 @@
 		cursor: default;
 	}
 }
-:host ::ng-deep kautocomplete ul.ui-autocomplete-multiple-container.ui-inputtext{
+:host ::ng-deep kautocomplete ul.p-autocomplete-multiple-container.p-inputtext{
 	padding: 0px;
-	.ui-autocomplete-input-token{
+	.p-autocomplete-input-token{
 		padding: 0px;
 		input{
 			height: 34px;

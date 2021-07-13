@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
 import { ISubscription } from 'rxjs/Subscription';
 import { KalturaClient, KalturaMultiRequest } from 'kaltura-ngx-client';
@@ -26,6 +26,9 @@ import { MetadataProfileAddAction } from 'kaltura-ngx-client';
 import { getKalturaServerUri } from 'config/server';
 import { SettingsMetadataMainViewService } from 'app-shared/kmc-shared/kmc-views';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 export interface SchemasFilters {
   pageSize: number;
   pageIndex: number;
@@ -107,7 +110,7 @@ export class SchemasStore extends FiltersStoreBase<SchemasFilters> implements On
     this._schemas.state.next({ loading: true, errorMessage: null });
     this._querySubscription = this._buildQueryRequest()
       .pipe(cancelOnDestroy(this))
-      .map(({ objects, totalCount }) => {
+      .pipe(map(({ objects, totalCount }) => {
         objects.forEach((object: SettingsMetadataProfile) => {
           if (!object.createMode || object.createMode === KalturaMetadataProfileCreateMode.kmc) {
             const parsedProfile = this._metadataProfileParser.parse(object);
@@ -129,7 +132,7 @@ export class SchemasStore extends FiltersStoreBase<SchemasFilters> implements On
         });
 
         return { objects, totalCount };
-      })
+      }))
       .subscribe(
         response => {
           this._logger.info(`handle success data loading`);
@@ -177,7 +180,7 @@ export class SchemasStore extends FiltersStoreBase<SchemasFilters> implements On
         new MetadataProfileListAction({ filter, pager })
       );
     } catch (err) {
-      return Observable.throw(err);
+      return throwError(err);
     }
   }
 
@@ -258,16 +261,16 @@ export class SchemasStore extends FiltersStoreBase<SchemasFilters> implements On
       ...profiles.map(profile => new MetadataProfileDeleteAction({ id: profile.id }))
     );
     return this._kalturaServerClient.multiRequest(request)
-      .map(() => {
-      });
+      .pipe(map(() => {
+      }));
   }
 
   public saveSchema(schema: SettingsMetadataProfile): Observable<void> {
     const action = schema.isNew ? this._getCreateSchemaAction(schema) : this._getUpdateSchemaAction(schema);
 
     return this._kalturaServerClient.request(action)
-      .map(() => {
-      });
+      .pipe(map(() => {
+      }));
   }
 }
 

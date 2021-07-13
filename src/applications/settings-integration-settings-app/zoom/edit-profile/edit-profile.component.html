@@ -51,13 +51,13 @@
             <div class="kLabel" style="width: 150px">
                 <span>{{'applications.settings.integrationSettings.zoom.category' | translate}}</span>
             </div>
-            <kAutoComplete [formControl]="_categories"
+            <kAutoComplete formControlName="categories"
                            field="name"
                            [tooltipResolver]="_categoriesTooltipResolver"
                            suggestionItemField="item"
                            suggestionLabelField="name"
                            suggestionSelectableField="isSelectable"
-                           [multiple]="false"
+                           [allowMultiple]="false"
                            [minLength]="3"
                            [suggestionsProvider]="_categoriesProvider"
                            (completeMethod)="_searchCategories($event)">
@@ -79,13 +79,13 @@
             <div class="kLabel" style="width: 150px">
                 <span>{{'applications.settings.integrationSettings.zoom.webinarCategory' | translate}}</span>
             </div>
-            <kAutoComplete [formControl]="_webinarCategory"
+            <kAutoComplete formControlName="webinarCategory"
                            field="name"
                            [tooltipResolver]="_categoriesTooltipResolver"
                            suggestionItemField="item"
                            suggestionLabelField="name"
                            suggestionSelectableField="isSelectable"
-                           [multiple]="false"
+                           [allowMultiple]="false"
                            [minLength]="3"
                            [suggestionsProvider]="_categoriesProvider"
                            (completeMethod)="_searchCategories($event)">
@@ -118,15 +118,15 @@
             </div>
             <p-radioButton name="participation"
                            [value]="2"
-                           [formControl]="_participation"
+                           formControlName="participation"
                            [label]="'applications.settings.integrationSettings.zoom.participation1' | translate"></p-radioButton>
             <p-radioButton name="participation"
                            [value]="1"
-                           [formControl]="_participation"
+                           formControlName="participation"
                            [label]="'applications.settings.integrationSettings.zoom.participation2' | translate"></p-radioButton>
             <p-radioButton name="participation"
                            [value]="0"
-                           [formControl]="_participation"
+                           formControlName="participation"
                            [label]="'applications.settings.integrationSettings.zoom.participation3' | translate"></p-radioButton>
         </div>
 
@@ -138,22 +138,22 @@
                 <span>{{'applications.settings.integrationSettings.zoom.user' | translate}}</span>
             </div>
             <div class="kRadios">
-                <p-radioButton name="zoom"
+                <p-radioButton name="userId"
                                [value]="true"
-                               [formControl]="_userId"
+                               formControlName="userId"
                                [label]="'applications.settings.integrationSettings.zoom.zoom' | translate"></p-radioButton>
                 <div class="kRow" style="margin-left: 36px; margin-bottom: 0px">
                     <p-radioButton name="postfix"
                                    [value]="0"
-                                   [formControl]="_postfix"
+                                   formControlName="postfix"
                                    [label]="'applications.settings.integrationSettings.zoom.postfix1' | translate"></p-radioButton>
                     <p-radioButton name="postfix" [ngStyle]="{'marginLeft': '24px'}"
                                    [value]="2"
-                                   [formControl]="_postfix"
+                                   formControlName="postfix"
                                    [label]="'applications.settings.integrationSettings.zoom.postfix2' | translate"></p-radioButton>
                     <p-radioButton name="postfix" [ngStyle]="{'marginLeft': '24px'}"
                                    [value]="1"
-                                   [formControl]="_postfix"
+                                   formControlName="postfix"
                                    [label]="'applications.settings.integrationSettings.zoom.postfix3' | translate"></p-radioButton>
                 </div>
                 <div class="kRow" style="margin-left: 36px; margin-bottom: 24px">
@@ -163,9 +163,9 @@
                     <input [formControl]="_userPostfix" placeholder="@kaltura.com" pInputText>
                 </div>
                 <div class="kRow" style="align-items: flex-start; margin-bottom: 0px">
-                    <p-radioButton name="zoom" [ngStyle]="{'marginRight': '0px'}"
+                    <p-radioButton name="userId" [ngStyle]="{'marginRight': '0px'}"
                                    [value]="false"
-                                   [formControl]="_userId"
+                                   formControlName="userId"
                                    [label]="'applications.settings.integrationSettings.zoom.cms' | translate"></p-radioButton>
                     <kInputHelper class="kHelp" trigger="click">
                         <span>{{'applications.settings.integrationSettings.zoom.userHelp' | translate}}</span>
@@ -180,22 +180,22 @@
                 <span>{{'applications.settings.integrationSettings.zoom.create' | translate}}</span>
             </div>
             <div class="kRadios">
-                <p-radioButton name="user"
+                <p-radioButton name="createUser"
                            [value]="true"
-                           [formControl]="_createUser"
+                               formControlName="createUser"
                            [label]="'applications.settings.integrationSettings.zoom.user1' | translate"></p-radioButton>
                 <div class="kRow" style="margin-bottom: 0px; align-items: flex-start">
-                    <p-radioButton name="user" [ngStyle]="{'marginRight': '8px'}"
+                    <p-radioButton name="createUser" [ngStyle]="{'marginRight': '8px'}"
                                    [value]="false"
-                                   [formControl]="_createUser"
+                                   formControlName="createUser"
                                    [label]="'applications.settings.integrationSettings.zoom.user2' | translate"></p-radioButton>
                     <div class="kRadios">
-                        <kAutoComplete [formControl]="_defaultUserId"
+                        <kAutoComplete formControlName="defaultUserId"
                                        field="screenName"
                                        [tooltipResolver]="_usersTooltipResolver"
                                        suggestionItemField="item"
                                        suggestionLabelField="name"
-                                       [multiple]="false"
+                                       [allowMultiple]="false"
                                        [minLength]="3"
                                        [suggestionsProvider]="_usersProvider"
                                        (completeMethod)="_searchUsers($event)">

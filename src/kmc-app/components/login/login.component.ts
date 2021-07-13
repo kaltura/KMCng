@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { AppAuthentication, AutomaticLoginErrorReasons, BrowserService, LoginError, LoginResponse } from 'app-shared/kmc-shell';
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { serverConfig } from 'config/server';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
@@ -232,7 +233,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
     this._inProgress = true;
 
     this._appAuthentication.updatePassword(payload)
-      .switchMap(({ email, password: userPassword }) => this._makeLoginRequest(email, userPassword))
+      .pipe(switchMap(({ email, password: userPassword }) => this._makeLoginRequest(email, userPassword)))
       .subscribe(
         ({ success, error }) => {
           this._inProgress = false;

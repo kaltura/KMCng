@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { AppAuthentication, BrowserService } from 'app-shared/kmc-shell';
-import 'rxjs/add/operator/first';
 
 @Component({
     selector: 'kRestorePassword',

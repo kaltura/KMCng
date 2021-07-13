@@ -2,10 +2,11 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { TrackedFileStatuses, UploadManagement } from '@kaltura-ng/kaltura-common';
 import { NewEntryUploadFile } from 'app-shared/kmc-shell';
 import { UploadMonitorStatuses } from './upload-monitor.component';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { NewEntryFlavourFile } from 'app-shared/kmc-shell/new-entry-flavour-file';
 import { NewReplaceVideoUploadFile } from 'app-shared/kmc-shell/new-replace-video-upload';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { filter } from 'rxjs/operators';
 
 @Injectable()
 export class NewUploadMonitorService implements OnDestroy {
@@ -16,8 +17,8 @@ export class NewUploadMonitorService implements OnDestroy {
   constructor(private _uploadManagement: UploadManagement) {
     this._uploadManagement
       .onTrackedFileChanged$
-      .filter(this._filterUploadsByType)
-      .filter(({ status }) => TrackedFileStatuses.purged !== status)
+      .pipe(filter(this._filterUploadsByType))
+      .pipe(filter(({ status }) => TrackedFileStatuses.purged !== status))
       .pipe(cancelOnDestroy(this))
       .subscribe(trackedFile => {
           let relevantFile = this._newUploadFiles[trackedFile.id];

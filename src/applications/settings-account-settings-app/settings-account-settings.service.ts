@@ -14,7 +14,7 @@ import {KalturaPartner} from 'kaltura-ngx-client';
 import {PartnerGetInfoAction} from 'kaltura-ngx-client';
 import {PartnerUpdateAction} from 'kaltura-ngx-client';
 import {KalturaUserListResponse} from 'kaltura-ngx-client';
-
+import { map } from 'rxjs/operators';
 
 export interface AccountSettings {
   website: string;
@@ -71,7 +71,7 @@ export class SettingsAccountSettingsService {
     );
 
     return this._kalturaServerClient.multiRequest(multiRequest)
-      .map(
+      .pipe(map(
         data => {
           if (data.hasErrors()) {
             throw new Error('error occurred in action \'getPartnerAccountSettings\'');
@@ -93,6 +93,6 @@ export class SettingsAccountSettingsService {
             }
           });
           return {accountOwners, partnerData};
-        });
+        }));
   }
 }

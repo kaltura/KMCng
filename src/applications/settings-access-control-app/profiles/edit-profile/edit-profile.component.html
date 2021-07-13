@@ -33,24 +33,24 @@
       <div class="kTitle">{{'applications.settings.accessControl.editForm.authorizedDomains' | translate}}</div>
       <div class="kRow">
         <span class="kLabel">
-          <p-radioButton name="authorizedDomains"
+          <p-radioButton name="domainsType"
                          [value]="null"
-                         [formControl]="_domainsTypeField"
+                         formControlName="domainsType"
                          [label]="'applications.settings.accessControl.editForm.allDomains' | translate"></p-radioButton>
         </span>
       </div>
       <div class="kRow">
         <span class="kLabel">
-          <p-radioButton name="authorizedDomains"
+          <p-radioButton name="domainsType"
                          [value]="_siteRestrictionType.allowSiteList"
-                         [formControl]="_domainsTypeField"
+                         formControlName="domainsType"
                          [label]="'applications.settings.accessControl.editForm.selectedDomainsOnly' | translate"></p-radioButton>
         </span>
         <div class="kControl kAutoComplete">
           <kAutoComplete suggestionItemField="item"
                          suggestionSelectableField="isSelectable"
                          [formControl]="_allowedDomainsField"
-                         [multiple]="true"
+                         [allowMultiple]="true"
                          [class.hasError]="_allowedDomainsField.enabled && _domainsFormatError"
                          [limitToSuggestions]="false"
                          [minLength]="3"
@@ -67,16 +67,16 @@
       </div>
       <div class="kRow">
         <span class="kLabel">
-          <p-radioButton name="authorizedDomains"
+          <p-radioButton name="domainsType"
                          [value]="_siteRestrictionType.restrictSiteList"
-                         [formControl]="_domainsTypeField"
+                         formControlName="domainsType"
                          [label]="'applications.settings.accessControl.editForm.blockSelectedDomains' | translate"></p-radioButton>
         </span>
         <div class="kControl kAutoComplete">
           <kAutoComplete suggestionItemField="item"
                          suggestionSelectableField="isSelectable"
                          [class.hasError]="_restrictedDomainsField.enabled && _domainsFormatError"
-                         [multiple]="true"
+                         [allowMultiple]="true"
                          [formControl]="_restrictedDomainsField"
                          [limitToSuggestions]="false"
                          [minLength]="3"
@@ -97,17 +97,17 @@
       <div class="kTitle">{{'applications.settings.accessControl.editForm.authorizedCountries' | translate}}</div>
       <div class="kRow">
         <span class="kLabel">
-          <p-radioButton name="authorizedCountries"
+          <p-radioButton name="countriesType"
                          [value]="null"
-                         [formControl]="_countriesTypeField"
+                         formControlName="countriesType"
                          [label]="'applications.settings.accessControl.editForm.allCountries' | translate"></p-radioButton>
         </span>
       </div>
       <div class="kRow">
         <span class="kLabel">
-          <p-radioButton name="authorizedCountries"
+          <p-radioButton name="countriesType"
                          [value]="_countryRestrictionType.allowCountryList"
-                         [formControl]="_countriesTypeField"
+                         formControlName="countriesType"
                          [label]="'applications.settings.accessControl.editForm.selectedCountriesOnly' | translate"></p-radioButton>
         </span>
         <p-multiSelect class="kControl"
@@ -129,9 +129,9 @@
       </div>
       <div class="kRow">
         <span class="kLabel">
-          <p-radioButton name="authorizedCountries"
+          <p-radioButton name="countriesType"
                          [value]="_countryRestrictionType.restrictCountryList"
-                         [formControl]="_countriesTypeField"
+                         formControlName="countriesType"
                          [label]="'applications.settings.accessControl.editForm.blockSelectedCountries' | translate"></p-radioButton>
         </span>
         <p-multiSelect class="kControl"
@@ -157,23 +157,23 @@
       <div class="kTitle">{{'applications.settings.accessControl.editForm.authorizedIps' | translate}}</div>
       <div class="kRow">
         <span class="kLabel">
-          <p-radioButton name="authorizedIps"
+          <p-radioButton name="ipsType"
                          [value]="null"
-                         [formControl]="_ipsTypeField"
+                         formControlName="ipsType"
                          [label]="'applications.settings.accessControl.editForm.allIps' | translate"></p-radioButton>
         </span>
       </div>
       <div class="kRow">
         <span class="kLabel">
-          <p-radioButton name="authorizedIps"
+          <p-radioButton name="ipsType"
                          [value]="_ipAddressRestrictionType.allowList"
-                         [formControl]="_ipsTypeField"
+                         formControlName="ipsType"
                          [label]="'applications.settings.accessControl.editForm.selectedIpsOnly' | translate"></p-radioButton>
         </span>
         <div class="kControl kAutoComplete">
           <kAutoComplete suggestionItemField="item"
                          suggestionSelectableField="isSelectable"
-                         [multiple]="true"
+                         [allowMultiple]="true"
                          [limitToSuggestions]="false"
                          [formControl]="_allowedIpsField"
                          [class.hasError]="_allowedIpsField.enabled && _ipsFormatError"
@@ -191,15 +191,15 @@
       </div>
       <div class="kRow">
         <span class="kLabel">
-          <p-radioButton name="authorizedIps"
+          <p-radioButton name="ipsType"
                          [value]="_ipAddressRestrictionType.restrictList"
-                         [formControl]="_ipsTypeField"
+                         formControlName="ipsType"
                          [label]="'applications.settings.accessControl.editForm.blockSelectedIps' | translate"></p-radioButton>
         </span>
         <div class="kControl kAutoComplete">
           <kAutoComplete suggestionItemField="item"
                          suggestionSelectableField="isSelectable"
-                         [multiple]="true"
+                         [allowMultiple]="true"
                          [limitToSuggestions]="false"
                          [class.hasError]="_restrictedIpsField.enabled && _ipsFormatError"
                          [formControl]="_restrictedIpsField"
@@ -221,17 +221,17 @@
       <div class="kTitle">{{'applications.settings.accessControl.editForm.authorizedFlavors' | translate}}</div>
       <div class="kRow">
         <span class="kLabel">
-          <p-radioButton name="authorizedFlavors"
+          <p-radioButton name="flavorsType"
                          [value]="null"
-                         [formControl]="_flavorsTypeField"
+                         formControlName="flavorsType"
                          [label]="'applications.settings.accessControl.editForm.allFlavors' | translate"></p-radioButton>
         </span>
       </div>
       <div class="kRow">
         <span class="kLabel">
-          <p-radioButton name="authorizedFlavors"
+          <p-radioButton name="flavorsType"
                          [value]="_flavorsRestrictionType.allowList"
-                         [formControl]="_flavorsTypeField"
+                         formControlName="flavorsType"
                          [label]="'applications.settings.accessControl.editForm.selectedFlavorsOnly' | translate"></p-radioButton>
         </span>
         <p-multiSelect [options]="_store.flavors"
@@ -251,9 +251,9 @@
       </div>
       <div class="kRow">
         <span class="kLabel">
-          <p-radioButton name="authorizedFlavors"
+          <p-radioButton name="flavorsType"
                          [value]="_flavorsRestrictionType.restrictList"
-                         [formControl]="_flavorsTypeField"
+                         formControlName="flavorsType"
                          [label]="'applications.settings.accessControl.editForm.blockSelectedFlavors' | translate"></p-radioButton>
         </span>
         <p-multiSelect [options]="_store.flavors"

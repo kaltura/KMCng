@@ -1,9 +1,11 @@
 import { serverConfig, ServerConfig } from './server-config';
 import {globalConfig} from './global-config';
 import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 import {environment} from 'environments/environment';
 import * as Ajv from 'ajv';
 import { ServerConfigSchema } from './server-config-schema';
+import { takeUntil, tap, delay, map } from 'rxjs/operators';
 
 export type ExternalAppsAdapter<T> = { [K in keyof T]: (configuration: T[K]) => boolean };
 
@@ -23,7 +25,7 @@ function validateSeverConfig(data: ServerConfig): { isValid: boolean, error?: st
 
 function getConfiguration(): Observable<ServerConfig> {
     if (window && (<any>window).kmcConfig) {
-        return Observable.of((<any>window).kmcConfig);
+        return of((<any>window).kmcConfig);
     }
 
     return Observable.create(observer =>
@@ -78,8 +80,8 @@ function getConfiguration(): Observable<ServerConfig> {
 export function initializeConfiguration<TExternalApplications>(externalAppsAdapter: ExternalAppsAdapter<TExternalApplications>): Observable<void> {
 
     return getConfiguration()
-        .takeUntil(Observable.of(true).delay(environment.configurationTimeout))
-        .do(response => {
+        .pipe(takeUntil(of(true).pipe(delay(environment.configurationTimeout))))
+        .pipe(tap(response => {
             const validationResult = validateSeverConfig(response);
             if (validationResult.isValid) {
                 for (const externalAppName of Object.keys(response.externalApps)) {
@@ -100,8 +102,8 @@ export function initializeConfiguration<TExternalApplications>(externalAppsAdapt
             } else {
                 throw Error(validationResult.error || 'Invalid server configuration');
             }
-        })
-        .map(() => {
+        }))
+        .pipe(map(() => {
             return undefined;
-        });
+        }));
 }

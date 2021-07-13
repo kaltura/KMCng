@@ -47,12 +47,12 @@
 }
 
 :host ::ng-deep {
-  .ui-widget.ui-dropdown {
+  .p-dropdown {
     width: 265px;
     font-size: 14px;
   }
 
-  .ui-dropdown-items-wrapper{
+  .p-dropdown-items-wrapper{
     max-height: 115px;
   }
 }

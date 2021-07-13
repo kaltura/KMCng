@@ -86,7 +86,6 @@
 
     a {
       font-size: 16px;
-      color: $kGrayscale2;
       text-decoration: none;
     }
   }
@@ -122,15 +121,7 @@
 }
 
 :host ::ng-deep p-checkbox {
-  .ui-chkbox-label {
-    font-size: 16px;
-    font-weight: normal;
-    line-height: 19px;
-    color: $kGrayscale2;
-    margin-left: 10px;
-  }
-
-  .ui-chkbox .ui-chkbox-box {
+  .p-checkbox, .p-checkbox-box {
     width: 18px;
     height: 18px;
   }

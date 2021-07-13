@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/multicast';
-import 'rxjs/add/operator/publishReplay';
+import { throwError } from 'rxjs';
+import { publishReplay, refCount, map, catchError } from 'rxjs/operators';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 import { KalturaClient } from 'kaltura-ngx-client';
 import { CategoryListAction } from 'kaltura-ngx-client';
@@ -18,6 +18,7 @@ import { CategoryGetAction } from 'kaltura-ngx-client';
 import { KalturaAppearInListType } from 'kaltura-ngx-client';
 import { KalturaPrivacyType } from 'kaltura-ngx-client';
 import { KalturaContributionPolicyType } from 'kaltura-ngx-client';
+import { of } from 'rxjs';
 
 export interface CategoryData {
     parentId?: number,
@@ -86,9 +87,9 @@ export class CategoriesSearchService implements OnDestroy {
           new CategoryGetAction({id: categoryId}).setRequestOptions({
               responseProfile
           })
-      ).map(category => {
+      ).pipe(map(category => {
           return this.parseAndCacheCategories([category])[0];
-      })
+      }))
   }
 
   public getCategories(categoriesList: number[]): Observable<CategoriesQuery> {
@@ -96,19 +97,19 @@ export class CategoriesSearchService implements OnDestroy {
       // changing it prioritize cache will require refactoring places that are using this method.
     if (categoriesList && categoriesList.length) {
         return this.buildCategoryListRequest({ categoriesList })
-            .map(response => {
+            .pipe(map(response => {
                 // parse response into categories items
                 return { items: this.parseAndCacheCategories(response.objects) };
-            });
+            }));
     } else {
-      return Observable.throw({ message: 'missing categoriesList argument' });
+      return throwError({ message: 'missing categoriesList argument' });
     }
   }
 
   public getChildrenCategories(parentId: number): Observable<CategoriesQuery> {
 
     if (parentId === null) {
-      return Observable.throw({ message: 'missing parentId argument' });
+      return throwError({ message: 'missing parentId argument' });
     }
 
     return this._getCategoriesWithCache({ cacheToken: parentId + '', parentId });
@@ -148,7 +149,7 @@ export class CategoriesSearchService implements OnDestroy {
         }
       });
     } else {
-      return Observable.of([]);
+      return of([]);
     }
   }
 
@@ -159,17 +160,17 @@ export class CategoriesSearchService implements OnDestroy {
     if (!cachedResponse) {
         this._logger.info(`caching categories for token '${cacheToken}'`);
         this._groupedCategoriesCache[cacheToken] = cachedResponse = this.buildCategoryListRequest({ parentId, categoriesList })
-        .map(response => {
+        .pipe(map(response => {
           // parse response into categories items
           return { items: this.parseAndCacheCategories(response.objects) };
-        }).catch(error => {
+        })).pipe(catchError(error => {
           this._groupedCategoriesCache[cacheToken] = null;
 
           // re-throw the provided error
-          return Observable.throw(error);
-        })
-        .publishReplay(1)
-        .refCount();
+          return throwError(error);
+        }))
+        .pipe(publishReplay(1))
+        .pipe(refCount());
     }
 
     return cachedResponse;

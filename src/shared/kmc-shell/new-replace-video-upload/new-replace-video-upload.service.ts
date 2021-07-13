@@ -1,7 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { KalturaClient } from 'kaltura-ngx-client';
 import { Observable } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription';
 import { TrackedFileStatuses, UploadManagement } from '@kaltura-ng/kaltura-common';
 import { NewReplaceVideoUploadFile } from './new-replace-video-upload-file';
 import { KalturaUploadedFileTokenResource } from 'kaltura-ngx-client';
@@ -12,12 +11,13 @@ import { UploadTokenDeleteAction } from 'kaltura-ngx-client';
 import { TrackedFileData } from '@kaltura-ng/kaltura-common';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { KalturaUrlResource } from 'kaltura-ngx-client';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { MediaCancelReplaceAction } from 'kaltura-ngx-client';
 import { BrowserService } from 'app-shared/kmc-shell/providers';
 import { KalturaRemoteStorageResource } from 'kaltura-ngx-client';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { filter, map } from 'rxjs/operators';
 
 export interface KmcNewReplaceEntryLink {
     url: string;
@@ -61,7 +61,7 @@ export class NewReplaceVideoUploadService implements OnDestroy {
     private _monitorTrackedFilesChanges(): void {
         this._uploadManagement.onTrackedFileChanged$
             .pipe(cancelOnDestroy(this))
-            .filter(trackedFile => trackedFile.data instanceof NewReplaceVideoUploadFile)
+            .pipe(filter(trackedFile => trackedFile.data instanceof NewReplaceVideoUploadFile))
             .subscribe(
                 trackedFile => {
                     switch (trackedFile.status) {
@@ -125,7 +125,7 @@ export class NewReplaceVideoUploadService implements OnDestroy {
     private _cleanupUpload(trackedFile: TrackedFileData): void {
         const trackedFileData = <NewReplaceVideoUploadFile>trackedFile.data;
 
-        if (trackedFileData.createMediaEntrySubscription instanceof Subscription) {
+        if (trackedFileData.createMediaEntrySubscription) {
             trackedFileData.createMediaEntrySubscription.unsubscribe();
             trackedFileData.createMediaEntrySubscription = null;
         }
@@ -200,8 +200,8 @@ export class NewReplaceVideoUploadService implements OnDestroy {
 
         return this._kalturaServerClient
             .request(new MediaUpdateContentAction({ entryId, resource, conversionProfileId }))
-            .map(() => {
-            });
+            .pipe(map(() => {
+            }));
     }
 
     public cancelUploadByEntryId(entryId: string): void {
@@ -221,7 +221,7 @@ export class NewReplaceVideoUploadService implements OnDestroy {
 
         return this._kalturaServerClient
             .request(new MediaUpdateContentAction({ entryId, resource, conversionProfileId }))
-            .map(() => {
-            });
+            .pipe(map(() => {
+            }));
     }
 }

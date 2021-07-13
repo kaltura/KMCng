@@ -34,33 +34,33 @@
 }
 
 :host ::ng-deep .kProgressBar {
-  &.uploading .ui-progressbar-value {
+  &.uploading .p-progressbar-value {
     background-color: $kSecondary;
   }
 
-  &.uploaded .ui-progressbar-value {
+  &.uploaded .p-progressbar-value {
     background-color: $kSuccess;
   }
 
-  &.uploadFailure .ui-progressbar-value {
+  &.uploadFailure .p-progressbar-value {
     background-color: $kDandger;
   }
 
-  &.pending .ui-progressbar {
+  &.pending .p-progressbar {
     background-color: $kGrayscale6;
   }
 
-  &:not(.pending) .ui-progressbar {
+  &:not(.pending) .p-progressbar {
     @extend .kProgressBarBackground;
     background-color: $kGrayscale6;
   }
 
-  .ui-progressbar {
+  .p-progressbar {
     width: 100px;
     height: 12px;
   }
 
-  .ui-progressbar-value {
+  .p-progressbar-value {
     @extend .kProgressBarBackground;
     @extend .kProgressBarAnimation;
   }

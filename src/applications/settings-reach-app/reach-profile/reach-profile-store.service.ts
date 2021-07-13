@@ -1,8 +1,9 @@
 import { Host, Injectable, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subject } from 'rxjs/Subject';
+import {BehaviorSubject, EMPTY} from 'rxjs';
+import { Subject } from 'rxjs';
+import { throwError } from 'rxjs';
 import { ISubscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs';
 import { KalturaClient, KalturaMultiRequest, KalturaObjectBaseFactory, ReachProfileGetAction, ReachProfileUpdateAction } from 'kaltura-ngx-client';
@@ -17,6 +18,8 @@ import { AppEventsService } from 'app-shared/kmc-shared';
 import { ReachProfilesStore } from "../reach-profiles/reach-profiles-store/reach-profiles-store.service";
 import { SettingsReachProfileViewSections, SettingsReachProfileViewService } from "app-shared/kmc-shared/kmc-views/details-views/settings-reach-profile-view.service";
 import { SettingsReachMainViewService } from "app-shared/kmc-shared/kmc-views";
+import { debounce, map, flatMap, filter } from 'rxjs/operators';
+import { timer } from 'rxjs';
 
 export enum ActionTypes {
   ProfileLoading,
@@ -86,7 +89,7 @@ export class ReachProfileStore implements OnDestroy {
   private _onSectionsStateChanges(): void {
     this._widgetsManager.widgetsState$
       .pipe(cancelOnDestroy(this))
-      .debounce(() => Observable.timer(500))
+      .pipe(debounce(() => timer(500)))
       .subscribe(
         sectionsState => {
           const newDirtyState = Object
@@ -166,11 +169,11 @@ export class ReachProfileStore implements OnDestroy {
     this._widgetsManager.notifyDataSaving(newProfile, request, this.profile.data())
       .pipe(cancelOnDestroy(this))
       .pipe(tag('block-shell'))
-      .flatMap(prepareResponse => {
+      .pipe(flatMap(prepareResponse => {
         if (prepareResponse.ready) {
           return this._kalturaServerClient.multiRequest(request)
             .pipe(tag('block-shell'))
-            .map(multiResponse => {
+            .pipe(map(multiResponse => {
               if (multiResponse.hasErrors()) {
                 const errorMessage = multiResponse.map(response => {
                   if (response.error) {
@@ -184,8 +187,8 @@ export class ReachProfileStore implements OnDestroy {
                 this._saveProfileInvoked = true;
                 this._loadProfile(profileResponse.result.id);
               }
-              return Observable.empty();
-            });
+              return EMPTY;
+            }));
         } else {
           switch (prepareResponse.reason) {
             case OnDataSavingReasons.validationErrors:
@@ -199,9 +202,9 @@ export class ReachProfileStore implements OnDestroy {
               break;
           }
 
-          return Observable.empty();
+          return EMPTY;
         }
-      })
+      }))
       .subscribe(
         response => {
           // do nothing - the service state is modified inside the map functions.
@@ -287,13 +290,13 @@ export class ReachProfileStore implements OnDestroy {
       return this._kalturaServerClient
         .request(reachProfileAction);
     } else {
-      return Observable.throw(new Error('missing profileId'));
+      return throwError(new Error('missing profileId'));
     }
   }
 
   public openProfile(profile: KalturaReachProfile): void {
     this.canLeave()
-        .filter(({ allowed }) => allowed)
+        .pipe(filter(({ allowed }) => allowed))
         .pipe(cancelOnDestroy(this))
         .subscribe(() => {
             this._settingsReachProfileViewService.open({ profile, section: SettingsReachProfileViewSections.Settings });

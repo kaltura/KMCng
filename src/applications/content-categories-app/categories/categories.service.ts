@@ -1,11 +1,12 @@
 import {BrowserService} from 'app-shared/kmc-shell/providers/browser.service';
 import {KalturaCategoryFilter} from 'kaltura-ngx-client';
 import {Injectable, OnDestroy} from '@angular/core';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {BehaviorSubject} from 'rxjs';
 import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 import {ISubscription} from 'rxjs/Subscription';
-import 'rxjs/add/operator/map';
-
+import { map } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 import {KalturaDetachedResponseProfile} from 'kaltura-ngx-client';
 import {KalturaFilterPager} from 'kaltura-ngx-client';
 import {KalturaResponseProfileType} from 'kaltura-ngx-client';
@@ -451,7 +452,7 @@ export class CategoriesService extends FiltersStoreBase<CategoriesFilters> imple
         })
       );
     } catch (err) {
-      return Observable.throw(err);
+      return throwError(err);
     }
 
   }
@@ -555,7 +556,7 @@ export class CategoriesService extends FiltersStoreBase<CategoriesFilters> imple
         if (!newCategoryName) {
             const error = new Error('missing category name');
             (<any>error).code = 'missing_category_name';
-            return Observable.throw(error);
+            return throwError(error);
         }
         const category = new KalturaCategory({
             name: newCategoryData.name,
@@ -583,7 +584,7 @@ export class CategoriesService extends FiltersStoreBase<CategoriesFilters> imple
         }
 
         return this._kalturaClient.multiRequest(multiRequest)
-            .map(
+            .pipe(map(
                 data => {
                     if (data.hasErrors()) {
                         const message = this._appLocalization.get('applications.content.moveCategory.errors.creationError');
@@ -609,7 +610,7 @@ export class CategoriesService extends FiltersStoreBase<CategoriesFilters> imple
                     }
 
                     return {category: data[0].result};
-                });
+                }));
     }
 
     /**
@@ -620,7 +621,7 @@ export class CategoriesService extends FiltersStoreBase<CategoriesFilters> imple
     public moveCategory(moveCategoryData: MoveCategoryData): Observable<void> {
         if (!moveCategoryData || !this.isParentCategorySelectionValid(moveCategoryData)) {
             const categoryMovedFailureErrorMessage = this._appLocalization.get('applications.content.moveCategory.errors.categoryMovedFailure');
-            return Observable.throw(new Error(categoryMovedFailureErrorMessage));
+            return throwError(new Error(categoryMovedFailureErrorMessage));
         }
 
         return <any>this._kalturaClient.request(
@@ -628,7 +629,7 @@ export class CategoriesService extends FiltersStoreBase<CategoriesFilters> imple
                 categoryIds: moveCategoryData.categories.map(category => (category.id)).join(','),
                 targetCategoryParentId: moveCategoryData.categoryParent ? moveCategoryData.categoryParent.id : 0
             })
-        ).map(categoryMoved => (undefined));
+        ).pipe(map(categoryMoved => (undefined)));
     }
 
     /**
@@ -678,6 +679,6 @@ export class CategoriesService extends FiltersStoreBase<CategoriesFilters> imple
         return this._categoriesSearchService.getCategory(id);
       }
 
-      return Observable.of(category);
+      return of(category);
     }
 }

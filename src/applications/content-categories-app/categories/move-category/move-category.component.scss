@@ -52,7 +52,9 @@
   }
   .kFooter {
     border-top: 1px solid $kGrayscale4;
-    padding-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     box-sizing: border-box;
     text-align: center;
     height: 66px;

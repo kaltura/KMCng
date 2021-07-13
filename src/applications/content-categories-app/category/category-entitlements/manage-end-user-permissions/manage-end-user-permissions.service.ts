@@ -1,9 +1,10 @@
 import {BrowserService} from 'app-shared/kmc-shell/providers/browser.service';
 import {Injectable, OnDestroy} from '@angular/core';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {BehaviorSubject} from 'rxjs';
 import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 import {ISubscription} from 'rxjs/Subscription';
-import 'rxjs/add/operator/map';
+import { map, catchError, switchMap } from 'rxjs/operators';
 import {KalturaDetachedResponseProfile} from 'kaltura-ngx-client';
 import {KalturaFilterPager} from 'kaltura-ngx-client';
 import {KalturaResponseProfileType} from 'kaltura-ngx-client';
@@ -33,8 +34,8 @@ import {KalturaSearchOperator} from 'kaltura-ngx-client';
 import {KalturaSearchOperatorType} from 'kaltura-ngx-client';
 import {KalturaCategoryUserStatus} from 'kaltura-ngx-client';
 import { CategoryGetAction } from 'kaltura-ngx-client';
-import { switchMap, map } from 'rxjs/operators';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { throwError } from 'rxjs';
 
 export interface LoadingStatus {
   loading: boolean;
@@ -190,7 +191,7 @@ export class ManageEndUserPermissionsService extends FiltersStoreBase<UsersFilte
           // create request items
           if (typeof data.categoryId === 'undefined' || typeof data.inheritUsers === 'undefined') {
               //  this is valid condition - this scenario will happen until category id will be provided
-              return Observable.of({items: [], totalCount: 0, actualUsersCount: 0});
+              return of({items: [], totalCount: 0, actualUsersCount: 0});
           }
 
           const filter: KalturaCategoryUserFilter = new KalturaCategoryUserFilter({
@@ -290,16 +291,16 @@ export class ManageEndUserPermissionsService extends FiltersStoreBase<UsersFilte
                   )
               );
       } catch (err) {
-          return Observable.throw(err);
+          return throwError(err);
       }
   }
 
   private _getKalturaUsers(categoryUsersId: string[]): Observable<KalturaUser[]> {
     if (!categoryUsersId) {
-      return Observable.throw(new Error('ManageEndUserPermissionsService: Category has no end-users'))
+      return throwError(new Error('ManageEndUserPermissionsService: Category has no end-users'))
     }
     if (!categoryUsersId.length) {
-      return Observable.of([]);
+      return of([]);
     }
     const multiRequest = new KalturaMultiRequest();
     categoryUsersId.forEach(userId => {
@@ -310,18 +311,18 @@ export class ManageEndUserPermissionsService extends FiltersStoreBase<UsersFilte
     });
 
     return this._kalturaClient.multiRequest(multiRequest)
-      .map(
+      .pipe(map(
         data => {
           if (data.hasErrors()) {
             throw new Error('ManageEndUserPermissionsService: error occurred while trying to buildQueryRequest');
           }
           return data.map(item => item.result);
-        });
+        }));
   }
 
   public activateUsers(categoryId: number, usersIds: string[]): Observable<void> {
     if (!usersIds || !usersIds.length) {
-      return Observable.throw('Unable to activate users');
+      return throwError('Unable to activate users');
     }
 
     const multiRequest = new KalturaMultiRequest();
@@ -330,20 +331,20 @@ export class ManageEndUserPermissionsService extends FiltersStoreBase<UsersFilte
     });
 
     return this._kalturaClient.multiRequest(multiRequest)
-      .map(response => {
+      .pipe(map(response => {
           if (response.hasErrors()) {
             throw new Error(
               this._appLocalization.get('applications.content.categoryDetails.entitlements.usersPermissions.errors.activateUsers'));
           }
           return undefined;
         }
-      )
-      .catch(err => Observable.throw(err));
+      ))
+      .pipe(catchError(err => throwError(err)));
   }
 
   public deactivateUsers(categoryId: number, usersIds: string[]): Observable<void> {
     if (!usersIds || !usersIds.length) {
-      return Observable.throw('Unable to deactivate users');
+      return throwError('Unable to deactivate users');
     }
 
     const multiRequest = new KalturaMultiRequest();
@@ -352,22 +353,22 @@ export class ManageEndUserPermissionsService extends FiltersStoreBase<UsersFilte
     });
 
     return this._kalturaClient.multiRequest(multiRequest)
-      .map(response => {
+      .pipe(map(response => {
           if (response.hasErrors()) {
             throw new Error(
               this._appLocalization.get('applications.content.categoryDetails.entitlements.usersPermissions.errors.deactivateUsers'));
           }
           return undefined;
         }
-      )
-      .catch(err => Observable.throw(err));
+      ))
+      .pipe(catchError(err => throwError(err)));
   }
 
   public deleteUsers(categoryId: number, usersIds: string[]): Observable<void> {
       this._logger.info(`handle delete users request`, { categoryId, usersIds });
     if (!usersIds || !usersIds.length) {
         this._logger.info(`no users were provided abort action`);
-      return Observable.throw('Unable to delete users');
+      return throwError('Unable to delete users');
     }
 
     const multiRequest = new KalturaMultiRequest();
@@ -376,22 +377,22 @@ export class ManageEndUserPermissionsService extends FiltersStoreBase<UsersFilte
     });
 
     return this._kalturaClient.multiRequest(multiRequest)
-      .map(response => {
+      .pipe(map(response => {
           if (response.hasErrors()) {
             throw new Error(
               this._appLocalization.get('applications.content.categoryDetails.entitlements.usersPermissions.errors.deleteUsers'));
           }
           return undefined;
         }
-      )
-      .catch(err => Observable.throw(err));
+      ))
+      .pipe(catchError(err => throwError(err)));
   }
 
   public setPermissionLevel(categoryId: number, usersId: string[], permissionLevel: KalturaCategoryUserPermissionLevel): Observable<void> {
       this._logger.info(`handle set permission level action`, { categoryId, usersId, permissionLevel });
     if (!usersId || !usersId.length || typeof permissionLevel === 'undefined') {
         this._logger.info(`no users or permissionLevel were provided abort action`);
-      return Observable.throw('Unable to set permission level for users');
+      return throwError('Unable to set permission level for users');
     }
 
     const multiRequest = new KalturaMultiRequest();
@@ -408,22 +409,22 @@ export class ManageEndUserPermissionsService extends FiltersStoreBase<UsersFilte
     });
 
     return this._kalturaClient.multiRequest(multiRequest)
-      .map(response => {
+      .pipe(map(response => {
           if (response.hasErrors()) {
             throw new Error(
               this._appLocalization.get('applications.content.categoryDetails.entitlements.usersPermissions.errors.setPermissionLevel'));
           }
           return undefined;
         }
-      )
-      .catch(err => Observable.throw(err));
+      ))
+      .pipe(catchError(err => throwError(err)));
   }
 
   public setUpdateMethod(categoryId: number, usersIds: string[], updateMethod: KalturaUpdateMethodType): Observable<void> {
       this._logger.info(`handle set update method action`, { categoryId, usersIds, updateMethod });
     if (!usersIds || !usersIds.length || typeof updateMethod === 'undefined') {
         this._logger.info(`no users or updateMethod were provided abort action`);
-      return Observable.throw('Unable to set update method for users');
+      return throwError('Unable to set update method for users');
     }
 
 
@@ -440,15 +441,15 @@ export class ManageEndUserPermissionsService extends FiltersStoreBase<UsersFilte
     });
 
     return this._kalturaClient.multiRequest(multiRequest)
-      .map(response => {
+      .pipe(map(response => {
           if (response.hasErrors()) {
             throw new Error(
               this._appLocalization.get('applications.content.categoryDetails.entitlements.usersPermissions.errors.setUpdateMethod'));
           }
           return undefined;
         }
-      )
-      .catch(err => Observable.throw(err));
+      ))
+      .pipe(catchError(err => throwError(err)));
   }
 
   private _getPermissionsForPermissionLevel(permissionLevel: KalturaCategoryUserPermissionLevel) {

@@ -85,26 +85,26 @@
   padding-left: 14px!important;
 }
 
-:host ::ng-deep .ui-table .thumbnailColumn {
+:host ::ng-deep .p-datatable .thumbnailColumn {
   width: 100px;
 }
 
-:host ::ng-deep .ui-table .mediaTypeColumn {
+:host ::ng-deep .p-datatable .mediaTypeColumn {
   width: 80px;
   text-align: center;
 }
 
-:host ::ng-deep .ui-table .createdAtColumn {
+:host ::ng-deep .p-datatable .createdAtColumn {
   width: 140px;
   text-align: center;
 }
 
-:host ::ng-deep .ui-table .durationColumn {
+:host ::ng-deep .p-datatable .durationColumn {
   width: 100px;
   text-align: center;
 }
 
-:host ::ng-deep .ui-table .actionsColumn {
+:host ::ng-deep .p-datatable .actionsColumn {
   overflow: visible;
   width: 80px;
 }

@@ -13,6 +13,8 @@ import { serverConfig } from 'config/server';
 import { PageExitVerificationService } from '../page-exit-verification';
 import { filter, map, pairwise } from 'rxjs/operators';
 import { MessageService } from 'primeng/api';
+import { from as fromPromise} from 'rxjs';
+import { of } from 'rxjs';
 
 export enum HeaderTypes {
     error = 1,
@@ -332,7 +334,7 @@ export class BrowserService implements IAppStorage {
             }
             file = this._downloadContent(data);
         } else {
-            file = Observable.of(new Blob([data], {type: type}));
+            file = of(new Blob([data], {type: type}));
         }
 
         file.subscribe(content => {
@@ -409,7 +411,7 @@ export class BrowserService implements IAppStorage {
 
     public navigateToLoginWithStatus(): Observable<boolean> {
         this._logger.info(`navigate to login view`);
-        return Observable.fromPromise(this._router.navigateByUrl(kmcAppConfig.routing.loginRoute, {replaceUrl: true}));
+        return fromPromise(this._router.navigateByUrl(kmcAppConfig.routing.loginRoute, {replaceUrl: true}));
     }
 
     public navigateToLogin(): void {

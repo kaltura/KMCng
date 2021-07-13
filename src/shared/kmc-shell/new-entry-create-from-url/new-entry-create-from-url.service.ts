@@ -10,6 +10,7 @@ import {
     MediaUpdateContentAction,
 } from 'kaltura-ngx-client';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
 import { globalConfig } from "config/global";
 
@@ -88,13 +89,13 @@ export class NewEntryCreateFromUrlService implements OnDestroy {
         return this._kalturaServerClient.multiRequest(new KalturaMultiRequest(
             ...createMediaEntryActions,
             ...updateMediaContentActions
-        )).map(responses => {
+        )).pipe(map(responses => {
             if (responses.hasErrors()) {
                 const message = responses.every(response => !!response.error)
                     ? this._appLocalization.get('applications.upload.uploadSettings.createFromUrlError.all')
                     : this._appLocalization.get('applications.upload.uploadSettings.createFromUrlError.some');
                 throw Error(message);
             }
-        });
+        }));
     }
 }

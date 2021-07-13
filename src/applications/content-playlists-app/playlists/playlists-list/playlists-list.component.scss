@@ -192,11 +192,11 @@
   z-index: 203;
 }
 
-:host ::ng-deep span.ui-button-icon-left.pi-kIcontrash{
+:host ::ng-deep span.p-button-icon-left.pi-kIcontrash{
 	margin-left: -.5em;
 }
 
-:host ::ng-deep .ui-button-icon-only .pi{
+:host ::ng-deep .p-button-icon-only .pi{
 	margin-left: -.5em;
 }
 :host ::ng-deep .kStickyClass{
@@ -204,7 +204,7 @@
 }
 
 :host ::ng-deep .kPlaylistsTableFooter {
-  .ui-dropdown-panel {
+  .p-dropdown-panel {
     min-width: 70px;
   }
 }

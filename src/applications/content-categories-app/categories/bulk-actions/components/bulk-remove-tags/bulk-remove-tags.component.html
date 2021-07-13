@@ -7,7 +7,7 @@
       <kAutoComplete *ngIf="tags && tags.length" [ngModel]="tags"
                      [tooltipResolver]="'__tooltip'"
                      [classField]="'__class'"
-                     [multiple]="true"
+                     [allowMultiple]="true"
                      [limitToSuggestions]="false"
                      readonly="true"
                      (onUnselect)="_removeTag($event)">

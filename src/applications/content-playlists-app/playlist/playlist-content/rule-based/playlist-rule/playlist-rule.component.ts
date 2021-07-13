@@ -13,6 +13,7 @@ import { BrowserService } from 'app-shared/kmc-shell/providers';
 import { PlaylistRule } from './playlist-rule.interface';
 import { AreaBlockerMessage } from '@kaltura-ng/kaltura-ui';
 import { ColumnsResizeManagerService, ResizableColumnsTableName } from 'app-shared/kmc-shared/columns-resize-manager';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'kPlaylistRule',
@@ -116,7 +117,7 @@ export class PlaylistRuleComponent implements OnInit {
 
   private _applyFilters(playlist: PlaylistRule): void {
     this._playlistRuleParser.toEntriesFilters(playlist)
-      .filter(Boolean)
+      .pipe(filter(Boolean))
       .subscribe(
         filters => {
           this._entriesStore.filter(filters);

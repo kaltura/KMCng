@@ -23,6 +23,7 @@ import { LiveDashboardAppViewService } from 'app-shared/kmc-shared/kmc-views/com
 import { AnalyticsNewMainViewService, ContentEntriesMainViewService } from 'app-shared/kmc-shared/kmc-views';
 import { ClearEntriesSelectionEvent } from 'app-shared/kmc-shared/events/clear-entries-selection-event';
 import { ColumnsResizeManagerService, ResizableColumnsTableName } from 'app-shared/kmc-shared/columns-resize-manager';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'kEntriesListHolder',
@@ -125,7 +126,7 @@ export class EntriesListHolderComponent implements OnInit, OnDestroy {
 
       this._uploadManagement.onTrackedFileChanged$
           .pipe(cancelOnDestroy(this))
-          .filter(trackedFile => trackedFile.data instanceof NewEntryUploadFile && trackedFile.status === TrackedFileStatuses.uploadCompleted)
+          .pipe(filter(trackedFile => trackedFile.data instanceof NewEntryUploadFile && trackedFile.status === TrackedFileStatuses.uploadCompleted))
           .subscribe(() => {
               this._entriesStore.reload();
           });

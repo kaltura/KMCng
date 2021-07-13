@@ -8,7 +8,9 @@ import {FeedsService} from 'applications/content-syndication-app/feeds/feeds.ser
 import {PopupWidgetComponent} from '@kaltura-ng/kaltura-ui';
 import {KalturaSyndicationFeedType} from 'kaltura-ngx-client';
 import {FlavoursStore} from 'app-shared/kmc-shared';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
+import { throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
 import {KalturaSyndicationFeedEntryCount} from 'kaltura-ngx-client';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -257,7 +259,7 @@ export class FeedDetailsComponent implements OnInit, OnDestroy {
       this._logger.debug(`query data`, { mode: this._mode });
     if (this._mode === 'edit' && (!this.feed || !this.feed.id)) {
         this._logger.warn(`cannot load data for edit mode without feedId`);
-      return Observable.throw('An error occurred while trying to load feed');
+      return throwError('An error occurred while trying to load feed');
     }
 
     const getPlayers$ = this._playersStore.get({type: PlayerTypes.Entry}).pipe(cancelOnDestroy(this));
@@ -269,9 +271,9 @@ export class FeedDetailsComponent implements OnInit, OnDestroy {
       const getEntriesCount$ = this._feedsService.getFeedEntryCount(this.feed.id).pipe(cancelOnDestroy(this));
       requests.push(getEntriesCount$);
     }
-    return Observable.forkJoin(...requests)
+    return forkJoin(...requests)
       .pipe(cancelOnDestroy(this))
-      .map(response => {
+      .pipe(map(response => {
         const players = response[0].items.map(player => ({
           id: player.id,
           version: player.tags.indexOf('kalturaPlayerJs') > -1 ? '3' : '2',
@@ -279,7 +281,7 @@ export class FeedDetailsComponent implements OnInit, OnDestroy {
         }));
 
         return {players, flavors: response[1].items, entriesCount: this._mode === 'edit' ? response[2] : null};
-      });
+      }));
   }
 
   // Create empty structured form on loading

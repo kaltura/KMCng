@@ -16,6 +16,8 @@ import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { Title } from '@angular/platform-browser';
 import { ContextualHelpService } from 'app-shared/kmc-shared/contextual-help/contextual-help.service';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { from as fromPromise} from 'rxjs';
+import { map} from 'rxjs/operators';
 
 export enum ContentEntryViewSections {
     Metadata = 'Metadata',
@@ -279,7 +281,7 @@ export class ContentEntryViewService extends KmcDetailsViewBaseService<ContentEn
     protected _open(args: ContentEntryViewArgs): Observable<boolean> {
         const sectionToken = this._getSectionRouteToken(args.section);
         this._logger.info('handle open entry view request by the user', { entryId: args.entry.id, sectionToken });
-        return Observable.fromPromise(this._router.navigateByUrl(`/content/entries/entry/${args.entry.id}/${sectionToken}`));
+        return fromPromise(this._router.navigateByUrl(`/content/entries/entry/${args.entry.id}/${sectionToken}`));
     }
 
     public openById(entryId: string, section: ContentEntryViewSections, reloadEntriesListOnNavigateOut?: boolean, draftEntry?: boolean): void {
@@ -295,13 +297,13 @@ export class ContentEntryViewService extends KmcDetailsViewBaseService<ContentEn
         this._kalturaClient
             .request(baseEntryAction)
             .pipe(tag('block-shell'))
-            .map(response => {
+            .pipe(map(response => {
                 if (response instanceof KalturaMediaEntry) {
                     return response;
                 } else {
                     throw new Error(`invalid type provided, expected KalturaMediaEntry, got ${typeof response}`);
                 }
-            })
+            }))
             .subscribe(
                 (entry) => {
                     this.open({ entry, section: ContentEntryViewSections.Metadata, reloadEntriesListOnNavigateOut, draftEntry });

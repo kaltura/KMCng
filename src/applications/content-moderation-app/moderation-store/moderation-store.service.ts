@@ -8,6 +8,8 @@ import { MediaListFlagsAction } from 'kaltura-ngx-client';
 import { KalturaFilterPager } from 'kaltura-ngx-client';
 import { UserNotifyBanAction } from 'kaltura-ngx-client';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
+import { throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class ModerationStore implements OnDestroy {
@@ -35,21 +37,21 @@ export class ModerationStore implements OnDestroy {
           })
         })
       ])
-      .map(([entry, flag]) => ({
+      .pipe(map(([entry, flag]) => ({
         entry: entry.result,
         flag: flag.result
-      }))
-      .catch(() => {
-        return Observable.throw(new Error(this._appLocalization.get('applications.content.moderationDetails.errors.entryDetails')));
-      });
+      })))
+      .pipe(catchError(() => {
+        return throwError(new Error(this._appLocalization.get('applications.content.moderationDetails.errors.entryDetails')));
+      }));
   }
 
   public banCreator(userId: string): Observable<void> {
     return this._kalturaServerClient
       .request(new UserNotifyBanAction({ userId }))
-      .catch(() => {
-        return Observable.throw(new Error(this._appLocalization.get('applications.content.moderationDetails.errors.ban')));
-      })
+      .pipe(catchError(() => {
+        return throwError(new Error(this._appLocalization.get('applications.content.moderationDetails.errors.ban')));
+      }))
   }
 }
 

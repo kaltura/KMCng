@@ -12,7 +12,7 @@
 .kAddToDefaultTranscodingProfile {
   padding-top: 11px;
   ::ng-deep {
-    .ui-chkbox-label {
+    .p-chkbox-label {
       font-weight: normal;
     }
   }
@@ -50,13 +50,14 @@
   }
 }
 :host ::ng-deep .kSelectPlayer p-dropdown{
-    .ui-dropdown{
+    .p-dropdown{
         width: 380px !important;
     }
-    .ui-dropdown-panel .ui-dropdown-filter-container{
-        padding-left: 12px;
+    .p-dropdown-panel .p-dropdown-filter-container{
+        padding: 8px;
+        padding-right: 0px;
     }
-    .ui-dropdown-filter.ui-inputtext{
+    .p-dropdown-filter.p-inputtext{
         width: 350px;
     }
     .pi-pi-search:before{
@@ -64,22 +65,21 @@
         content: "\e911";
     }
 
-    .ui-dropdown label{
+    .p-dropdown label{
         padding-left: 2px;
     }
-    .ui-dropdown-item.ui-corner-all{
+    .p-dropdown-item{
         padding-left: 8px;
         padding-right: 8px;
-        width: 340px;
     }
-    .ui-dropdown-item.ui-corner-all.ui-state-highlight:after{
+    .p-dropdown-item.p-highlight:after{
         content: none;
     }
     .check{
         margin-left: auto;
         display: none;
     }
-    .ui-dropdown-item.ui-corner-all.ui-state-highlight .check{
+    .p-dropdown-item.p-highlight .check{
         display: block;
     }
 }

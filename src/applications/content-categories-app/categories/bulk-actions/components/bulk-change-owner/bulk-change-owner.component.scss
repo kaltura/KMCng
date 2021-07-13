@@ -34,17 +34,9 @@
   justify-content: center;
 }
 
-
-::ng-deep .ui-autocomplete.ui-widget{
-  width: 100%;
-  input{
-    width: 100%;
-  }
-  .ui-autocomplete-input-token{
-    width:100%;
-  }
-
-  li.userAdded{
-    background-color: transparentize($kPrimary, 0.5) !important;
-  }
+:host ::ng-deep kautocomplete ul{
+    width: 100% !important;
+}
+:host ::ng-deep .kHighlightedText {
+    text-decoration: underline;
 }

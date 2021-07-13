@@ -28,7 +28,7 @@ export class SettingsMyUserSettingsService {
 
     return this._kalturaServerClient
       .multiRequest(request)
-      .map(([user, role]) => {
+      .pipe(map(([user, role]) => {
         if (user.error || role.error) {
           throw new Error((user.error || role.error).message);
         }
@@ -37,10 +37,10 @@ export class SettingsMyUserSettingsService {
           user: user.result,
           role: role.result
         };
-      })
-      .catch(() => {
-        return Observable.throw(new Error(this._appLocalization.get('applications.settings.myUserSettings.errors.getUserData')));
-      });
+      }))
+      .pipe(catchError(() => {
+        return throwError(new Error(this._appLocalization.get('applications.settings.myUserSettings.errors.getUserData')));
+      }));
   }
 
   public updateEmail(user: KalturaUser): Observable<void> {
@@ -57,7 +57,7 @@ export class SettingsMyUserSettingsService {
   public updateLoginData(userData: UserUpdateLoginDataActionArgs): Observable<void> {
     return this._kalturaServerClient
       .request(new UserUpdateLoginDataAction(userData))
-      .catch(error => {
+      .pipe(catchError(error => {
         let message = error && error.message
           ? error.code === 'PASSWORD_STRUCTURE_INVALID'
             ? this._appLocalization.get('applications.settings.myUserSettings.errors.passwordStructure')
@@ -69,8 +69,8 @@ export class SettingsMyUserSettingsService {
         if (error && error.code && error.code === "MISSING_OTP"){
             message = this._appLocalization.get('app.login.error.missingOtp');
         }
-        return Observable.throw(new Error(message));
-      });
+        return throwError(new Error(message));
+      }));
   }
 
   public updateUserNameManually(user: KalturaUser): void {

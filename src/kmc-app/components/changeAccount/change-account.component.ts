@@ -8,6 +8,7 @@ import {PartnerListPartnersForUserAction} from 'kaltura-ngx-client';
 import {KalturaPartnerFilter} from 'kaltura-ngx-client';
 import {KalturaPartnerStatus} from 'kaltura-ngx-client';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {AreaBlockerMessage} from '@kaltura-ng/kaltura-ui';
 import { KalturaFilterPager } from 'kaltura-ngx-client';
 
@@ -128,9 +129,9 @@ export class ChangeAccountComponent implements OnInit {
       partnerFilter: filter,
         pager: pager
     }))
-      .map(data => {
+      .pipe(map(data => {
         return data.objects.map(partner => ({'id': partner.id, 'name': partner.name}))
-      });
+      }));
   }
 }
 

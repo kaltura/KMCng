@@ -4,6 +4,7 @@ import { DefaultFiltersList } from './default-filters-list';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
 import { KMCPermissions, KMCPermissionsService } from 'app-shared/kmc-shared/kmc-permissions';
 import { KalturaBulkUploadObjectType } from 'kaltura-ngx-client';
+import { of } from 'rxjs';
 
 export interface RefineListItem {
   value: string;
@@ -25,7 +26,7 @@ export class BulkLogRefineFiltersService {
   }
 
   public getFilters(): Observable<RefineList[]> {
-    return Observable.of(this._buildDefaultFiltersGroup());
+    return of(this._buildDefaultFiltersGroup());
   }
 
   private _buildDefaultFiltersGroup(): RefineList[] {

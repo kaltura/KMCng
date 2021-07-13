@@ -161,21 +161,21 @@
 
 
 
-:host ::ng-deep span.ui-button-icon-left.pi-kIcontrash {
+:host ::ng-deep span.p-button-icon-left.pi-kIcontrash {
   margin-left: -.5em;
 }
 
-:host ::ng-deep .ui-tree {
+:host ::ng-deep .p-tree {
   width: 380px;
 }
 
-:host ::ng-deep .ui-button-icon-right.kIcondropdown_arrow_bottom {
+:host ::ng-deep .p-button-icon-right.kIcondropdown_arrow_bottom {
   font-size: 10px;
   margin-right: 2px;
   pointer-events: none;
 }
 
-:host ::ng-deep .ui-tieredmenu.ui-menu {
+:host ::ng-deep .p-tieredmenu.p-menu {
   width: 250px;
   .ui-submenu-icon {
     font-size: 10px;
@@ -183,7 +183,7 @@
   }
 }
 
-:host ::ng-deep .ui-button-icon-only .pi {
+:host ::ng-deep .p-button-icon-only .pi {
   margin-left: -.5em;
 }
 
@@ -192,7 +192,7 @@
 }
 
 :host ::ng-deep .kAccountsTableFooter {
-  .ui-dropdown-panel {
+  .p-dropdown-panel {
     min-width: 70px;
   }
 }

@@ -11,7 +11,7 @@ hr{
 		font-weight: 400;
 		height: 34px;
     ::ng-deep
-    .ui-button-icon-right.kIcondropdown_arrow_bottom{
+    .p-button-icon-right.kIcondropdown_arrow_bottom{
       font-size: 10px;
       color: $kGrayscale3;
       margin-right: 4px;
@@ -61,7 +61,6 @@ hr{
 			input {
 				width: 100%;
                 max-width: 500px;
-				height: 34px;
 			}
 
 			textarea{
@@ -185,11 +184,11 @@ hr{
 		/* PrimeNG overrides */
 		/*********************/
 
-	  .ui-dropdown.ui-widget{
+	  .p-dropdown{
 			width: 100% !important;
 		}
 
-		  .ui-dropdown-label.ui-inputtext{
+		  .p-dropdown-label.p-inputtext{
 			background-color: #ffffff;
               padding-left: 1em;
 		}
@@ -213,7 +212,7 @@ hr{
 				width: 100%;
 			}
 		}
-		  .ui-button-icon-right.ui-c.pi-pi-fw.kIcondropdown_arrow_bottom{
+		  .p-button-icon-right.ui-c.pi-pi-fw.kIcondropdown_arrow_bottom{
 			font-size: 11px;
 			padding-right: 4px;
 		}
@@ -224,11 +223,11 @@ hr{
 				width: 100%;
 			}
 		}
-		  .ui-calendar .ui-inputtext{
+		  .p-calendar .p-inputtext{
 			width: 144px;
 		}
 
-		  .ui-button-icon-only .pi{
+		  .p-button-icon-only .pi{
 			margin-left: -.5em;
 		}
 
@@ -270,6 +269,9 @@ hr{
 		color: $kBlack;
 	}
 }
-:host ::ng-deep kautocomplete input{
-	height: auto !important;
+:host ::ng-deep kautocomplete ul{
+    width: 100% !important;
+}
+:host ::ng-deep .kHighlightedText {
+    text-decoration: underline;
 }

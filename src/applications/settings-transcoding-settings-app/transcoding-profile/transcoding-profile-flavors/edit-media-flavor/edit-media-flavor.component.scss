@@ -85,12 +85,12 @@
 }
 
 :host ::ng-deep .kEditMediaProfileFlavor {
-  .ui-dropdown.ui-widget {
+  .p-dropdown {
     min-width: 400px;
     width: 400px;
   }
 
-  .ui-inputtext:disabled {
+  .p-inputtext:disabled {
     opacity: 1;
     background-color: $kGrayscale6;
     border: 1px solid $kGrayscale4;

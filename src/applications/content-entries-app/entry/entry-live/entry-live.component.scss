@@ -134,13 +134,13 @@
 
 }
 
-:host ::ng-deep .ui-dropdown{
+:host ::ng-deep .p-dropdown{
 	width: 200px !important;
 }
-:host ::ng-deep .kLiveBitrate .ui-dropdown{
+:host ::ng-deep .kLiveBitrate .p-dropdown{
 	width: 120px !important;
 }
-:host ::ng-deep .ui-dropdown-label.ui-inputtext{
+:host ::ng-deep .p-dropdown-label.p-inputtext{
 	background-color: #ffffff;
 }
 
@@ -148,6 +148,6 @@
 	margin-top: -.8em;
 }
 
-:host ::ng-deep span.ui-button-icon-left.kIconcalendar{
+:host ::ng-deep span.p-button-icon-left.kIconcalendar{
 	padding-top: 2px !important;
 }

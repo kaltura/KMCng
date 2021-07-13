@@ -10,7 +10,8 @@ import {CategoryUserAddAction} from 'kaltura-ngx-client';
 import {KalturaCategoryUser} from 'kaltura-ngx-client';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
 import {CategoryUserCopyFromCategoryAction} from 'kaltura-ngx-client';
-import 'rxjs/add/operator/delay';
+import { delay, map, catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class AddUsersService {
@@ -22,7 +23,7 @@ export class AddUsersService {
 
   public addUsers({usersIds, categoryId, permissionLevel, updateMethod}: { usersIds: string[], categoryId: number, permissionLevel: KalturaCategoryUserPermissionLevel, updateMethod: KalturaUpdateMethodType}): Observable<void> {
     if (!usersIds || !usersIds.length) {
-      return Observable.throw(
+      return throwError(
         new Error(this._appLocalization
           .get('applications.content.categoryDetails.entitlements.usersPermissions.addUsers.errors.missingUsers')));
     }
@@ -39,7 +40,7 @@ export class AddUsersService {
     });
 
     return this._kalturaServerClient.multiRequest(multiRequest)
-      .map(response => {
+      .pipe(map(response => {
           if (response.hasErrors()) {
             const errorMessage = (response.find(r => (r.error && r.error.code !== 'CATEGORY_USER_ALREADY_EXISTS'))) ?
                 'applications.content.categoryDetails.entitlements.usersPermissions.addUsers.errors.addUsersFailed':
@@ -48,8 +49,8 @@ export class AddUsersService {
           }
           return undefined;
         }
-      )
-      .catch(err => Observable.throw(err));
+      ))
+      .pipe(catchError(err => throwError(err)));
   }
 
 
@@ -57,7 +58,7 @@ export class AddUsersService {
   public copyUsersFromParent({categoryId}: {categoryId: number}): Observable<void> {
     return this._kalturaServerClient.request(
       new CategoryUserCopyFromCategoryAction({categoryId})
-    ).delay(6000); // we delay the response for the server to be able to index the new users
+    ).pipe(delay(6000)); // we delay the response for the server to be able to index the new users
   }
 
 

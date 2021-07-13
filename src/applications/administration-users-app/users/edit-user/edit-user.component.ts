@@ -11,6 +11,7 @@ import { KalturaUser } from 'kaltura-ngx-client';
 import { KalturaUserRole } from 'kaltura-ngx-client';
 import { KMCPermissions, KMCPermissionsService } from 'app-shared/kmc-shared/kmc-permissions';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { first } from 'rxjs/operators';
 
 export interface PartnerInfo {
   adminLoginUsersQuota: number;
@@ -72,7 +73,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._usersStore.users.data$
       .pipe(cancelOnDestroy(this))
-      .first()
+      .pipe(first())
       .subscribe(({ roles, users, partnerInfo }) => {
         this._roles = roles.items;
         this._users = users.items;

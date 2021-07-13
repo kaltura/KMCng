@@ -108,7 +108,7 @@
           width: 260px;
           margin-right: 16px;
 
-          p-dropdown {
+          .p-dropdown {
             width: 100%;
           }
         }
@@ -154,18 +154,18 @@
   .kContent {
     width: 992px;
 
-    .ui-table-scrollable-body {
+    .p-datatable-scrollable-body {
       height: calc(100vh - 409px) !important;
     }
 
-    .kTagsVisible .ui-table-scrollable-body {
+    .kTagsVisible .p-datatable-scrollable-body {
       height: calc(100vh - 450px) !important;
     }
 
   }
 }
 
-:host ::ng-deep .kOrderBy .ui-dropdown {
+:host ::ng-deep .kOrderBy .p-dropdown {
   width: 100%;
 
   label {

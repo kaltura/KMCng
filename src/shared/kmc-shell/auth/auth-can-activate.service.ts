@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AppAuthentication } from "./app-authentication.service";
 import { BoostrappingStatus, AppBootstrap } from './app-bootstrap.service';
 import { BrowserService } from '../providers/browser.service';
+import { of } from 'rxjs';
 
 @Injectable()
 export class AuthCanActivate implements CanActivate {
@@ -12,7 +13,7 @@ export class AuthCanActivate implements CanActivate {
 
         if (this.appAuthentication.isLogged())
         {
-            return Observable.of(true);
+            return of(true);
         }
 
         return Observable.create((observer : any) =>

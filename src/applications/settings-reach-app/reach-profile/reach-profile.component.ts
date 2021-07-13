@@ -16,6 +16,7 @@ import { SettingsReachProfileViewSections, SettingsReachProfileViewService } fro
 import { ReachProfileCreditWidget } from "./reach-profile-credit/reach-profile-credit-widget.service";
 import { ReachProfileDictionaryWidget } from "./reach-profile-dictionary/reach-profile-dictionary-widget.service";
 import { ReachProfileRulesWidget } from "./reach-profile-rules/reach-profile-rules-widget.service";
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'kReachProfile',
@@ -107,7 +108,7 @@ export class ReachProfileComponent implements OnInit, OnDestroy {
               });
     this._profileStore.profile.state$
       .pipe(cancelOnDestroy(this))
-      .filter(Boolean)
+      .pipe(filter(Boolean))
       .subscribe(
           (status: StatusArgs) => {
           this._showLoader = false;

@@ -31,11 +31,9 @@
         padding-right: 12px;
       }
 
-
       input {
         width: 100%;
         max-width: 500px;
-        height: 34px;
       }
 
       textarea {
@@ -76,17 +74,9 @@
   }
 }
 
-:host ::ng-deep kautocomplete {
-  .ui-state-disabled {
-    background-color: $kGrayscale5;
-  }
-
-  input {
-    height: auto !important;
-    width: 100%;
-  }
+:host ::ng-deep kautocomplete ul{
+    width: 100% !important;
 }
-
-:host ::ng-deep .ui-autocomplete {
-  width: 100%;
+:host ::ng-deep .kHighlightedText {
+    text-decoration: underline;
 }

@@ -101,6 +101,7 @@ $spinner-colors: rgb(218, 31, 38), rgb(6, 168, 133), rgb(0, 147, 68), rgb(248, 1
         height: 20px;
         width: 18px;
         font-size: 24px;
+        overflow: visible;
         &:active{
           box-shadow: none;
         }
@@ -181,7 +182,7 @@ $spinner-colors: rgb(218, 31, 38), rgb(6, 168, 133), rgb(0, 147, 68), rgb(248, 1
                       background-color: $kGrayscale7;
                   }
                   &.active {
-                      color: $kTertiary;
+                      color: $kPrimary;
                       cursor: default;
                   }
               }
@@ -283,17 +284,18 @@ $spinner-colors: rgb(218, 31, 38), rgb(6, 168, 133), rgb(0, 147, 68), rgb(248, 1
 .kPermissionsListPanel {
   width: 320px;
 
-  &.ui-multiselect-panel {
+  &.p-multiselect-panel {
     .pi-minus {
-      background-color: #00a784;
-      border: 1px solid #00a784;
+      background-color: $kPrimary;
+      border: 1px solid $kPrimary;
       color: #ffffff;
-      width: 16px;
-      height: 16px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-radius: 3px;
-      top: -1px;
       position: relative;
-      left: -1px;
     }
   }
 
@@ -334,7 +336,7 @@ $spinner-colors: rgb(218, 31, 38), rgb(6, 168, 133), rgb(0, 147, 68), rgb(248, 1
         border: 1px solid $kPrimary;
     }
     &:active{
-        box-shadow: 0 0 0 3px rgba(0,167,132,0.4);
+        box-shadow: 0 0 0 3px rgba($kPrimary,0.4);
     }
     -webkit-transition: all 100ms ease-in-out;
     -moz-transition: all 100ms ease-in-out;
@@ -345,8 +347,8 @@ $spinner-colors: rgb(218, 31, 38), rgb(6, 168, 133), rgb(0, 147, 68), rgb(248, 1
 .ui-column-resizer-helper {
     background-color: $kGrayscale5;
 }
-.ui-button{
-    .ui-button-icon-left{
+.p-button{
+    .p-button-icon-left{
         font-size: inherit;
     }
 }
@@ -366,13 +368,20 @@ $spinner-colors: rgb(218, 31, 38), rgb(6, 168, 133), rgb(0, 147, 68), rgb(248, 1
         background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='28px' height='28px' viewBox='0 0 28 28' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch --%3E%3Ctitle%3EV7 Icon%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Share-&amp;-Embed' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Preview-&amp;-Share-Select-Player' transform='translate(-577.000000, -168.000000)'%3E%3Cg id='Select-player' transform='translate(460.000000, 10.000000)'%3E%3Cg id='Drop-Down' transform='translate(100.000000, 42.000000)'%3E%3Cg id='Menu/Menu-item' transform='translate(0.000000, 114.000000)'%3E%3Cg id='V7-Icon' transform='translate(17.000000, 2.000000)'%3E%3Crect id='Rectangle-4' fill='%23BB48B4' x='0' y='0' width='28' height='28' rx='3'%3E%3C/rect%3E%3Cpath d='M9.655,20 L6.985,20 L5.32,9.995 L7.645,9.995 L8.725,17.69 L13.18,9.995 L15.715,9.995 L9.655,20 Z M17.635,20 L15.19,20 L20.53,11.87 L15.61,11.87 L16.015,9.995 L23.53,9.995 L23.2,11.48 L17.635,20 Z' id='V7' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
     &.selectedPlayer{
-        height: 24px;
+        height: 32px;
+        margin-left: -6px;
         .playerIcon{
             transform: scale(0.8);
         }
+        span {
+            white-space: nowrap;
+        }
+    }
+    span {
+        white-space: pre-wrap;
     }
 }
-.ui-menu{
+.p-menu{
     li.kSelected{
         font-weight: bold;
         a:after{
@@ -406,10 +415,10 @@ div, span, tr, td, li {
     outline: none !important;
 }
 
-.ui-datepicker-trigger {
+.p-datepicker-trigger {
     position: absolute;
 }
 
-.ui-table p-sorticon {
+.p-datatable p-sorticon {
     vertical-align: unset;
 }

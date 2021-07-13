@@ -3,7 +3,7 @@ import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { BrowserService } from 'app-shared/kmc-shell/providers';
 import { Title } from '@angular/platform-browser';
 import { ContextualHelpService } from 'app-shared/kmc-shared/contextual-help/contextual-help.service';
-import { catchError, map } from 'rxjs/internal/operators';
+import { catchError, map } from 'rxjs/operators';
 
 
 export interface DetailsViewMetadata {
@@ -37,7 +37,7 @@ export abstract class KmcDetailsViewBaseService<TArgs extends {}> {
         if (this.isAvailable(args)) {
             this._lastArgsUsedByOpen = args;
             this._open(args)
-                .map(result => result === null ? true : result) // treat navigation to save route as successful operation
+                .pipe(map(result => result === null ? true : result)) // treat navigation to save route as successful operation
                 .subscribe(
                 result => {
                     if (!result) {

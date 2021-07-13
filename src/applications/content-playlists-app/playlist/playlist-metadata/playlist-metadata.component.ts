@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { PlaylistMetadataWidget } from './playlist-metadata-widget.service';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { SuggestionsProviderData } from '@kaltura-ng/kaltura-primeng-ui';
 import { ISubscription } from 'rxjs/Subscription';
 

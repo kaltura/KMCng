@@ -26,6 +26,7 @@ import {CategoriesUtilsService} from "../../categories-utils.service";
 import {CategoriesStatusMonitorService} from 'app-shared/content-shared/categories-status/categories-status-monitor.service';
 import { KMCPermissions, KMCPermissionsService } from 'app-shared/kmc-shared/kmc-permissions';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
+import {TieredMenu} from "primeng/tieredmenu";
 
 @Component({
   selector: 'kCategoriesBulkActions',
@@ -45,7 +46,7 @@ export class CategoriesBulkActionsComponent implements OnInit, OnDestroy {
   @Output() onBulkChange = new EventEmitter<{ reload: boolean}>();
 
   @ViewChild('bulkActionsPopup', { static: true }) public bulkActionsPopup: PopupWidgetComponent;
-
+  @ViewChild('menu', { static: true }) private _bulkMenu: TieredMenu;
 
   constructor(private _appLocalization: AppLocalization,
               private _permissionsService: KMCPermissionsService,
@@ -120,7 +121,7 @@ export class CategoriesBulkActionsComponent implements OnInit, OnDestroy {
 
   openBulkActionWindow(action: string, popupWidth: number, popupHeight: number) {
       this._logger.info(`handle open bulk action window`, { action, popupWidth, popupHeight });
-
+      this._bulkMenu.hide();
     if (this._categoriesUtilsService.hasEditWarnings(this.selectedCategories)) {
         this._logger.info(`category has edit warning tag, show confirmation`);
       this._browserService.confirm(

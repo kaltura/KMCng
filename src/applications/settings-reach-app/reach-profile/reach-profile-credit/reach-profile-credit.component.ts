@@ -4,6 +4,7 @@ import { cancelOnDestroy } from '@kaltura-ng/kaltura-common';
 import { KalturaBaseVendorCreditArgs, KalturaReachProfile, KalturaReoccurringVendorCredit, KalturaTimeRangeVendorCredit, KalturaUnlimitedVendorCredit, KalturaVendorCredit } from "kaltura-ngx-client";
 import { ReachProfileCreditWidget } from "./reach-profile-credit-widget.service";
 import { AppLocalization } from "@kaltura-ng/mc-shared";
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'kReachProfileCredit',
@@ -26,7 +27,7 @@ export class ReachProfileCreditComponent implements OnInit, OnDestroy {
 
     this._widgetService.data$
       .pipe(cancelOnDestroy(this))
-      .filter(Boolean)
+      .pipe(filter(Boolean))
       .subscribe(
           (data: KalturaReachProfile) => {
           this._currentProfile = data;

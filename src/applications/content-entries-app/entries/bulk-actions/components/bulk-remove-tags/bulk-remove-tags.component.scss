@@ -47,6 +47,9 @@
   justify-content: center;
 }
 
-:host ::ng-deep .ui-autocomplete {
-  width: 100%;
+:host ::ng-deep kautocomplete ul{
+    width: 100% !important;
+}
+:host ::ng-deep .kHighlightedText {
+    text-decoration: underline;
 }

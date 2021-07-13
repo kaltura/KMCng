@@ -2,7 +2,7 @@
 
 .kNoParentOption {
   padding-bottom: 10px;
-  display: block;
+  display: flex;
 }
 
 .kMain {
@@ -43,10 +43,11 @@
   margin-top: 4px;
   border-bottom: 0px solid white;
   min-height: 260px;
+  position: relative;
 }
 
 :host ::ng-deep k-area-blocker {
-  height: 265px;
+  height: 260px;
   overflow-y: hidden;
 }
 
@@ -71,15 +72,9 @@
   }
 }
 
-:host ::ng-deep kautocomplete ul.ui-autocomplete-multiple-container.ui-inputtext {
-  padding: 0px;
-  .ui-autocomplete-input-token {
-    padding: 0px;
-    input {
-      height: 34px;
-      padding-left: 8px;
-      width: 500px;
-    }
-  }
+:host ::ng-deep kautocomplete ul{
+    width: 100% !important;
 }
-
+:host ::ng-deep .kHighlightedText {
+    text-decoration: underline;
+}

@@ -6,7 +6,7 @@
       <kAutoComplete [(ngModel)]="tags"
                      suggestionItemField="item"
                      suggestionSelectableField="isSelectable"
-                     [multiple]="true"
+                     [allowMultiple]="true"
                      [limitToSuggestions]="false"
                      [minLength]="3"
                      [suggestionsProvider]="_tagsProvider"

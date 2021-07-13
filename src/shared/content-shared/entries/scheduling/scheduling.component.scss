@@ -36,13 +36,16 @@
     cursor: default;
     pointer-events: none;
   }
+  .error {
+    margin-top: 4px;
+  }
 }
 
 :host ::ng-deep label {
   font-weight: 400;
 }
 
-:host ::ng-deep .ui-calendar .ui-inputtext {
+:host ::ng-deep .p-calendar .p-inputtext {
   width: 140px !important;
 }
 

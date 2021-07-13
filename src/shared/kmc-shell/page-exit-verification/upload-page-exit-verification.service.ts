@@ -5,6 +5,7 @@ import { PageExitVerificationService } from 'app-shared/kmc-shell/page-exit-veri
 import { NewEntryUploadFile } from 'app-shared/kmc-shell/new-entry-upload';
 import { NewEntryFlavourFile } from 'app-shared/kmc-shell/new-entry-flavour-file';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { filter } from 'rxjs/operators';
 
 @Injectable()
 export class UploadPageExitVerificationService implements OnDestroy {
@@ -36,8 +37,8 @@ export class UploadPageExitVerificationService implements OnDestroy {
   public init(): void {
     this._uploadManagement.onTrackedFileChanged$
       .pipe(cancelOnDestroy(this))
-      .filter(({ data }) => data instanceof NewEntryUploadFile || data instanceof NewEntryFlavourFile)
-      .filter(({ status, progress }) => !(status === TrackedFileStatuses.uploading && progress > 0))
+      .pipe(filter(({ data }) => data instanceof NewEntryUploadFile || data instanceof NewEntryFlavourFile))
+      .pipe(filter(({ status, progress }) => !(status === TrackedFileStatuses.uploading && progress > 0)))
       .subscribe(({ id, status }) => {
         if (status === TrackedFileStatuses.added) {
           if (this._trackedFilesIds.indexOf(id) === -1) {

@@ -190,34 +190,34 @@
 }
 
 :host ::ng-deep .kDropFoldersList {
-    .ui-dropdown-panel {
+    .p-dropdown-panel {
         width: 238px;
     }
 
-    .ui-dropdown-label {
+    .p-dropdown-label {
         text-overflow: ellipsis;
         font-weight: normal;
         font-size: 15px;
         color: $kGrayscale1;
     }
 
-    .ui-dropdown.ui-widget {
+    .p-dropdown {
         min-width: 238px;
         width: 238px;
     }
 }
 
 :host ::ng-deep .kMatchDropFolderTable {
-    .ui-table .ui-table-scrollable-body {
+    .p-datatable .p-datatable-scrollable-body {
         max-height: 208px !important;
         height: 208px !important;
     }
 
-    .ui-table .ui-table-tbody > tr > td:first-child {
+    .p-datatable .p-datatable-tbody > tr > td:first-child {
         border-color: #d9d9d9;
     }
 
-    .ui-radiobutton {
+    .p-radiobutton {
         margin-top: -2px;
     }
 

@@ -3,6 +3,7 @@ import { KalturaPlaylist } from 'kaltura-ngx-client';
 import { PlaylistDetailsWidget } from './playlist-details-widget.service';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 import { AppLocalization } from "@kaltura-ng/mc-shared";
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'kPlaylistDetails',
@@ -25,7 +26,7 @@ export class PlaylistDetailsComponent implements OnInit, OnDestroy {
     this._widgetService.attachForm();
     this._widgetService.data$
       .pipe(cancelOnDestroy(this))
-      .filter(Boolean)
+      .pipe(filter(Boolean))
       .subscribe((data: KalturaPlaylist) => {
         this._currentPlaylist = data;
         this._isNew = !this._currentPlaylist.id;

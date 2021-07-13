@@ -5,7 +5,8 @@
   <button class="kButtonDefault kBulkActionsBtn" icon="kIcondropdown_arrow_bottom" iconPos="right" pButton label="{{'applications.content.entries.bulkActions' | translate}}" (click)="menu.toggle($event)"></button>
 </div>
 
-<p-tieredMenu #menu kMenuCloseOnScroll [model]="_bulkActionsMenu" [popup]="true" [styleClass]="menu" class="kOverrideFAIcons" [appendTo]="'body'"></p-tieredMenu>
+<p-tieredMenu #menu kMenuCloseOnScroll [model]="_bulkActionsMenu" [popup]="true" [styleClass]="menu" class="kOverrideFAIcons" [appendTo]="'body'"
+              [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'"></p-tieredMenu>
 
 
 <kPopupWidget #bulkActionsPopup data-aid="bulkActionsPopup" [popupWidth]="_bulkWindowWidth" [popupHeight]="_bulkWindowHeight" [modal]="true">

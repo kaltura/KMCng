@@ -161,23 +161,19 @@ $kmc-flags-path: '../../styles/flags/';
 }
 
 :host ::ng-deep .kEditAccessControlProfile {
-  .ui-multiselect-panel {
-    width: 320px;
-    height: 262px;
-  }
 
-  .ui-radiobutton-label {
+  .p-radiobutton-label {
     font-weight: normal;
     font-size: 15px;
     margin-left: 5px;
   }
 
-  .ui-multiselect-label {
+  .p-multiselect-label {
     font-weight: normal;
     padding: .5em;
   }
 
-  .ui-multiselect-trigger {
+  .p-multiselect-trigger {
     padding: .5em 1em;
 
     .pi-caret-down {
@@ -185,55 +181,29 @@ $kmc-flags-path: '../../styles/flags/';
     }
   }
 
-  .ui-multiselect-items-wrapper {
+  .p-multiselect-items-wrapper {
     overflow-x: hidden;
   }
 
-  kautocomplete {
-    &.hasError {
-      .ui-autocomplete-multiple-container {
-        border-color: $kDandger;
-      }
-    }
-    input {
-      height: auto !important;
-    }
-
-    .ui-autocomplete.ui-widget {
-      width: 100%;
-      input {
-        width: 100%;
-      }
-    }
-
-    .ui-autocomplete-multiple-container {
-      display: flex;
-      height: 71px !important;
-      flex-wrap: wrap;
-      overflow-y: auto;
-
-      .ui-autocomplete-token {
-        flex: 0 auto;
-      }
-
-      .ui-autocomplete-input-token {
-        flex: 1;
-        width: 100%;
-        min-width: 175px;
-      }
-    }
-  }
-
   p-checkbox {
-    .ui-chkbox-label {
+    .p-chkbox-label {
       font-size: 15px;
       font-weight: normal;
       line-height: 18px;
       margin-left: 10px;
     }
 
-    .ui-chkbox {
+    .p-chkbox {
       margin-right: 0;
     }
   }
+}
+:host ::ng-deep kautocomplete ul{
+    width: 100% !important;
+    &.p-autocomplete-multiple-container.p-inputtext {
+        height: 70px;
+    }
+}
+:host ::ng-deep .kHighlightedText {
+    text-decoration: underline;
 }

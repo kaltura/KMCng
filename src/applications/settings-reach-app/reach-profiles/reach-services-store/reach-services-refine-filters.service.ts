@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DefaultFiltersList } from './default-filters-list';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
+import { of } from 'rxjs';
 
 export interface RefineListItem {
   value: string;
@@ -22,7 +23,7 @@ export class ReachServicesRefineFiltersService {
   }
 
   public getFilters(): Observable<RefineList[]> {
-    return Observable.of(this._buildDefaultFiltersGroup());
+    return of(this._buildDefaultFiltersGroup());
   }
 
   private _buildDefaultFiltersGroup(): RefineList[] {

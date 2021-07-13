@@ -21,7 +21,7 @@ import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { ContentCategoryViewSections, ContentCategoryViewService } from 'app-shared/kmc-shared/kmc-views/details-views';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 import { AnalyticsNewMainViewService } from "app-shared/kmc-shared/kmc-views";
-import {KalturaSourceType} from "kaltura-ngx-client";
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'kCategory',
@@ -80,7 +80,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this._analyticsAllowed = this._analyticsNewMainViewService.isAvailable(); // new analytics app is available
     this._categoriesStatusMonitorService.status$
 	    .pipe(cancelOnDestroy(this))
-	    .first()
+	    .pipe(first())
 	    .subscribe((status: CategoriesStatus) => {
           if (status.lock){
             this._browserService.alert({
@@ -294,7 +294,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   public canLeave(): Observable<{ allowed: boolean }> {
     return this._categoryStore.canLeaveWithoutSaving();
   }
-  
+
   public _openCategoryAnalytics(): void {
       if (this._analyticsAllowed) {
           const route = 'analytics/category';

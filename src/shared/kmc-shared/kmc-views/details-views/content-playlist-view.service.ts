@@ -9,6 +9,7 @@ import {KalturaPlaylist, KalturaPlaylistType} from 'kaltura-ngx-client';
 import {KalturaLogger} from '@kaltura-ng/kaltura-logger';
 import {Title} from '@angular/platform-browser';
 import {ContextualHelpService} from 'app-shared/kmc-shared/contextual-help/contextual-help.service';
+import { from as fromPromise} from 'rxjs';
 
 export enum ContentPlaylistViewSections {
     Metadata = 'Metadata',
@@ -128,6 +129,6 @@ export class ContentPlaylistViewService extends KmcDetailsViewBaseService<Conten
     protected _open(args: ContentPlaylistViewArgs): Observable<boolean> {
         this._logger.info('handle open playlist view request by the user', { playlistId: args.playlist.id });
         const sectionToken = this._getSectionRouteToken(args.section);
-        return Observable.fromPromise(this._router.navigateByUrl(`/content/playlists/playlist/${args.playlist.id}/${sectionToken}`));
+        return fromPromise(this._router.navigateByUrl(`/content/playlists/playlist/${args.playlist.id}/${sectionToken}`));
     }
 }

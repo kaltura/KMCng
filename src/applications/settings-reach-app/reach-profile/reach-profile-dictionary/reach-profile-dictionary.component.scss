@@ -71,65 +71,20 @@
     }
 
     ::ng-deep {
-        .ui-button-icon-left {
+        .p-button-icon-left {
             font-size: 24px;
             color: $kGrayscale3;
         }
 
-        .ui-button-text {
+        .p-button-text {
             margin-left: 16px;
         }
     }
 
 }
 ::ng-deep p-chips.kInvalid {
-    .ui-chips ul.ui-inputtext {
+    .p-chips ul.p-inputtext {
         border: 1px solid $kDandger;
     }
 }
 
-::ng-deep p-chips {
-    width: 100%;
-    .ui-chips {
-        ul.ui-inputtext {
-            max-height: 101px;
-            overflow-y: auto;
-            height: auto;
-        }
-        .ui-chips-token{
-            margin-right: 6px;
-            height: 24px;
-            border: 0px solid $kPrimary;
-            background-color: $kPrimary;
-            border-radius: 3px;
-            color: #ffffff;
-            padding-top: 4px;
-            margin-bottom: 3px;
-            margin-top: 3px;
-            &:hover {
-                background-color: darken(#00A784, 10%);
-            }
-            .ui-chips-token-label{
-                font-weight: bold;
-            }
-            .ui-chips-token-icon.pi-times{
-                flex: 0 0 auto;
-                margin-top: -10px;
-                right: 0px;
-                padding: 4px;
-                cursor: pointer;
-                font-size: 12px;
-                margin-right: 2px;
-                padding-top: 4px;
-                &:hover{
-                    background-color: rgba(255,255,255,0.3);
-                    border: 0px solid rgba(255,255,255,0.3);
-                    border-radius: 3px;
-                }
-            }
-            .ui-chips-token-icon.pi-times:before {
-                content: "\e91d";
-            }
-        }
-    }
-}

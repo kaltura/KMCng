@@ -1,4 +1,4 @@
-:host ::ng-deep span.ui-button-icon-left.pi-kIconarrow_forward, :host ::ng-deep span.ui-button-icon-left.pi-kIconarrow_backward {
+:host ::ng-deep span.p-button-icon-left.pi-kIconarrow_forward, :host ::ng-deep span.p-button-icon-left.pi-kIconarrow_backward {
 	margin-left: -.5em;
 }
 :host ::ng-deep .stickyHeader{
@@ -25,7 +25,7 @@
         ::ng-deep .kIconstatistic {
             font-size: 24px;
         }
-        ::ng-deep .ui-button-text{
+        ::ng-deep .p-button-text{
             padding-left: 42px;
             white-space: nowrap;
         }

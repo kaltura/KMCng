@@ -83,12 +83,12 @@
   }
 
   p-table {
-    .ui-table-scrollable-body {
+    .p-datatable-scrollable-body {
       margin-bottom: 34px;
       height: calc(100vh - 521px) !important;
     }
 
-    .ui-table-scrollable-table-wrapper {
+    .p-datatable-scrollable-table-wrapper {
       height: calc(100vh - 521px);
     }
 

@@ -4,8 +4,7 @@ import {EntryAdvertisementsWidget} from './entry-advertisements-widget.service';
 import { AdvertisementsAppViewService } from 'app-shared/kmc-shared/kmc-views/component-views';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 import { EntryStore } from '../entry-store.service';
-import { Observable } from 'rxjs';
-import 'rxjs/add/observable/merge';
+import { merge } from 'rxjs';
 
 @Component({
     selector: 'kEntryAdvertisements',
@@ -25,7 +24,7 @@ export class EntryAdvertisementsComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this._widgetService.attachForm();
 
-        Observable.merge(
+        merge(
             this._widgetService.data$,
             this._store.hasSource.value$
         )

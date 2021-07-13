@@ -15,6 +15,8 @@ import { AppLocalization } from '@kaltura-ng/mc-shared';
 import { CategoriesGraphUpdatedEvent } from 'app-shared/kmc-shared/app-events/categories-graph-updated/categories-graph-updated';
 import { AppEventsService } from 'app-shared/kmc-shared';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { throwError } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 export interface EntitlementSectionData {
   categories: KalturaCategory[];
@@ -38,7 +40,7 @@ export class EntitlementService implements OnDestroy{
       })
     );
 
-    return this._kalturaServerClient.multiRequest(request).pipe(cancelOnDestroy(this)).map(
+    return this._kalturaServerClient.multiRequest(request).pipe(cancelOnDestroy(this)).pipe(map(
       response => {
         if (response.hasErrors()) {
           throw new Error('error occurred in action \'getEntitlementsSectionData\'');
@@ -48,12 +50,12 @@ export class EntitlementService implements OnDestroy{
         const categories: KalturaCategory[] = response[1].result.objects;
         return {categories, partnerDefaultEntitlementEnforcement};
       }
-    );
+    ));
   }
 
   public deleteEntitlement({id, privacyContextData}: { id: number, privacyContextData?: { privacyContext: string, privacyContexts: string } }): Observable<void> {
       if (!id) {
-          return Observable.throw(new Error('Error occurred while trying to delete entitlement'));
+          return throwError(new Error('Error occurred while trying to delete entitlement'));
       }
 
       const category = new KalturaCategory();
@@ -75,23 +77,23 @@ export class EntitlementService implements OnDestroy{
           id,
           category
       }))
-          .do(() => {
+          .pipe(tap(() => {
               this._notifyCategoriesGraphChanges();
-          })
-          .map(_ => (undefined));
+          }))
+          .pipe(map(_ => (undefined)));
   }
 
   public addEntitlement({id, privacyContext}: { id: number, privacyContext: string }): Observable<void> {
     if (!id || !privacyContext) {
-      return Observable.throw(new Error('Error occurred while trying to add entitlement, invalid entitlement\'s data'));
+      return throwError(new Error('Error occurred while trying to add entitlement, invalid entitlement\'s data'));
     }
 
     return this._categoriesSearch.getCategory(id)
-        .switchMap(category =>
+        .pipe(switchMap(category =>
         {
             if (category.privacyContext && category.privacyContext.length)
             {
-                return Observable.throw(new Error(this._appLocalization.get('applications.settings.integrationSettings.entitlement.editEntitlement.errors.privacyContextLabelExists')));
+                return throwError(new Error(this._appLocalization.get('applications.settings.integrationSettings.entitlement.editEntitlement.errors.privacyContextLabelExists')));
             }else {
 
                 return this._kalturaServerClient.request(new CategoryUpdateAction({
@@ -100,12 +102,12 @@ export class EntitlementService implements OnDestroy{
                         privacyContext
                     })
                 }))
-                    .do(() => {
+                    .pipe(tap(() => {
                         this._notifyCategoriesGraphChanges();
-                    })
-                    .map(_ => (undefined));
+                    }))
+                    .pipe(map(_ => (undefined)));
             }
-        });
+        }));
   }
 
   private _notifyCategoriesGraphChanges(): void{

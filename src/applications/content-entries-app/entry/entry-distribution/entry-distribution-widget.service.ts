@@ -22,7 +22,7 @@ import { KalturaWidevineFlavorAsset } from 'kaltura-ngx-client';
 import { KalturaThumbAsset } from 'kaltura-ngx-client';
 import { KalturaEntryDistribution } from 'kaltura-ngx-client';
 import { KalturaDistributionProfile } from 'kaltura-ngx-client';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { EntryDistributionSubmitDeleteAction } from 'kaltura-ngx-client';
 import { EntryDistributionDeleteAction } from 'kaltura-ngx-client';
 import { AreaBlockerMessage } from '@kaltura-ng/kaltura-ui';
@@ -39,6 +39,8 @@ import { KalturaDistributionProviderType } from 'kaltura-ngx-client';
 import { ContentEntryViewSections } from 'app-shared/kmc-shared/kmc-views/details-views/content-entry-view.service';
 import {KalturaLogger} from '@kaltura-ng/kaltura-logger';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { of } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 
 export interface ExtendedKalturaEntryDistribution extends KalturaEntryDistribution {
   name: string;
@@ -95,7 +97,7 @@ export class EntryDistributionWidget extends EntryWidget implements OnDestroy {
     super._showLoader();
 
     return this._loadDistributionData()
-      .do((response: DistributionWidgetData) => {
+      .pipe(tap((response: DistributionWidgetData) => {
         this._flavors.next({ items: response.flavors });
         this._thumbnails.next({ items: response.thumbnails });
         this._distributedProfiles.next({ items: response.distributedProfiles });
@@ -103,14 +105,14 @@ export class EntryDistributionWidget extends EntryWidget implements OnDestroy {
         this._partnerDistributionProfiles.next({ items: response.partnerDistributionProfiles });
 
         super._hideLoader();
-      })
-      .map(() => ({ failed: false }))
-      .catch(error => {
+      }))
+      .pipe(map(() => ({ failed: false })))
+      .pipe(catchError(error => {
           super._hideLoader();
           super._showActivationError();
-          return Observable.of({ failed: true, error });
+          return of({ failed: true, error });
         }
-      );
+      ));
   }
 
   protected onDataSaving(data: KalturaMediaEntry, request: KalturaMultiRequest): void {
@@ -254,7 +256,7 @@ export class EntryDistributionWidget extends EntryWidget implements OnDestroy {
         entryThumbnailsListAction
       ))
       .pipe(cancelOnDestroy(this, this.widgetReset$))
-      .map(response => {
+      .pipe(map(response => {
         if (response.hasErrors()) {
           response.forEach(item => {
             if (item.error) {
@@ -296,7 +298,7 @@ export class EntryDistributionWidget extends EntryWidget implements OnDestroy {
           undistributedProfiles,
           partnerDistributionProfiles
         };
-      });
+      }));
   }
 
   private _performDeleteRequest(action: KalturaRequest<KalturaEntryDistribution | void>, closePopupCallback?: () => void): void {
@@ -483,7 +485,7 @@ export class EntryDistributionWidget extends EntryWidget implements OnDestroy {
   public loadMissingFlavors(flavors: Partial<Flavor>[]): Observable<{ id: string, name: string }[]> {
     const actions = flavors.map(({ id }) => new FlavorParamsGetAction({ id: Number(id) }));
     return this._kalturaClient.multiRequest(new KalturaMultiRequest(...actions))
-      .map(responses => {
+      .pipe(map(responses => {
         return responses.map(response => {
           const result = response.result;
           if (response.error || !result) {
@@ -495,7 +497,7 @@ export class EntryDistributionWidget extends EntryWidget implements OnDestroy {
 
           return { id: String(result.id), name: result.name };
         });
-      });
+      }));
   }
 
   public distributeProfile(payload: { entryId: string, profileId: number, submitWhenReady: boolean }, closePopupCallback: () => void): void {
@@ -518,13 +520,13 @@ export class EntryDistributionWidget extends EntryWidget implements OnDestroy {
     this._kalturaClient.multiRequest(new KalturaMultiRequest(...actions))
       .pipe(cancelOnDestroy(this, this.widgetReset$))
       .pipe(tag('block-shell'))
-      .map(responses => {
+      .pipe(map(responses => {
         responses.forEach(response => {
           if (response.error instanceof KalturaAPIException) {
             throw Error(response.error.message);
           }
         });
-      })
+      }))
       .subscribe(
         () => {
           this.refresh();

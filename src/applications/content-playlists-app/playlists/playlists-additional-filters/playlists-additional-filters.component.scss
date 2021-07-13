@@ -40,22 +40,22 @@
   text-decoration: none;
 }
 
-:host ::ng-deep .kDateRange .ui-calendar.ui-calendar-w-btn {
+:host ::ng-deep .kDateRange .p-calendar.p-calendar-w-btn {
 	width: 158px;
 }
 
-:host ::ng-deep .kDateRange .ui-calendar .ui-inputtext {
+:host ::ng-deep .kDateRange .p-calendar .p-inputtext {
 	margin: 0;
 	padding-left: 33px;
 	width: 100%;
 }
 
-:host ::ng-deep .kDateRange .kDateRangeFirst .ui-calendar.ui-calendar-w-btn {
+:host ::ng-deep .kDateRange .kDateRangeFirst .p-calendar.p-calendar-w-btn {
 	border-bottom-left-radius: 3px;
 	border-top-left-radius: 3px;
 }
 
-:host ::ng-deep .kDateRange .kDateRangeLast .ui-calendar.ui-calendar-w-btn {
+:host ::ng-deep .kDateRange .kDateRangeLast .p-calendar.p-calendar-w-btn {
 	border-left: 0 solid $kGrayscale4;
 	border-bottom-right-radius: 3px;
 	border-top-right-radius: 3px;

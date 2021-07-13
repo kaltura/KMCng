@@ -58,11 +58,11 @@ a.disabled {
   margin-left: 10px;
 }
 
-:host ::ng-deep .ui-tree .ui-tree-container {
+:host ::ng-deep .p-tree .p-tree-container {
   overflow: visible;
 }
 
-:host ::ng-deep .ui-tree .ui-chkbox {
+:host ::ng-deep .p-tree .ui-chkbox {
   vertical-align: top;
   margin-top: 16px;
 }
@@ -71,14 +71,14 @@ a.disabled {
     display: block;
 }
 :host ::ng-deep .kLanguages {
-    .ui-multiselect {
+    .p-multiselect {
         padding-left: 0;
         width: 274px;
     }
-    .ui-multiselect-panel{
+    .p-multiselect-panel{
         width: 272px;
     }
-    .ui-multiselect-label {
+    .p-multiselect-label {
         padding: .5em;
         line-height: inherit;
     }
@@ -87,6 +87,6 @@ a.disabled {
         border-radius: 0;
     }
 }
-:host ::ng-deep .ui-multiselect-panel .ui-multiselect-items-wrapper {
+:host ::ng-deep .p-multiselect-panel .p-multiselect-items-wrapper {
     overflow-x: hidden;
 }

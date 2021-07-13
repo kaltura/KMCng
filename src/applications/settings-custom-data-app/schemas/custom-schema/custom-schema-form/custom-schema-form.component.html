@@ -44,17 +44,17 @@
       <p-radioButton class="kRadioLeft"
                      name="applyTo"
                      [value]="_applyToValues.entry"
-                     [formControl]="_applyToField"
+                     formControlName="applyTo"
                      [label]="'applications.settings.metadata.form.entries' | translate"></p-radioButton>
       <p-radioButton class="kRadioRight"
                      name="applyTo"
                      [value]="_applyToValues.category"
-                     [formControl]="_applyToField"
+                     formControlName="applyTo"
                      [label]="'applications.settings.metadata.form.categories' | translate"></p-radioButton>
         <p-radioButton class="kRadioRight"
                      name="applyTo"
                      [value]="_applyToValues.userEntry"
-                     [formControl]="_applyToField"
+                       formControlName="applyTo"
                      [label]="'applications.settings.metadata.form.userEntry' | translate"></p-radioButton>
     </div>
   </div>

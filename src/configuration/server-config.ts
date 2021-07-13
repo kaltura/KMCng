@@ -1,7 +1,4 @@
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/delay';
 import { ExternalAppsAdapter } from './server-config-utils';
-import { globalConfig } from 'config/global';
 
 /*************************************
  * Developer Notice:

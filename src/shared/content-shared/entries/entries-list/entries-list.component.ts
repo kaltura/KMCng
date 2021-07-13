@@ -15,6 +15,8 @@ import { ReachAppViewService, ReachPages } from 'app-shared/kmc-shared/kmc-views
 import { KMCPermissions, KMCPermissionsService } from 'app-shared/kmc-shared/kmc-permissions';
 import { MenuItem } from 'primeng/api';
 import { EntriesSearchFiltersComponent } from "app-shared/content-shared/entries/entries-search-filters/entries-search-filters.component";
+import { filter } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 export interface CustomMenuItem extends MenuItem {
     metadata?: any;
@@ -88,7 +90,7 @@ export class EntriesListComponent implements OnInit, OnDestroy, OnChanges {
 
       this._entriesStore.entries.data$
         .pipe(cancelOnDestroy(this))
-        .filter(data => Array.isArray(data.items))
+        .pipe(filter(data => Array.isArray(data.items)))
         .subscribe(({ items }) => {
           this._entriesDuration = items.reduce((total, entry) => total + entry.duration, 0);
         });
@@ -173,7 +175,7 @@ export class EntriesListComponent implements OnInit, OnDestroy, OnChanges {
         this._isBusy = true;
         this._entriesRefineFilters.getFilters()
             .pipe(cancelOnDestroy(this))
-            .first() // only handle it once, no need to handle changes over time
+            .pipe(first()) // only handle it once, no need to handle changes over time
             .subscribe(
                 groups => {
 

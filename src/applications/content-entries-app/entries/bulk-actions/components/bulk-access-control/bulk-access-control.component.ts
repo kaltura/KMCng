@@ -8,7 +8,7 @@ import { PopupWidgetComponent, PopupWidgetStates } from '@kaltura-ng/kaltura-ui'
 
 
 import { Observable } from 'rxjs';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { SelectItem } from 'primeng/api';
 
 import { KalturaAccessControl } from 'kaltura-ngx-client';
@@ -26,8 +26,8 @@ import { KalturaFlavorParams } from 'kaltura-ngx-client';
 import { KalturaUtils } from '@kaltura-ng/kaltura-common';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
 import { AccessControlProfileStore, FlavoursStore } from 'app-shared/kmc-shared';
-
-import 'rxjs/add/observable/forkJoin';
+import { throwError } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import * as R from 'ramda';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 
@@ -125,7 +125,7 @@ export class BulkAAccessControl implements OnInit, OnDestroy, AfterViewInit {
 					}
 				);
 				this._accessControlProfiles.next({items: []});
-				return Observable.throw(error);
+				return throwError(error);
 			}
 		);
 	}
@@ -176,7 +176,7 @@ export class BulkAAccessControl implements OnInit, OnDestroy, AfterViewInit {
 		const getAPProfiles$ = this._accessControlProfileStore.get().pipe(cancelOnDestroy(this));
 		const getFlavours$ = this._flavoursStore.get().pipe(cancelOnDestroy(this));
 
-		return Observable.forkJoin(getAPProfiles$, getFlavours$).pipe(cancelOnDestroy(this));
+		return forkJoin(getAPProfiles$, getFlavours$).pipe(cancelOnDestroy(this));
 	}
 
 	private _setRestrictions() {

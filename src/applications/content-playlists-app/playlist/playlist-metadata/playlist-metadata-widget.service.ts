@@ -9,11 +9,14 @@ import { KalturaTagFilter } from 'kaltura-ngx-client';
 import { KalturaTaggedObjectType } from 'kaltura-ngx-client';
 import { KalturaFilterPager } from 'kaltura-ngx-client';
 import { KalturaClient } from 'kaltura-ngx-client';
-import { async } from 'rxjs/scheduler/async';
+import { asyncScheduler } from 'rxjs';
 import { KMCPermissions, KMCPermissionsService } from 'app-shared/kmc-shared/kmc-permissions';
 import { ContentPlaylistViewSections } from 'app-shared/kmc-shared/kmc-views/details-views';
 import {KalturaLogger} from '@kaltura-ng/kaltura-logger';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { observeOn } from 'rxjs/operators';
+import { merge } from 'rxjs';
+import { of } from 'rxjs';
 
 @Injectable()
 export class PlaylistMetadataWidget extends PlaylistWidget implements OnDestroy {
@@ -40,9 +43,9 @@ export class PlaylistMetadataWidget extends PlaylistWidget implements OnDestroy 
   }
 
   private _monitorFormChanges(): void {
-    Observable.merge(this.metadataForm.valueChanges, this.metadataForm.statusChanges)
+    merge(this.metadataForm.valueChanges, this.metadataForm.statusChanges)
       .pipe(cancelOnDestroy(this))
-        .observeOn(async) // using async scheduler so the form group status/dirty mode will be synchornized
+        .pipe(observeOn(asyncScheduler)) // using async scheduler so the form group status/dirty mode will be synchornized
       .subscribe(() => {
           super.updateState({
             isValid: this.metadataForm.status !== 'INVALID',
@@ -55,7 +58,7 @@ export class PlaylistMetadataWidget extends PlaylistWidget implements OnDestroy 
   protected onValidate(wasActivated: boolean): Observable<{ isValid: boolean }> {
       const name = wasActivated ? this.metadataForm.value.name : this.data.name;
       const hasValue = (name || '').trim() !== '';
-      return Observable.of({
+      return of({
           isValid: hasValue
       });
   }

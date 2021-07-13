@@ -8,7 +8,7 @@ import {
   KeyValueDiffers,
   OnDestroy
 } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
 import { TrackedFileStatuses, UploadManagement } from '@kaltura-ng/kaltura-common';
 import { AppLocalization } from '@kaltura-ng/mc-shared';
@@ -35,6 +35,9 @@ import { FriendlyHashId } from '@kaltura-ng/kaltura-common';
 import { ContentEntryViewSections } from 'app-shared/kmc-shared/kmc-views/details-views/content-entry-view.service';
 import {KalturaLogger} from '@kaltura-ng/kaltura-logger';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { filter, map, catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { of } from 'rxjs';
 
 export interface CaptionRow {
     uploading: boolean;
@@ -87,15 +90,15 @@ export class EntryCaptionsWidget extends EntryWidget  implements OnDestroy {
   private _trackUploadFiles(): void {
     this._uploadManagement.onTrackedFileChanged$
       .pipe(cancelOnDestroy(this))
-      .map(uploadedFile => {
+      .pipe(map(uploadedFile => {
         let relevantCaption = null;
         if (uploadedFile.data instanceof NewEntryCaptionFile) {
           const captions = this._captions.getValue().items;
           relevantCaption = captions ? captions.find(captionFile => captionFile.uploadFileId === uploadedFile.id) : null;
         }
         return { relevantCaption, uploadedFile };
-      })
-      .filter(({ relevantCaption }) => !!relevantCaption)
+      }))
+      .pipe(filter(({ relevantCaption }) => !!relevantCaption))
       .subscribe(
         ({ relevantCaption, uploadedFile }) => {
           switch (uploadedFile.status) {
@@ -152,7 +155,7 @@ export class EntryCaptionsWidget extends EntryWidget  implements OnDestroy {
       pager: new KalturaFilterPager( { pageIndex: 0, pageSize: 500 })
     }))
       .pipe(cancelOnDestroy(this, this.widgetReset$))
-      .map(response => {
+      .pipe(map(response => {
         // Restore previous upload state
         this._updateCaptionsResponse(response);
 
@@ -168,14 +171,14 @@ export class EntryCaptionsWidget extends EntryWidget  implements OnDestroy {
         super._hideLoader();
 
           return {failed: false};
-      })
-      .catch(error => {
+      }))
+      .pipe(catchError(error => {
           super._hideLoader();
           super._showActivationError();
           this._captions.next({ items: [] });
-          return Observable.throw(error);
+          return throwError(error);
         }
-      );
+      ));
   }
 
   private _updateCaptionsResponse(response): void {
@@ -292,7 +295,7 @@ export class EntryCaptionsWidget extends EntryWidget  implements OnDestroy {
         this.currentCaption.uploading = true;
         this.updateState({ isBusy: true });
 
-        Observable.of(this._uploadManagement.addFile(new NewEntryCaptionFile(captionFile)))
+        of(this._uploadManagement.addFile(new NewEntryCaptionFile(captionFile)))
             .subscribe((response) => {
                     this.currentCaption.uploadFileId = response.id;
                     this.currentCaption.uploading = false;
@@ -423,7 +426,7 @@ export class EntryCaptionsWidget extends EntryWidget  implements OnDestroy {
         if (this.currentCaption.id) {
             return this._kalturaServerClient.request(new CaptionAssetServeAction({captionAssetId: this.currentCaption.id}));
         } else {
-            return Observable.throw(new Error('cannot generate caption preview url. missing caption id'));
+            return throwError(new Error('cannot generate caption preview url. missing caption id'));
         }
     }
 

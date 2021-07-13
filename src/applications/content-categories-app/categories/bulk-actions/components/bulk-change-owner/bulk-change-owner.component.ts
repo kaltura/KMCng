@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
 import { ISubscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 import { KalturaClient } from 'kaltura-ngx-client';
 import { KalturaFilterPager } from 'kaltura-ngx-client';

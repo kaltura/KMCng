@@ -9,6 +9,7 @@ import { KalturaReachProfile} from 'kaltura-ngx-client';
 import { KalturaLogger } from '@kaltura-ng/kaltura-logger';
 import { Title } from '@angular/platform-browser';
 import { ContextualHelpService } from 'app-shared/kmc-shared/contextual-help/contextual-help.service';
+import { from as fromPromise} from 'rxjs';
 
 export enum SettingsReachProfileViewSections {
     Settings = 'Settings',
@@ -139,6 +140,6 @@ export class SettingsReachProfileViewService extends KmcDetailsViewBaseService<S
     protected _open(args: SettingReachProfileViewArgs): Observable<boolean> {
         const sectionToken = this._getSectionRouteToken(args.section);
         this._logger.info('handle open transcoding profile view request by the user', { profileId: args.profile.id, sectionToken });
-        return Observable.fromPromise(this._router.navigateByUrl(`/settings/reach/profile/${args.profile.id}/${sectionToken}`));
+        return fromPromise(this._router.navigateByUrl(`/settings/reach/profile/${args.profile.id}/${sectionToken}`));
     }
 }

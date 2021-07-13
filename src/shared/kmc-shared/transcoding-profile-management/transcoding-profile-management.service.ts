@@ -10,6 +10,8 @@ import { KalturaConversionProfile } from 'kaltura-ngx-client';
 import { AppEventsService } from 'app-shared/kmc-shared';
 import { cancelOnDestroy } from '@kaltura-ng/kaltura-common';
 import { TranscodingProfilesUpdatedEvent } from 'app-shared/kmc-shared/events';
+import { throwError } from 'rxjs';
+import { publishReplay, refCount, catchError, map } from 'rxjs/operators';
 
 @Injectable()
 export class TranscodingProfileManagement implements OnDestroy {
@@ -39,19 +41,19 @@ export class TranscodingProfileManagement implements OnDestroy {
               pager: new KalturaFilterPager({ pageSize: 500 })
           })
       )
-      .map((res: KalturaConversionProfileListResponse) => res.objects);
+      .pipe(map((res: KalturaConversionProfileListResponse) => res.objects));
   }
 
   public get(): Observable<KalturaConversionProfile[]> {
     if (!this._transcodingProfileCache$) {
       this._transcodingProfileCache$ = this._loadTranscodingProfiles()
-        .catch(err => {
+        .pipe(catchError(err => {
           console.log(`log: [warn] [transcodingProfile-management] Error during load transcoding profiles: ${err}`);
           this._transcodingProfileCache$ = null;
-          return Observable.throw(err);
-        })
-        .publishReplay(1)
-        .refCount();
+          return throwError(err);
+        }))
+        .pipe(publishReplay(1))
+        .pipe(refCount());
     }
 
     return this._transcodingProfileCache$;

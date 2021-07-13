@@ -129,7 +129,7 @@
   flex-direction: column;
 }
 
-:host ::ng-deep p-table .ui-table-scrollable-body {
+:host ::ng-deep p-table .p-datatable-scrollable-body {
   margin-bottom: 34px;
 }
 
@@ -138,7 +138,7 @@
   display: table;
 }
 :host ::ng-deep p-table {
-    .ui-table .ui-table-thead > tr > th {
+    .p-datatable .p-datatable-thead > tr > th {
         border-left: 1px solid $kGrayscale6;
     }
 }

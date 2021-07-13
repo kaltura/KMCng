@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
 import { AppAuthentication, BrowserService } from 'app-shared/kmc-shell';
 import { TrackedFileStatuses } from '@kaltura-ng/kaltura-common';
@@ -55,7 +55,9 @@ import { KMCPermissions, KMCPermissionsService } from 'app-shared/kmc-shared/kmc
 import { of as ObservableOf} from 'rxjs';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
 import { KalturaConversionProfileAssetParamsListResponse, ConversionProfileListAction, KalturaNullableBoolean } from 'kaltura-ngx-client';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap, catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { of } from 'rxjs';
 
 export interface ReplacementData {
     status: KalturaEntryReplacementStatus;
@@ -123,26 +125,26 @@ export class EntryFlavoursWidget extends EntryWidget implements OnDestroy {
 
         return this._loadFlavorsSectionData()
             .pipe(cancelOnDestroy(this, this.widgetReset$))
-            .map(() => {
+            .pipe(map(() => {
                 super._hideLoader();
                 return { failed: false };
-            })
-            .catch(error => {
+            }))
+            .pipe(catchError(error => {
                 super._hideLoader();
                 super._showActivationError();
-                return Observable.of({ failed: true, error });
-            });
+                return of({ failed: true, error });
+            }));
     }
 
     private _getLinkData(): Observable<{storageProfile: KalturaStorageProfile, conversionProfileAsset: KalturaConversionProfileAssetParams}> {
         if (!this._permissionsService.hasPermission(KMCPermissions.CONTENT_INGEST_REMOTE_STORAGE)) {
-            return Observable.of({ storageProfile: null, conversionProfileAsset: null });
+            return of({ storageProfile: null, conversionProfileAsset: null });
         }
 
         let conversionProfileAssetRequest;
 
         if (!Number.isInteger(this.data.conversionProfileId)) {
-            conversionProfileAssetRequest = Observable.of(null);
+            conversionProfileAssetRequest = of(null);
         } else {
             const filter = new KalturaConversionProfileFilter({
                 orderBy: KalturaConversionProfileOrderBy.createdAtDesc.toString(),
@@ -188,7 +190,7 @@ export class EntryFlavoursWidget extends EntryWidget implements OnDestroy {
                     const relevantProfile = profiles.find(profile => profile.id === this.data.conversionProfileId) || defaultProfile;
 
                     if (!relevantProfile || !Number.isInteger(relevantProfile.storageProfileId)) {
-                        return Observable.of(null);
+                        return of(null);
                     }
 
                     const action = new StorageProfileListAction({
@@ -300,7 +302,7 @@ export class EntryFlavoursWidget extends EntryWidget implements OnDestroy {
             this._logger.info(`start server polling every 10 seconds to sync entry's flavors data`, { entryId: this.data.id });
 
             this._flavorsDataPollingSubscription = this._kmcServerPolls.register<KalturaMultiResponse>(10, this._flavorsDataRequestFactory)
-                .let(flavorsData$ => this._mapFlavorsData(flavorsData$))
+                .pipe(flavorsData$ => this._mapFlavorsData(flavorsData$))
                 .pipe(cancelOnDestroy(this, this.widgetReset$))
                 .subscribe(
                     (response) => {
@@ -317,16 +319,16 @@ export class EntryFlavoursWidget extends EntryWidget implements OnDestroy {
 
         return this._kalturaServerClient
             .multiRequest(this._flavorsDataRequestFactory.create())
-            .let(flavorsData$ => this._mapFlavorsData(flavorsData$.map(result => ({ result, error: null }))))
-            .map((response) => {
+            .pipe(flavorsData$ => this._mapFlavorsData(flavorsData$.pipe(map(result => ({ result, error: null })))))
+            .pipe(map((response) => {
                 this._handleFlavorsDataResponse(response);
-            })
-            .switchMap(() => this._getLinkData())
-            .map(({ storageProfile, conversionProfileAsset }) => {
+            }))
+            .pipe(switchMap(() => this._getLinkData()))
+            .pipe(map(({ storageProfile, conversionProfileAsset }) => {
                 this.storageProfile = storageProfile;
                 this.conversionProfileAsset = conversionProfileAsset;
                 return undefined;
-            });
+            }));
     }
 
     private _getFlavorsDataAction(entryId: string): FlavorAssetGetFlavorAssetsWithParamsAction {
@@ -543,15 +545,15 @@ export class EntryFlavoursWidget extends EntryWidget implements OnDestroy {
     private _trackUploadFiles(): void {
         this._uploadManagement.onTrackedFileChanged$
             .pipe(cancelOnDestroy(this))
-            .map(uploadedFile => {
+            .pipe(map(uploadedFile => {
                 let relevantFlavor = null;
                 if (uploadedFile.data instanceof NewEntryFlavourFile) {
                     const flavors = this._flavors.getValue();
                     relevantFlavor = flavors ? flavors.find(flavorFile => flavorFile.uploadFileId === uploadedFile.id) : null;
                 }
                 return {relevantFlavor, uploadedFile};
-            })
-            .filter(({relevantFlavor}) => !!relevantFlavor)
+            }))
+            .pipe(filter(({relevantFlavor}) => !!relevantFlavor))
             .subscribe(
                 ({relevantFlavor, uploadedFile}) => {
                     switch (uploadedFile.status) {
@@ -584,7 +586,7 @@ export class EntryFlavoursWidget extends EntryWidget implements OnDestroy {
     }
 
     public uploadFlavor(flavor: Flavor, fileData: File): void {
-        Observable.of(this._uploadManagement.addFile(new NewEntryFlavourFile(fileData, this.data.id, this.data.mediaType)))
+        of(this._uploadManagement.addFile(new NewEntryFlavourFile(fileData, this.data.id, this.data.mediaType)))
             .subscribe((response) => {
                     flavor.uploadFileId = response.id;
                     flavor.status = KalturaFlavorAssetStatus.importing.toString();
@@ -606,10 +608,10 @@ export class EntryFlavoursWidget extends EntryWidget implements OnDestroy {
         }))
             .pipe(cancelOnDestroy(this, this.widgetReset$))
             .pipe(tag('block-shell'))
-            .catch(error => {
+            .pipe(catchError(error => {
                 this._uploadManagement.cancelUploadWithError(flavor.uploadFileId, 'Cannot update flavor, cancel related file');
-                return Observable.throw(error);
-            })
+                return throwError(error);
+            }))
             .subscribe(
                 response => {
                     this.refresh();
@@ -638,10 +640,10 @@ export class EntryFlavoursWidget extends EntryWidget implements OnDestroy {
         }))
             .pipe(cancelOnDestroy(this, this.widgetReset$))
             .pipe(tag('block-shell'))
-            .catch(error => {
+            .pipe(catchError(error => {
                 this._uploadManagement.cancelUploadWithError(flavor.uploadFileId, 'Cannot update flavor, cancel related file');
-                return Observable.throw(error);
-            })
+                return throwError(error);
+            }))
             .subscribe(
                 response => {
                     flavor.id = response.id;

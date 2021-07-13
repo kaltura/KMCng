@@ -21,7 +21,7 @@
         .kRow {
             display: flex;
             padding-top: 22px;
-            align-items: center;
+
             .kLabel {
                 width: 196px;
                 flex: 0 0 auto;
@@ -53,12 +53,6 @@
                 }
             }
 
-            .switchLabel{
-                min-width: 24px;
-                flex: 0 0 auto;
-                display: inline-block;
-            }
-
             kmultiselect{
                 max-width: 500px;
                 display: block;
@@ -71,8 +65,6 @@
             .kControl, k-prime-control {
                 width: 100%;
                 max-width: 500px;
-                display: flex;
-                align-items: center;
             }
         }
     }
@@ -94,7 +86,7 @@
 }
 
 :host ::ng-deep .kMetadataDetails {
-    .ui-dropdown.ui-widget, p-dropdown {
+    .p-dropdown {
         width: 100%;
     }
 }

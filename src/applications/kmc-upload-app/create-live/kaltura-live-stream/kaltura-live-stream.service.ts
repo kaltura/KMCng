@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {KalturaClient} from 'kaltura-ngx-client';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {ConversionProfileListAction} from 'kaltura-ngx-client';
 import {KalturaConversionProfileFilter} from 'kaltura-ngx-client';
 import {KalturaConversionProfileType} from 'kaltura-ngx-client';
@@ -24,6 +25,6 @@ export class KalturaLiveStreamService {
 
     return this._kalturaServerClient
       .request(new ConversionProfileListAction({filter: kalturaConversionProfileFilter, pager: kalturaFilterPager}))
-      .map(response => (<KalturaConversionProfile[]>response.objects))
+      .pipe(map(response => (<KalturaConversionProfile[]>response.objects)))
   }
 }

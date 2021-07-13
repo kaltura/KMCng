@@ -14,7 +14,7 @@ $autoCompleteWidth: 326px;
 .kContent {
   display: flex;
   flex-direction: column;
-  height: 449px;
+  height: 520px;
   width: 790px;
 
   .kContainer {
@@ -74,7 +74,7 @@ $autoCompleteWidth: 326px;
       .kRadio {
         padding-right: 40px;
 
-        ::ng-deep .ui-radiobutton-label {
+        ::ng-deep .p-radiobutton-label {
           font-weight: normal;
         }
       }
@@ -107,39 +107,30 @@ $autoCompleteWidth: 326px;
   }
 }
 
-:host ::ng-deep .ui-autocomplete.ui-widget {
+:host ::ng-deep .kHighlightedText {
+    text-decoration: underline;
+}
+:host ::ng-deep  kautocomplete ul {
   width: $autoCompleteWidth;
+    &.p-autocomplete-multiple-container {
+        height: 85px !important;
+    }
+    &.p-autocomplete-items {
+        max-height: 120px !important;
+        overflow: auto !important;
+    }
   font-size: 15px;
 
     li.userAdded {
         background-color: transparentize($kPrimary, 0.5) !important;
     }
-
-  input {
-    width: 100%;
-  }
-  .ui-autocomplete-input-token {
-    width: 100%;
-  }
-
-  ul.ui-autocomplete-multiple-container {
-
-    height: 85px;
-    overflow: auto;
-  }
-
-  .ui-autocomplete-panel {
-    height: 120px;
-  }
 }
 
 :host ::ng-deep {
-  .ui-dropdown {
+  .p-dropdown {
     height: 34px;
-    width: 326px !important;
     border: 1px solid $kGrayscale4;
-
-    .ui-dropdown-label {
+    .p-dropdown-label {
       color: $kGrayscale1;
       font-size: 15px;
     }

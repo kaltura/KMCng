@@ -22,21 +22,21 @@
   padding-left: 14px!important;
 }
 
-:host ::ng-deep .ui-table .nameColumn {
+:host ::ng-deep .p-datatable .nameColumn {
   width: 100px;
 }
 
-:host ::ng-deep .ui-table .createdAtColumn {
+:host ::ng-deep .p-datatable .createdAtColumn {
   width: 40px;
   text-align: center;
 }
 
-:host ::ng-deep .ui-table .entriesCountColumn {
+:host ::ng-deep .p-datatable .entriesCountColumn {
   width: 50px;
   text-align: center;
 }
 
-:host ::ng-deep .ui-table .actionsColumn {
+:host ::ng-deep .p-datatable .actionsColumn {
   overflow: visible;
   width: 30px;
 }

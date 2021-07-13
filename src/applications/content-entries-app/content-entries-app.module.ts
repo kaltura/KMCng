@@ -15,6 +15,7 @@ import {LocalizationModule} from '@kaltura-ng/mc-shared';
 import {KalturaPrimeNgUIModule} from '@kaltura-ng/kaltura-primeng-ui';
 import {AreaBlockerModule, KalturaUIModule, StickyModule, TooltipModule} from '@kaltura-ng/kaltura-ui';
 import {AutoCompleteModule} from '@kaltura-ng/kaltura-primeng-ui';
+import {AutoCompleteModule as PrimeAutoCompleteModule} from 'primeng/autocomplete';
 import {SliderModule} from '@kaltura-ng/kaltura-primeng-ui';
 import {PopupWidgetModule} from '@kaltura-ng/kaltura-ui';
 import {DynamicFormModule} from '@kaltura-ng/kaltura-ui';
@@ -62,6 +63,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     AccordionModule,
     AreaBlockerModule,
     AutoCompleteModule,
+    PrimeAutoCompleteModule,
     SliderModule,
     ButtonModule,
     CalendarModule,

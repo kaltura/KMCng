@@ -15,6 +15,10 @@ import { KMCPermissions, KMCPermissionsService } from 'app-shared/kmc-shared/kmc
 import { ContentCategoryViewSections } from 'app-shared/kmc-shared/kmc-views/details-views';
 import {KalturaLogger} from '@kaltura-ng/kaltura-logger';
 import { cancelOnDestroy, tag } from '@kaltura-ng/kaltura-common';
+import { merge } from 'rxjs';
+import { throwError } from 'rxjs';
+import { of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class CategoryEntitlementsWidget extends CategoryWidget implements OnDestroy {
@@ -40,11 +44,11 @@ export class CategoryEntitlementsWidget extends CategoryWidget implements OnDest
           return this._kalturaClient.request(
               new CategoryGetAction({id: this.data.id})
           ).pipe(cancelOnDestroy(this, this.widgetReset$))
-              .map(value => {
+              .pipe(map(value => {
                   return value.membersCount;
-              });
+              }));
       } else {
-          return Observable.throw(new Error('missing data'));
+          return throwError(new Error('missing data'));
       }
   }
 
@@ -57,18 +61,18 @@ export class CategoryEntitlementsWidget extends CategoryWidget implements OnDest
 
     return this._fetchAdditionalData()
       .pipe(cancelOnDestroy(this, this.widgetReset$))
-      .map(({owner, parentCategory}) => {
+      .pipe(map(({owner, parentCategory}) => {
         super._hideLoader();
         this.parentCategory = parentCategory || null;
         this._resetFormData(owner);
         this._monitorFormChanges();
         return {failed: false};
-      })
-      .catch(error => {
+      }))
+      .pipe(catchError(error => {
         super._hideLoader();
         super._showActivationError();
-        return Observable.of({failed: true, error});
-      });
+        return of({failed: true, error});
+      }));
   }
 
 
@@ -89,36 +93,38 @@ export class CategoryEntitlementsWidget extends CategoryWidget implements OnDest
 
       if (multiRequest.requests.length) {
           return this._kalturaClient.multiRequest(multiRequest)
-              .map(
-                  data => {
-                      if (data.hasErrors()) {
-                          // check for missing user error, in which case we can continue
-                          let missingUserError = false;
+              .pipe(
+                  map(
+                      data => {
+                          if (data.hasErrors()) {
+                              // check for missing user error, in which case we can continue
+                              let missingUserError = false;
+                              data.forEach(response => {
+                                  if (response.error && response.error.code === "INVALID_USER_ID") {
+                                      missingUserError = true;
+                                      super._showUserError();
+                                  }
+                              });
+                              if (!missingUserError) {
+                                  throw new Error('error occurred in action \'_fetchAdditionalData\'');
+                              }
+                          }
+
+                          let owner: KalturaUser = null;
+                          let parentCategory = null;
                           data.forEach(response => {
-                              if (response.error && response.error.code === "INVALID_USER_ID") {
-                                  missingUserError = true;
-                                  super._showUserError();
+                              if (response.result instanceof KalturaCategory) {
+                                  parentCategory = response.result;
+                              } else if (response.result instanceof KalturaUser) {
+                                  owner = response.result;
                               }
                           });
-                          if (!missingUserError) {
-                              throw new Error('error occurred in action \'_fetchAdditionalData\'');
-                          }
-                      }
-
-                      let owner: KalturaUser = null;
-                      let parentCategory = null;
-                      data.forEach(response => {
-                          if (response.result instanceof KalturaCategory) {
-                              parentCategory = response.result;
-                          } else if (response.result instanceof KalturaUser) {
-                              owner = response.result;
-                          }
-                      });
-                      return {owner, parentCategory};
-                  });
+                          return {owner, parentCategory};
+                      })
+              );
       }else
       {
-          return Observable.of({ owner: null, parentCategory: null});
+          return of({ owner: null, parentCategory: null});
       }
   }
 
@@ -136,7 +142,7 @@ export class CategoryEntitlementsWidget extends CategoryWidget implements OnDest
   }
 
   private _monitorFormChanges() {
-    Observable.merge(this.entitlementsForm.valueChanges, this.entitlementsForm.statusChanges)
+    merge(this.entitlementsForm.valueChanges, this.entitlementsForm.statusChanges)
       .pipe(cancelOnDestroy(this, this.widgetReset$))
       .subscribe(
         () => {

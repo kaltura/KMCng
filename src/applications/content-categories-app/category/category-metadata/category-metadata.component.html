@@ -31,7 +31,7 @@
       <div class="kRow kValign">
         <span class="kLabel">{{'applications.content.categoryDetails.metadata.tags' | translate}}</span>
         <div class="kControl">
-          <kAutoComplete formControlName="tags" suggestionItemField="item" suggestionSelectableField="isSelectable" [multiple]="true"
+          <kAutoComplete formControlName="tags" suggestionItemField="item" suggestionSelectableField="isSelectable" [allowMultiple]="true"
             [limitToSuggestions]="false" [minLength]="3" [suggestionsProvider]="_tagsProvider" (completeMethod)="_searchTags($event)">
           </kAutoComplete>
         </div>

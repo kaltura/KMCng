@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import {BehaviorSubject, EMPTY} from 'rxjs';
 import { BrowserService } from 'shared/kmc-shell';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import {
     BaseEntryGetAction,
     DropFolderFileDeleteAction,
@@ -40,6 +40,8 @@ import { subApplicationsConfig } from 'config/sub-applications';
 import { serverConfig } from 'config/server';
 import { ContentDropFoldersMainViewService } from 'app-shared/kmc-shared/kmc-views';
 import { globalConfig } from 'config/global';
+import { of } from 'rxjs';
+import { switchMap, map, publishReplay, refCount } from 'rxjs/operators';
 
 const localStoragePageSizeKey = 'dropFolders.list.pageSize';
 
@@ -175,9 +177,9 @@ export class DropFoldersStoreService extends FiltersStoreBase<DropFoldersFilters
 
   }
 
-  private _buildQueryRequest(reloadFolders: boolean): Observable<KalturaDropFolderFileListResponse> {
+  private _buildQueryRequest(reloadFolders: boolean): Observable<any> {
     return this.loadDropFoldersList(reloadFolders)
-      .switchMap(({ dropFoldersList, error }) => {
+      .pipe(switchMap(({ dropFoldersList, error }) => {
         if (!dropFoldersList.length || error) {
           this._browserService.alert({
               header: this._appLocalization.get('app.common.attention'),
@@ -187,7 +189,7 @@ export class DropFoldersStoreService extends FiltersStoreBase<DropFoldersFilters
             )
           });
 
-          return Observable.of({
+          return of({
             objects: [],
             totalCount: 0
           });
@@ -248,7 +250,7 @@ export class DropFoldersStoreService extends FiltersStoreBase<DropFoldersFilters
         // build the request
         return <any>this._kalturaServerClient
           .request(new DropFolderFileListAction({ filter, pager }))
-          .map(response => {
+          .pipe(map(response => {
             response.objects.forEach(object => {
               dropFoldersList.forEach(folder => {
                 if (object.dropFolderId === folder.id) {
@@ -258,8 +260,8 @@ export class DropFoldersStoreService extends FiltersStoreBase<DropFoldersFilters
             });
 
             return response;
-          });
-      });
+          }));
+      }));
 
   }
 
@@ -288,7 +290,7 @@ export class DropFoldersStoreService extends FiltersStoreBase<DropFoldersFilters
       }).setRequestOptions({
           acceptedTypes: [KalturaDropFolder, KalturaDropFolderContentFileHandlerConfig]
       }))
-      .map(response => {
+      .pipe(map(response => {
         this._dropFolders.state.next({ loading: false, errorMessage: null });
         if (response.objects.length) {
           let df: KalturaDropFolder;
@@ -324,16 +326,16 @@ export class DropFoldersStoreService extends FiltersStoreBase<DropFoldersFilters
               )
           };
         }
-      })
-      .publishReplay(1)
-      .refCount();
+      }))
+      .pipe(publishReplay(1))
+      .pipe(refCount());
 
     return this._dropFoldersList$;
   }
 
   public isEntryExist(entryId: string): Observable<boolean> {
     return this._kalturaServerClient.request(new BaseEntryGetAction({ entryId }))
-      .map(Boolean);
+      .pipe(map(Boolean));
   }
 
   protected _createDefaultFiltersValue(): DropFoldersFilters {
@@ -376,7 +378,7 @@ export class DropFoldersStoreService extends FiltersStoreBase<DropFoldersFilters
 
   public deleteDropFiles(ids: number[]): Observable<{}> {
     if (!ids || !ids.length) {
-      return Observable.empty();
+      return EMPTY;
     }
 
     const requests = ids.map(id => new DropFolderFileDeleteAction({ dropFolderFileId: id }));
@@ -394,8 +396,8 @@ export class DropFoldersStoreService extends FiltersStoreBase<DropFoldersFilters
     const multiRequests = splittedRequests
       .map(reqChunk => this._kalturaServerClient.multiRequest(reqChunk));
 
-    return Observable.forkJoin(multiRequests)
-      .map(responses => {
+    return forkJoin(multiRequests)
+      .pipe(map(responses => {
         const errorMessage = [].concat.apply([], responses)
           .filter(response => !!response.error)
           .reduce((acc, { error }) => `${acc}\n${error.message}`, '')
@@ -406,7 +408,7 @@ export class DropFoldersStoreService extends FiltersStoreBase<DropFoldersFilters
         } else {
           return {};
         }
-      });
+      }));
   }
 }
 

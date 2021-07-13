@@ -34,31 +34,32 @@
 		}
 	}
 }
-:host ::ng-deep .ui-dropdown.ui-widget{
+:host ::ng-deep .p-dropdown{
     min-width: 180px;
 	width: 180px !important;
 }
 
-:host ::ng-deep .ui-dropdown-label.ui-inputtext{
+:host ::ng-deep .p-dropdown-label.p-inputtext{
 	background-color: #ffffff;
 }
 
-:host ::ng-deep .ui-dropdown-label {
+:host ::ng-deep .p-dropdown-label {
   text-overflow: ellipsis;
+
 }
 :host ::ng-deep .kAccessControlProfiles {
-    .ui-dropdown-panel {
+    .p-dropdown-panel {
         width: 250px;
     }
 
-    .ui-dropdown-label {
+    .p-dropdown-label {
         text-overflow: ellipsis;
         font-weight: normal;
         font-size: 15px;
         color: $kGrayscale1;
     }
 
-    .ui-dropdown.ui-widget {
+    .p-dropdown {
         min-width: 184px;
         width: 184px;
     }
