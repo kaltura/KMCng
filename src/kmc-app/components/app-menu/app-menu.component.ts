@@ -21,11 +21,11 @@ import {ResetMenuEvent, UpdateMenuEvent} from 'app-shared/kmc-shared/events';
     ]
 
 })
-export class AppMenuComponent implements OnInit, OnDestroy{
+export class AppMenuComponent implements OnInit, OnDestroy {
 
-    @ViewChild('helpmenu', { static: true }) private _helpmenu: PopupWidgetComponent;
-    @ViewChild('supportPopup', { static: true }) private _supportPopup: PopupWidgetComponent;
-    @ViewChild('leftMenu', { static: true }) private leftMenu: ElementRef;
+    @ViewChild('helpmenu', {static: true}) private _helpmenu: PopupWidgetComponent;
+    @ViewChild('supportPopup', {static: true}) private _supportPopup: PopupWidgetComponent;
+    @ViewChild('leftMenu', {static: true}) private leftMenu: ElementRef;
     private _appCachedVersionToken = 'kmc-cached-app-version';
 
     public _showChangelog = false;
@@ -46,8 +46,9 @@ export class AppMenuComponent implements OnInit, OnDestroy{
     selectedMenuItem: KMCAppMenuItem;
     showSubMenu = true;
 
-    public _customerCareLink = this._supportLinkExists ? serverConfig.externalLinks.kaltura.customerCare : "";
-    public _customerPortalLink = this._supportLinkExists ? serverConfig.externalLinks.kaltura.customerPortal : "";
+    public _customerCareLink = this._supportLinkExists ? serverConfig.externalLinks.kaltura.customerCare : '';
+    public _customerPortalLink = this._supportLinkExists ? serverConfig.externalLinks.kaltura.customerPortal : '';
+    public userInitials: string;
 
     constructor(public _kmcLogs: KmcLoggerConfigurator,
                 private _contextualHelpService: ContextualHelpService,
@@ -85,9 +86,12 @@ export class AppMenuComponent implements OnInit, OnDestroy{
         }
 
         this._powerUser = this._browserService.getInitialQueryParam('mode') === 'poweruser';
+        if (this._userAuthentication.appUser?.fullName) {
+            this.userInitials = this._userAuthentication.appUser.fullName.toUpperCase().split(' ').slice(0, 2).map(s => s[0]).join('');
+        }
     }
 
-    ngOnInit(){
+    ngOnInit() {
         const cachedVersion = this._browserService.getFromLocalStorage(this._appCachedVersionToken);
         this._showChangelog = cachedVersion !== globalConfig.client.appVersion;
         this._appEvents.event(UpdateMenuEvent)
@@ -109,22 +113,22 @@ export class AppMenuComponent implements OnInit, OnDestroy{
 
     }
 
-    private replaceMenu(menuID: string,  menu: KMCAppMenuItem[]): void{
+    private replaceMenu(menuID: string, menu: KMCAppMenuItem[]): void {
         this.renderer.setStyle(this.leftMenu.nativeElement, 'opacity', 0);
         this.renderer.setStyle(this.leftMenu.nativeElement, 'marginLeft', '100px');
-        setTimeout( ()=> {
+        setTimeout(() => {
             this.leftMenuConfig = menu;
             this.renderer.setStyle(this.leftMenu.nativeElement, 'opacity', 1);
             this.renderer.setStyle(this.leftMenu.nativeElement, 'marginLeft', '0px');
             this.setSelectedRoute(this.router.routerState.snapshot.url);
             this.menuID = menuID;
-        },300);
+        }, 300);
     }
 
     setSelectedRoute(path) {
         if (this.menuConfig) {
             this.selectedMenuItem = this.leftMenuConfig.find(item => item.isActiveView(path));
-            if (!this.selectedMenuItem){
+            if (!this.selectedMenuItem) {
                 this.selectedMenuItem = this.rightMenuConfig.find(item => item.isActiveView(path));
             }
             this.showSubMenu = this.selectedMenuItem && this.selectedMenuItem.children && this.selectedMenuItem.children.length > 0;
@@ -136,7 +140,7 @@ export class AppMenuComponent implements OnInit, OnDestroy{
 
     openHelpLink(key) {
         let link = '';
-        switch (key){
+        switch (key) {
             case 'manual':
                 link = serverConfig.externalLinks.kaltura.userManual;
                 break;

@@ -103,24 +103,27 @@
     .kUserName {
         display: flex;
         align-items: center;
-        opacity: 0.6;
-        color: $headerTextColor;
+        color: #fff;
         cursor: pointer;
         font-weight: 400;
         margin-left: 12px;
         font-size: 14px;
-        &:hover, &.open {
-            opacity: 1;
-            color: $mainLinkHoverColor;
-            i {
-                color: $mainLinkHoverColor;
-                opacity: 1;
-            }
-        }
         i {
             font-size: 10px;
             margin-left: 6px;
             margin-top: 2px;
+        }
+
+        .kUserInitials {
+            height: 34px;
+            width: 34px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            color: #fff;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     }
     .kLogo {

@@ -2,22 +2,22 @@
 
 .kUploadBtn {
   height: 34px;
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: 0.1em;
   font-weight: 700;
-  color: $kGrayscale1;
   margin-right: 12px;
-  padding-left: 6px;
-  padding-right: 6px;
-  border: none !important;
+  background: transparent;
+  color: #fff;
+  border: 1px solid #fff;
   &:disabled{
       color: $kGrayscale4;
       background: transparent;
       border: 1px solid $kGrayscale4 !important;
       cursor: none;
   }
-    ::ng-deep   .p-button-label {
-        padding: .25em 1em;
+
+    ::ng-deep .p-button-icon {
+        font-size: 20px;
     }
 }
 

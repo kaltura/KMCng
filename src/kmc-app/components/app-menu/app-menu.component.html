@@ -21,20 +21,21 @@
                             {{item.menuTitle | uppercase}}
                     </a>
                 </div>
+
+                <kUploadButton></kUploadButton>
             </div>
 
             <div class="kMenu-right">
                 <k-logs-record mode="button"
                                *ngIf="(_kmcLogs.logsRecordMode | async).enabled"
                                [logLevel]="(_kmcLogs.logsRecordMode | async).logLevel"></k-logs-record>
-                <kUploadButton></kUploadButton>
                 <kUploadMonitor [appmenu]="appmenu"></kUploadMonitor>
 
                 <i *ngFor="let item of rightMenuConfig" (click)="item.open()" [ngClass]="item.icon" [class.open]="item === selectedMenuItem" [kTooltip]="item.menuTitle" [placement]="'bottom'"></i>
 
                 <i #help class="kIconhelp" [class.has-notification]="_showChangelog" [class.open]="_helpMenuOpened"></i>
                 <div #username class="kUserName">
-                    <span>{{_userAuthentication.appUser?.fullName}}</span>
+                    <div class="kUserInitials">{{userInitials}}</div>
                     <i class="kIcondropdown_arrow_bottom"></i>
                 </div>
             </div>
@@ -59,7 +60,7 @@
               [popupWidth]="240"
               [closeBtn]="false"
               [targetRef]="username"
-              [targetOffset]="{'x': 8, 'y': 30}"
+              [targetOffset]="{'x': 8, 'y': 37}"
               (onOpen)="username.className='kUserName open'"
               (onClose)="username.className='kUserName'">
     <kKMCUserSettings [parentPopup]="usersettings"></kKMCUserSettings>

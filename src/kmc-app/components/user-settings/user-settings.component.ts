@@ -19,6 +19,8 @@ export class UserSettingsComponent {
   ];
   public _selectedLanguage = 'en';
   public _selectedDateFormat = this.browserService.getFromLocalStorage('kmc_date_format') || 'month-day-year';
+  public userInitials: string;
+  public partnerInfo: string[];
 
   constructor(public _userAuthentication: AppAuthentication, private browserService: BrowserService, private _router: Router) {
       kmcAppConfig.locales.forEach(locale => {
@@ -33,6 +35,13 @@ export class UserSettingsComponent {
       if (lang) {
         this._selectedLanguage = lang.value;
       }
+    }
+
+    if (this._userAuthentication.appUser?.fullName) {
+        this.userInitials = this._userAuthentication.appUser.fullName.toUpperCase().split(' ').slice(0, 2).map(s => s[0]).join('');
+    }
+    if (this._userAuthentication.appUser?.partnerInfo?.name) {
+        this.partnerInfo = this._userAuthentication.appUser.partnerInfo.name.split('-').slice(0, 2);
     }
   }
 

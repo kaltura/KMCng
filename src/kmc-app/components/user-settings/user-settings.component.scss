@@ -47,6 +47,8 @@ hr{
 .kMenuItemLabel {
     font-size: 15px;
     color: $kGrayscale1;
+    display: flex;
+    align-items: center;
 }
 
 .kMenuItem {
@@ -68,4 +70,37 @@ hr{
 :host ::ng-deep .p-dropdown {
     min-width: 208px;
     width: 208px !important;
+}
+
+.kUserInitials {
+    height: 34px;
+    width: 34px;
+    min-width: 34px;
+    background: $kGrayscale6;
+    border-radius: 50%;
+    color: $kGrayscale1;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.partner-info {
+    display: flex;
+    flex-direction: column;
+    font-weight: 700;
+    margin-top: 0px;
+    margin-left: 16px;
+    word-break: break-word;
+    p {
+        margin: 3px 0px;
+
+        &:first-child {
+            color: $kGrayscale1;
+        }
+
+        &:last-child {
+            color: #888888;
+        }
+    }
 }

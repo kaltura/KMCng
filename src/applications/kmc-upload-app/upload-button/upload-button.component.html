@@ -1,6 +1,8 @@
 <button pButton [disabled]="_disabled"
-        label="{{'app.titles.create' | translate | uppercase}}"
-        class="kButtonDefault kUploadBtn"
+        label="{{'app.titles.create' | translate}}"
+        class="kUploadBtn"
+        icon="kIconplus"
+        iconPos="left"
         (click)="uploadmenu.open()"></button>
 
 <kPopupWidget #uploadmenu data-aid="uploadmenu" [popupWidth]="360" [popupHeight]="385" [closeBtn]="true"

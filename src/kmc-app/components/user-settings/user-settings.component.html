@@ -5,9 +5,11 @@
                 <div>{{_userAuthentication.appUser?.fullName}}</div>
             </div>
         </li-->
-        <li class="kMenuItemLabel"><span (dblclick)="egg()" class="kIcon kIconhouse"></span>
-            <div class="kMenuItem">
-                <div>{{_userAuthentication.appUser?.partnerInfo?.name}}</div>
+        <li class="kMenuItemLabel">
+<!--            <span (dblclick)="egg()" class="kIcon kIconhouse"></span>-->
+            <div class="kUserInitials">{{userInitials}}</div>
+            <div class="kMenuItem partner-info">
+                <p *ngFor="let info of partnerInfo">{{info}}</p>
             </div>
         </li>
     </ul>
